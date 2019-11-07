@@ -88,17 +88,19 @@ else:
 # Install pip
 filepath, filename = os.path.split(pipInstaller)
 sys.path.insert(0, filepath)
-if PLATFORM == 'Darwin':
-    cmd = '{0} {1} --user'.format('python2.7', pipInstaller).split(' ')
-else:
-    cmd = '{0} {1} --user'.format(PYTHON_PATH, pipInstaller).split(' ')
-print('Calling shell command: {0}'.format(cmd))
-print(subprocess.check_output(cmd))
 
-# Install Dependencies
-cmd = '{0} install --force-reinstall --user {1} pyyaml requests[security]'.format(PIP_PATH,
-                                                                                    ANIMBUDDY_API_RELEASE_PATH).split(
-    ' ')
+if not os.path.exists(pipInstaller):
+    if PLATFORM == 'Darwin':
+        cmd = '{0} {1} --user'.format('python2.7', pipInstaller).split(' ')
+    else:
+        cmd = '{0} {1} --user'.format(PYTHON_PATH, pipInstaller).split(' ')
+    print('Calling shell command: {0}'.format(cmd))
+    print(subprocess.check_output(cmd))
+
+    # Install Dependencies
+    cmd = '{0} install --force-reinstall --user {1} pyyaml requests[security]'.format(PIP_PATH,
+                                                                                        ANIMBUDDY_API_RELEASE_PATH).split(
+        ' ')
 
 # Install SyncsketchGUI
 # * By using target, pip show won't find this package anymore
@@ -118,3 +120,10 @@ print(subprocess.check_output(cmd))
 if delete_tmpdir and tmpdir:
     print('cleaning up temporary files: {0}'.format(tmpdir))
     shutil.rmtree(tmpdir, ignore_errors=True)
+
+
+from animBuddy import UI
+reload(UI)
+
+x = UI.UI()
+x.loadInMaya()

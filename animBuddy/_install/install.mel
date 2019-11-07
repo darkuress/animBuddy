@@ -89,17 +89,19 @@ else:\n\
 # Install pip\n\
 filepath, filename = os.path.split(pipInstaller)\n\
 sys.path.insert(0, filepath)\n\
-if PLATFORM == 'Darwin':\n\
-    cmd = '{0} {1} --user'.format('python2.7', pipInstaller).split(' ')\n\
-else:\n\
-    cmd = '{0} {1} --user'.format(PYTHON_PATH, pipInstaller).split(' ')\n\
-print('Calling shell command: {0}'.format(cmd))\n\
-print(subprocess.check_output(cmd))\n\
 \n\
-# Install Dependencies\n\
-cmd = '{0} install --force-reinstall --user {1} pyyaml requests[security]'.format(PIP_PATH,\n\
-                                                                                    ANIMBUDDY_API_RELEASE_PATH).split(\n\
-    ' ')\n\
+if not os.path.exists(pipInstaller):\n\
+    if PLATFORM == 'Darwin':\n\
+        cmd = '{0} {1} --user'.format('python2.7', pipInstaller).split(' ')\n\
+    else:\n\
+        cmd = '{0} {1} --user'.format(PYTHON_PATH, pipInstaller).split(' ')\n\
+    print('Calling shell command: {0}'.format(cmd))\n\
+    print(subprocess.check_output(cmd))\n\
+\n\
+    # Install Dependencies\n\
+    cmd = '{0} install --force-reinstall --user {1} pyyaml requests[security]'.format(PIP_PATH,\n\
+                                                                                        ANIMBUDDY_API_RELEASE_PATH).split(\n\
+        ' ')\n\
 \n\
 # Install SyncsketchGUI\n\
 # * By using target, pip show won't find this package anymore\n\
@@ -119,4 +121,11 @@ print(subprocess.check_output(cmd))\n\
 if delete_tmpdir and tmpdir:\n\
     print('cleaning up temporary files: {0}'.format(tmpdir))\n\
     shutil.rmtree(tmpdir, ignore_errors=True)\n\
+\n\
+\n\
+from animBuddy import UI\n\
+reload(UI)\n\
+\n\
+x = UI.UI()\n\
+x.loadInMaya()\n\
 ");
