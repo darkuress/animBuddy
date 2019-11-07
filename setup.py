@@ -4,7 +4,7 @@ setup(
     name = 'animBuddy',
     version = '1.0.0',
     url = 'https://github.com/darkuress/animBuddy.git',
-    author = 'Syncsketch',
+    author = 'Huile De Olive',
     author_email = "huiledolivemaster@gmail.com",
     description = "Anim Buddy for Autodesk Maya",
     packages = find_packages(),

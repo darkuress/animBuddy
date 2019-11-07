@@ -110,7 +110,9 @@ if os.path.isdir(ANIMBUDDY_INSTALL_PATH):
     # todo: delete as well SyncsketchGUI-1.0.0.dist-info
     print('Deleting previous directory for a clean install {0} '.format(ANIMBUDDY_INSTALL_PATH))
 
-cmd = '{0} install --upgrade --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,
+#cmd = '{0} install --upgrade --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,
+#                                                                ANIMBUDDY_GUI_RELEASE_PATH).split(' ')
+cmd = '{0} install --ignore-installed --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,
                                                                 ANIMBUDDY_GUI_RELEASE_PATH).split(' ')
 print('Calling shell command: {0}'.format(cmd))
 print(subprocess.check_output(cmd))
