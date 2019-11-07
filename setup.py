@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'animBuddy',
-    version = '1.0.8',
+    version = '1.0.0',
     url = 'https://github.com/darkuress/animBuddy.git',
     author = 'Syncsketch',
     author_email = "huiledolivemaster@gmail.com",
