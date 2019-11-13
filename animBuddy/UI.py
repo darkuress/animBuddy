@@ -13,6 +13,8 @@ import SelectionGrp.Core
 reload(SelectionGrp.Core)
 import UISelectionToolBar
 reload(UISelectionToolBar)
+import DrawArcToolBar
+reload(DrawArcToolBar)
 from DrawArc import testRun as DAC
 reload(DAC)
 from ResetIt import Core as RIT
@@ -74,34 +76,58 @@ class UI(Preference.Preference):
         self.frozen = False
         
         #- Easy inbetween ---------------------------------------------------------------
+        wdth = 267
         cmds.rowLayout(numberOfColumns = 2)
-        cmds.columnLayout(width = 200)
-        cmds.rowLayout(width = 200, numberOfColumns = 5 , cw = [1,10])
-        cmds.text(label = "0")
-        cmds.separator(height = 5, width = 80, style = 'none')        
-        cmds.text(label = "0.6")
+        cmds.columnLayout(width = wdth)
+        cmds.frameLayout(labelVisible = False,
+                         borderVisible = False, 
+                         width = wdth,
+                         marginHeight = 0,
+                         marginWidth = 0,
+                         labelIndent = 0,
+                         collapsable = False,)
+        cmds.rowLayout(numberOfColumns = 11,
+                       adjustableColumn = 1, 
+                       columnAttach = ([2, 'both', 0]))
+        cmds.text(label = "0.0")
+        cmds.separator(height = 5, width = 36, style = 'none')        
+        cmds.text(label = "0.5")
         cmds.separator(height = 5, width = 70, style = 'none') 
-        cmds.text(label = "1.2")
+        cmds.text(label = "1.0")
+        cmds.separator(height = 5, width = 34, style = 'none') 
         cmds.setParent("..")
-        self.floatSliderEIBAmount = cmds.floatSlider(min = 0, 
+        cmds.setParent("..")
+        self.floatSliderEIBAmount = cmds.floatSlider(min = -0.2, 
                                                      max = 1.2, 
-                                                     width = 200,
-                                                     value = 0.6, 
+                                                     width = wdth,
+                                                     value = 0.5, 
                                                      step = 0.1,
                                                      annotation = 'Easy Inbetween. Right click to reset the tool.',
                                                      dc = self.easyInBetweenChange)
         cmds.popupMenu()
         cmds.menuItem(label = "Reset", command = self.afterDrop)
-        
-        cmds.rowLayout(width = 200, numberOfColumns = 18 , cw = [1,10])
-        for i in range(7):
-            value = float(i)/float(5)
+
+        cmds.frameLayout(labelVisible = False,
+                         borderVisible = False, 
+                         width = wdth,
+                         marginHeight = 0,
+                         marginWidth = 0,
+                         labelIndent = 0,
+                         collapsable = False,)                
+        cmds.rowLayout(width = wdth, numberOfColumns = 30 , columnAttach = ([2, 'both', 0]))
+        for i in range(-2, 13, 1):
+            value = i/10.0
+            if i == 0 or i == 5 or i == 10:
+                pic = 'dot_big.png'
+            else:
+                pic = 'dot.png'
             cmds.iconTextButton(style = 'iconOnly', 
-                                image1 = os.path.join(imagesPath, 'dot.png'), 
+                                image1 = os.path.join(imagesPath, pic), 
                                 label = str(value),
                                 annotation = "set inbetween : " + str(value),
                                 c = partial(self.easyInBetweenChange2, value = value) )
-            cmds.separator(height = 10, width = 15, style = 'none')
+            cmds.separator(height = 10, width = 1, style = 'none')
+        cmds.setParent("..")
         cmds.setParent("..")
         cmds.setParent("..")
         cmds.separator(hr= False, height = height, width = 40, style = sepStyle)
@@ -171,6 +197,8 @@ class UI(Preference.Preference):
                                                  label = 'arc',
                                                  annotation = 'MotionTrail tool',
                                                  c = self.drawArc)  
+        cmds.popupMenu()
+        cmds.menuItem(label = "Option", c = self.drawArcToolbar)
         cmds.separator(hr= False, height = height, width = sepWidth, style = sepStyle)
         cmds.setParent("..") 
 
@@ -219,7 +247,12 @@ class UI(Preference.Preference):
                                               width = iconSize/1.7, mw = marginSize, height = iconSize, mh = marginSize,
                                               label = 'preference',
                                               annotation = 'Preference')
-        cmds.separator(hr= False, height = height, width = sepWidth, style = "none")
+        cmds.popupMenu()
+        cmds.menuItem(label = "Preference")
+        cmds.menuItem(label = "--------------")
+        cmds.menuItem(label = "Close", command = self.closeUI)
+        
+        cmds.separator(hr= False, height = height, width = 10, style = "none")
         cmds.setParent("..") 
 
     #---------------------------------------------------------------------------------   
@@ -232,7 +265,7 @@ class UI(Preference.Preference):
     def afterDrop(self, *args):
         """
         """
-        cmds.floatSlider(self.floatSliderEIBAmount, e = True, v = 0.6) 
+        cmds.floatSlider(self.floatSliderEIBAmount, e = True, v = 0.5) 
 
     def easyInBetweenChange2(self, value = None, *args):
         """
@@ -275,7 +308,14 @@ class UI(Preference.Preference):
         Motion trail 
         """
         DAC.run()
-    
+
+    #---------------------------------------------------------------------------------
+    def drawArcToolbar(self, *args):
+        """
+        """
+        ui = DrawArcToolBar.DrawArcToolBar()
+        ui.loadInMaya()
+
     #---------------------------------------------------------------------------------      
     def copySession(self, *args):
         """
@@ -316,6 +356,17 @@ class UI(Preference.Preference):
 
         run = ui.UI()
         run.loadInMaya()
+
+    def closeUI(self, *args):
+        """
+        close the toolbar
+        """
+        if cmds.window('animBuddyWin', ex = True):
+            cmds.deleteUI('animBuddyWin')    
+        try:
+            cmds.deleteUI('abToolBar')   
+        except:
+            pass
         
     def loadInMaya(self, *args):
         """
