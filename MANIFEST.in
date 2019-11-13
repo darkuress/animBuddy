@@ -1,2 +1,2 @@
 include README.md
-global-include *.png *.psd
+global-include *.png

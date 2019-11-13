@@ -90,7 +90,7 @@ else:\n\
 filepath, filename = os.path.split(pipInstaller)\n\
 sys.path.insert(0, filepath)\n\
 \n\
-if not os.path.exists(pipInstaller):\n\
+if not os.path.exists(PIP_PATH):\n\
     if PLATFORM == 'Darwin':\n\
         cmd = '{0} {1} --user'.format('python2.7', pipInstaller).split(' ')\n\
     else:\n\
@@ -100,29 +100,30 @@ if not os.path.exists(pipInstaller):\n\
 \n\
     # Install Dependencies\n\
     cmd = '{0} install --force-reinstall --user {1} pyyaml requests[security]'.format(PIP_PATH,\n\
-                                                                                        ANIMBUDDY_API_RELEASE_PATH).split(\n\
-        ' ')\n\
+                                                                            ANIMBUDDY_API_RELEASE_PATH).split(' ')\n\
 \n\
-# Install SyncsketchGUI\n\
+# Install AnimBuddy\n\
 # * By using target, pip show won't find this package anymore\n\
 \n\
-if os.path.isdir(ANIMBUDDY_INSTALL_PATH):\n\
-    shutil.rmtree(ANIMBUDDY_INSTALL_PATH, ignore_errors=True)\n\
-    # todo: delete as well SyncsketchGUI-1.0.0.dist-info\n\
-    print('Deleting previous directory for a clean install {0} '.format(ANIMBUDDY_INSTALL_PATH))\n\
+#if os.path.isdir(ANIMBUDDY_INSTALL_PATH):\n\
+#    shutil.rmtree(ANIMBUDDY_INSTALL_PATH, ignore_errors=True)\n\
+#    # todo: delete as well SyncsketchGUI-1.0.0.dist-info\n\
+#    print('Deleting previous directory for a clean install {0} '.format(ANIMBUDDY_INSTALL_PATH))\n\
 \n\
 #cmd = '{0} install --upgrade --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,\n\
 #                                                                ANIMBUDDY_GUI_RELEASE_PATH).split(' ')\n\
-cmd = '{0} install --ignore-installed --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,\n\
-                                                                ANIMBUDDY_GUI_RELEASE_PATH).split(' ')\n\
-print('Calling shell command: {0}'.format(cmd))\n\
-print(subprocess.check_output(cmd))\n\
+\n\
+if not os.path.isdir(ANIMBUDDY_INSTALL_PATH):\n\
+    cmd = '{0} install --ignore-installed --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,\n\
+                                                                    ANIMBUDDY_GUI_RELEASE_PATH).split(' ')\n\
+    print('Calling shell command: {0}'.format(cmd))\n\
+    print(subprocess.check_output(cmd))\n\
 \n\
 \n\
-# Remove our temporary directory\n\
-if delete_tmpdir and tmpdir:\n\
-    print('cleaning up temporary files: {0}'.format(tmpdir))\n\
-    shutil.rmtree(tmpdir, ignore_errors=True)\n\
+    # Remove our temporary directory\n\
+    if delete_tmpdir and tmpdir:\n\
+        print('cleaning up temporary files: {0}'.format(tmpdir))\n\
+        shutil.rmtree(tmpdir, ignore_errors=True)\n\
 \n\
 \n\
 from animBuddy import UI\n\

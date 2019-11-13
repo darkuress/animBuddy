@@ -1,6 +1,8 @@
 import maya.cmds as cmds
 import os
 from functools import partial
+import Preference
+reload(Preference)
 import EasyInBetween.Core as EIB
 reload(EIB)
 import ExFootStep.Core as EFS
@@ -30,7 +32,7 @@ try:
 except:
     pass
     
-class UI:
+class UI(Preference.Preference):
     """
     Suffix
     EasyInBetween : EIB
@@ -41,6 +43,7 @@ class UI:
         """
         initializing ui
         """
+        super(UI, self).__init__()
         self.win = cmds.window('animBuddyWin', width = 1000, title = 'Easy Inbetween')
         cmds.frameLayout("main",
                          labelVisible = False,
@@ -50,7 +53,7 @@ class UI:
                          marginWidth = 0,
                          labelIndent = 0,
                          collapsable = False,)
-        cmds.rowLayout(numberOfColumns = 10,
+        cmds.rowLayout(numberOfColumns = 11,
                        adjustableColumn = 1, 
                        columnAttach = ([2, 'right', 0]))
         
@@ -62,7 +65,7 @@ class UI:
         cmds.separator(height = 10, width = 700, style = 'none')
         sepStyle = 'in'
         height = 20
-        iconSize = 22
+        iconSize = self.iconSize
         marginSize = 5
         sepWidth = 30
         
@@ -198,7 +201,7 @@ class UI:
         cmds.setParent("..") 
         
         #- BH Playblast------------------------------------------------------------
-        cmds.rowLayout(numberOfColumns = 2)
+        cmds.rowLayout(numberOfColumns = 1)
         self.buttonPlayblast = cmds.iconTextButton(style = 'iconOnly', 
                                                    image1 = os.path.join(imagesPath, 'play1_hi.png'), 
                                                    hi = os.path.join(imagesPath, 'play1.png'),
@@ -206,9 +209,19 @@ class UI:
                                                    label = 'playblast',
                                                    annotation = 'Beverhouse exclusive Playblast Tool', 
                                                    c = self.playblast)        
-        cmds.separator(height = 10, width = 10, style = 'none')
         cmds.setParent("..")        
-      
+
+        cmds.rowLayout(numberOfColumns = 3)
+        cmds.separator(hr= False, height = height, width = sepWidth, style = sepStyle)
+        self.buttonPref = cmds.iconTextButton(style = 'iconOnly', 
+                                              image1 = os.path.join(imagesPath, 'preference.png'), 
+                                              hi = os.path.join(imagesPath, 'preference_hi.png'),
+                                              width = iconSize/1.7, mw = marginSize, height = iconSize, mh = marginSize,
+                                              label = 'preference',
+                                              annotation = 'Preference')
+        cmds.separator(hr= False, height = height, width = sepWidth, style = "none")
+        cmds.setParent("..") 
+
     #---------------------------------------------------------------------------------   
     def easyInBetweenChange(self, *args):
         """
