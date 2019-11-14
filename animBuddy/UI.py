@@ -47,6 +47,10 @@ class UI(Preference.Preference):
         """
         super(UI, self).__init__()
         self.win = cmds.window('animBuddyWin', width = 1000, title = 'Easy Inbetween')
+
+        #Preference
+        self.pref = Preference.Preference()
+
         cmds.frameLayout("main",
                          labelVisible = False,
                          borderVisible = False, 
@@ -199,6 +203,8 @@ class UI(Preference.Preference):
                                                  c = self.drawArc)  
         cmds.popupMenu()
         cmds.menuItem(label = "Option", c = self.drawArcToolbar)
+        cmds.menuItem(label = "---------------", c = self.drawArcToolbar)
+        cmds.menuItem(label = "Delete All", c = self.deleteAll)       
         cmds.separator(hr= False, height = height, width = sepWidth, style = sepStyle)
         cmds.setParent("..") 
 
@@ -307,7 +313,17 @@ class UI(Preference.Preference):
         """
         Motion trail 
         """
-        DAC.run()
+        self.pref = Preference.Preference()
+        
+        DAC.run(dotSize = self.pref.dotSize, 
+                keyFrameSize = self.pref.keyFrameSize, 
+                timeBuffer = self.pref.timeBuffer)
+
+    def deleteAll(self, *args):
+        """
+        delete all motion trails
+        """
+        DAC.deleteAll()
 
     #---------------------------------------------------------------------------------
     def drawArcToolbar(self, *args):

@@ -9,55 +9,52 @@ class AnimCopySession:
         filePath = os.path.dirname(os.path.abspath(__file__))
         self.animData = os.path.join(filePath, 'temp.json')
         
+        self.data = {}
         self.sels = cmds.ls(sl = True)
         
-    def copyPose(self):
+    def copyPose(self, sel):
         """
         """
-        data = {}
-        for sel in self.sels:
-            data[sel] = {}
-            attrs = cmds.listAttr(sel, keyable = True)
-            for attr in attrs:
-                data[sel][attr] = cmds.getAttr(sel + '.' + attr)
-            
-        with open(self.animData, 'w') as outfile:
-            json.dump(data, outfile)        
+        self.data[sel] = {}
+        attrs = cmds.listAttr(sel, keyable = True)
+        for attr in attrs:
+            self.data[sel][attr] = cmds.getAttr(sel + '.' + attr)
 
-    def copyAnim(self):
+    def copyAnim(self, sel):
         """
         """
-        data = {}
-        for sel in self.sels:
-            data[sel] = {}
-            attrs = cmds.listAttr(sel, keyable = True)
-            for attr in attrs:
-                data[sel][attr] = {'tc' : cmds.keyframe(sel + '.' + attr, q = True, tc = True), 
-                                   'vc' : cmds.keyframe(sel + '.' + attr, q = True, vc = True)}
-            
+        self.data[sel] = {}
+        attrs = cmds.listAttr(sel, keyable = True)
+        for attr in attrs:
+            self.data[sel][attr] = {'tc' : cmds.keyframe(sel + '.' + attr, q = True, tc = True), 
+                                'vc' : cmds.keyframe(sel + '.' + attr, q = True, vc = True)}
+                     
+    def copy(self):
+        """
+        """
         with open(self.animData, 'w') as outfile:
-            json.dump(data, outfile)              
+            json.dump(self.data, outfile, indent = 2)   
 
     def paste(self):
         """
         """
         with open(self.animData) as jsonFile:
-            data = json.load(jsonFile)        
+            self.data = json.load(jsonFile)        
 
-        for obj in data.keys():
-            for attr in data[obj].keys():
-                # check if data is anim data or pose data
-                if isinstance(data[obj][attr], dict):
-                    for i in range(len(data[obj][attr]['tc'])):
+        for obj in self.data.keys():
+            for attr in self.data[obj].keys():
+                # check if self.data is anim self.data or pose self.data
+                if isinstance(self.data[obj][attr], dict):
+                    for i in range(len(self.data[obj][attr]['tc'])):
                         try:
                             cmds.setKeyframe(obj + '.' + attr, 
-                                             t = data[obj][attr]['tc'][i],
-                                             v = data[obj][attr]['vc'][i])
+                                             t = self.data[obj][attr]['tc'][i],
+                                             v = self.data[obj][attr]['vc'][i])
                         except:
                             pass
                 else:
                     try:
-                        cmds.setAttr(obj + '.' + attr, data[obj][attr])
+                        cmds.setAttr(obj + '.' + attr, self.data[obj][attr])
                     except:
                         pass
                         
@@ -70,11 +67,15 @@ class AnimCopySession:
             print 'pasting animation...'
             self.paste()
         else:
-            if cmds.keyframe(self.sels, q = True, tc = True):
-                self.copyAnim()
-            else:
-                print 'copying animation...'
-                self.copyPose()
+            self.data = {}
+            for sel in self.sels:
+                if cmds.keyframe(sel, q = True, tc = True):
+                    print 'copying animation...', sel
+                    self.copyAnim(sel)
+                else:
+                    print 'copying pose........', sel
+                    self.copyPose(sel)
+            self.copy()
 
     def reset(self):
         """

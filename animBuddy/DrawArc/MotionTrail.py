@@ -26,7 +26,7 @@ class MotionTrail(object):
         """
         return self._endTime
     
-    def build(self):
+    def build(self, dotSize = 0.2, keyFrameSize = 0.25, timeBuffer = 10):
         """
         """
         filePath = os.path.dirname(os.path.abspath(__file__))
@@ -40,6 +40,10 @@ class MotionTrail(object):
         cmds.addAttr(self.mtName, shortName = "endTime", attributeType = "float", defaultValue = 0.0)
         cmds.setAttr(self.mtName + ".endTime", self._endTime)
         
+        cmds.setAttr(self.mtName + ".sz", dotSize)
+        cmds.setAttr(self.mtName + ".ksz", keyFrameSize)
+        cmds.setAttr(self.mtName + ".tb", timeBuffer)
+
         longName = cmds.ls(self.mtName, l = True)[0]
         transform = cmds.ls(longName.split("|")[-2])[0]
         cmds.rename(transform, self.name)
