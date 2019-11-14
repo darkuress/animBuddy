@@ -48,9 +48,6 @@ class UI(Preference.Preference):
         super(UI, self).__init__()
         self.win = cmds.window('animBuddyWin', width = 1000, title = 'Easy Inbetween')
 
-        #Preference
-        self.pref = Preference.Preference()
-
         cmds.frameLayout("main",
                          labelVisible = False,
                          borderVisible = False, 
@@ -193,7 +190,6 @@ class UI(Preference.Preference):
         
         #- Draw Arc---------------------------------------------------------------
         cmds.rowLayout(numberOfColumns = 2)
-        #self.buttonDrawArc = cmds.button(label = 'a', c = self.drawArc) 
         self.buttonDrawArc = cmds.iconTextButton(style = 'iconOnly', 
                                                  image1 = os.path.join(imagesPath, 'arc_hi.png'), 
                                                  hi = os.path.join(imagesPath, 'arc.png'),
@@ -202,7 +198,7 @@ class UI(Preference.Preference):
                                                  annotation = 'MotionTrail tool',
                                                  c = self.drawArc)  
         cmds.popupMenu()
-        cmds.menuItem(label = "Option", c = self.drawArcToolbar)
+        cmds.menuItem(label = "Setting", c = self.drawArcToolbar)
         cmds.menuItem(label = "---------------", c = self.drawArcToolbar)
         cmds.menuItem(label = "Delete All", c = self.deleteAll)       
         cmds.separator(hr= False, height = height, width = sepWidth, style = sepStyle)
