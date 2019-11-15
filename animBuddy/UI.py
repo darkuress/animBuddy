@@ -369,6 +369,23 @@ class UI(Preference.Preference):
         run = ui.UI()
         run.loadInMaya()
 
+    def prefUI(self, *args):
+        """
+        """
+        import PreferenceUI
+        reload(PreferenceUI)
+        try:
+            ui.deleteLater()
+        except:
+            pass
+        
+        ui = PreferenceUI.PreferenceUI
+        
+        try:
+            ui.show()
+        except:
+            ui.deleteLater()
+
     def closeUI(self, *args):
         """
         close the toolbar

@@ -95,7 +95,7 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         keyFrames = [int(x) for x in keyFrames]
 
         #for i in range(data.startFrame, data.endFrame + 1):
-        for i in range(int(cmds.currentTime(q = True) - timeBuffer), int(cmds.currentTime(q = True) + timeBuffer)):
+        for i in range(int(cmds.currentTime(q = True) - timeBuffer), int(cmds.currentTime(q = True) + timeBuffer + 1)):
             point = cmds.getAttr("{}.wm".format(data.name), time = i)
             relativePoint = util.makeCameraRelative(point, util.getCam(), i)
                         

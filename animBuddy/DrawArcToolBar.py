@@ -32,19 +32,18 @@ class DrawArcToolBar:
                                                 w = 10, 
                                                 borderVisible = False, 
                                                 parent = self.win)
-        self.rowLayoutMain = cmds.rowLayout(numberOfColumns = 2, 
+        self.rowLayoutMain = cmds.rowLayout(numberOfColumns = 3, 
                                             adjustableColumn = 1, 
-                                            columnAttach = ([2, 'right', 0]), 
-                                            parent = self.frameLayoutMain)
-                
-        cmds.rowLayout(numberOfColumns = 5)
-        cmds.columnLayout(width = 200)#
-        cmds.rowLayout(numberOfColumns = 2)
+                                            columnAttach = ([1, 'right', 0]), 
+                                            parent = self.frameLayoutMain)  
+        cmds.rowLayout(numberOfColumns = 4)###    
+        cmds.columnLayout(width = 200)##
+        cmds.rowLayout(numberOfColumns = 2)#
         cmds.text(label = "dot size", width = 160)
-        self.textFieldDotSize = cmds.textField(text = self.pref.dotSize, 
+        self.textFieldDotSize = cmds.textField(text = round(self.pref.dotSize, 2), 
                                                width = 40,
                                                cc = self.dotSizeCB)
-        cmds.setParent("..")
+        cmds.setParent("..")#
         self.floatSliderDotSize = cmds.floatSlider(min = 0, 
                                                    max = 1, 
                                                    width = 200,
@@ -52,15 +51,15 @@ class DrawArcToolBar:
                                                    step = 0.01,
                                                    annotation = 'Dot Size of the MotionTrail.',
                                                    dc = self.dotSize)
-        cmds.setParent("..")#
-
-        cmds.columnLayout(width = 200)#
-        cmds.rowLayout(numberOfColumns = 2)
+        cmds.setParent("..")##
+        
+        cmds.columnLayout(width = 200)##
+        cmds.rowLayout(numberOfColumns = 2)#
         cmds.text(label = "keyframe size", width = 160)
-        self.textFieldKeyFrameSize = cmds.textField(text = self.pref.keyFrameSize, 
+        self.textFieldKeyFrameSize = cmds.textField(text = round(self.pref.keyFrameSize, 2), 
                                                     width = 40,
                                                     cc = self.keyFrameSizeCB)
-        cmds.setParent("..")
+        cmds.setParent("..")#
         self.floatSliderKeyFrameSize = cmds.floatSlider(min = 0, 
                                                         max = 1, 
                                                         width = 200,
@@ -68,15 +67,15 @@ class DrawArcToolBar:
                                                         step = 0.01,
                                                         annotation = 'KeyFrame Size of the MotionTrail.',
                                                         dc = self.keyFrameSize)
-        cmds.setParent("..")#
+        cmds.setParent("..")##
 
-        cmds.columnLayout(width = 200)#
-        cmds.rowLayout(numberOfColumns = 2)
+        cmds.columnLayout(width = 200)##
+        cmds.rowLayout(numberOfColumns = 2)#
         cmds.text(label = "time buffer size", width = 160)
-        self.textFieldTimeBuffer = cmds.textField(text = self.pref.timeBuffer, 
+        self.textFieldTimeBuffer = cmds.textField(text = round(self.pref.timeBuffer, 0), 
                                                   width = 40, 
                                                   cc = self.timeBufferSizeCB)
-        cmds.setParent("..")
+        cmds.setParent("..")#
         self.floatSliderTimeBufferSize = cmds.floatSlider(min = 0, 
                                                           max = 50, 
                                                           width = 200,
@@ -84,11 +83,14 @@ class DrawArcToolBar:
                                                           step = 1,
                                                           annotation = 'Time Buffer size.',
                                                           dc = self.timeBufferSize)
-        cmds.setParent("..")#
+        cmds.setParent("..")##
+        cmds.setParent("..")###
 
+        cmds.rowLayout(numberOfColumns = 5)
+        cmds.separator(hr= False, height = 10, width = 10, style = "none")
         self.buttonSave = cmds.button(label = "Save as Default",
                                       c = self.saveAsDefault)
-
+        cmds.separator(hr= False, height = 10, width = 10, style = "none")
         self.buttonClose = cmds.iconTextButton(style = 'iconOnly', 
                                                image1 = os.path.join(imagesPath, 'close.png'), 
                                                hi = os.path.join(imagesPath, 'close_hi.png'),
@@ -96,7 +98,8 @@ class DrawArcToolBar:
                                                label = 'close',
                                                annotation = 'Closing Selection ToolBar', 
                                                c = self.close) 
-        cmds.setParent("..")
+
+        
 
     def allMotionTrails(self):
         """
@@ -110,7 +113,7 @@ class DrawArcToolBar:
         value = cmds.floatSlider(self.floatSliderDotSize, q = True, v = True)
         if self.allMotionTrails():
             for mt in self.allMotionTrails():
-                cmds.setAttr(mt + '.size', value)
+                cmds.setAttr(mt + '.size', round(value, 2))
 
         cmds.textField(self.textFieldDotSize, e = True, text = round(value, 2))
 
@@ -128,7 +131,7 @@ class DrawArcToolBar:
         value = cmds.floatSlider(self.floatSliderKeyFrameSize, q = True, v = True)
         if self.allMotionTrails():
             for mt in self.allMotionTrails():
-                cmds.setAttr(mt + '.ksz', value)
+                cmds.setAttr(mt + '.ksz', round(value, 2))
 
         cmds.textField(self.textFieldKeyFrameSize, e = True, text = round(value, 2))
 
@@ -146,7 +149,7 @@ class DrawArcToolBar:
         value = cmds.floatSlider(self.floatSliderTimeBufferSize, q = True, v = True)
         if self.allMotionTrails():
             for mt in self.allMotionTrails():
-                cmds.setAttr(mt + '.tb', value)
+                cmds.setAttr(mt + '.tb', int(round(value, 2)))
         cmds.textField(self.textFieldTimeBuffer, e = True, text = round(value, 0))
 
     def timeBufferSizeCB(self, *args):
