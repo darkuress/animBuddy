@@ -250,7 +250,7 @@ class UI(Preference.Preference):
                                               label = 'preference',
                                               annotation = 'Preference')
         cmds.popupMenu()
-        cmds.menuItem(label = "Preference")
+        cmds.menuItem(label = "Preference", c = self.prefUI)
         cmds.menuItem(label = "--------------")
         cmds.menuItem(label = "Close", command = self.closeUI)
         
@@ -368,23 +368,23 @@ class UI(Preference.Preference):
 
         run = ui.UI()
         run.loadInMaya()
-
+    
     def prefUI(self, *args):
         """
         """
         import PreferenceUI
         reload(PreferenceUI)
         try:
-            ui.deleteLater()
+            self.ui.deleteLater()
         except:
             pass
         
-        ui = PreferenceUI.PreferenceUI
+        self.ui = PreferenceUI.PreferenceUI()
         
         try:
-            ui.show()
+            self.ui.show()
         except:
-            ui.deleteLater()
+            self.ui.deleteLater()
 
     def closeUI(self, *args):
         """
