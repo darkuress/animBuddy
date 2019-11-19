@@ -126,3 +126,70 @@ class SelectionGrp:
             return data['color']
         else:
             return False
+
+    def getAllCurrentSelections(self):
+        """
+        """
+        result = []
+        for file in os.listdir(self.selectionGrpDataPath):
+            if os.path.isfile(os.path.join(self.selectionGrpDataPath, file)):
+                result.append(os.path.join(self.selectionGrpDataPath, file))
+        return result
+
+    def export(self, name):
+        """
+        """
+        path = os.path.join(self.selectionGrpDataPath, name)
+        if os.path.isdir(path):
+            print "that group already exists"
+            confirm = cmds.confirmDialog(title='Already exists', 
+                                         message='This group already exists, Do you want to override?', 
+                                         button=['Yes','No'], defaultButton='Yes', cancelButton='No', dismissString='No' )
+            if confirm == 'no':
+                return
+        else:
+            os.makedirs(path) 
+
+        for file in self.getAllCurrentSelections(): 
+            shutil.copyfile(file, os.path.join(path, os.path.basename(file))) 
+
+    def importGrp(self, group):
+        """
+        importing selection grp
+        """
+        self.emptySelectionFolder()
+        grpPath = os.path.join(self.selectionGrpDataPath, group)
+        selectedGrps = os.listdir(grpPath)
+        for grp in selectedGrps: 
+            file = os.path.join(grpPath, grp)
+            if os.path.isfile(file):
+                shutil.copyfile(file, os.path.join(self.selectionGrpDataPath, os.path.basename(file))) 
+
+    def deleteGrp(self, group):
+        """
+        deleting selection grp
+        """
+        grpPath = os.path.join(self.selectionGrpDataPath, group)
+        if os.path.exists(grpPath):
+            shutil.rmtree(grpPath)
+
+    def getAllExportedGrps(self):
+        """
+        """
+        result = []
+        for folder in os.listdir(self.selectionGrpDataPath):
+            if os.path.isdir(os.path.join(self.selectionGrpDataPath, folder)):
+                result.append(folder)
+        return result        
+
+    def emptySelectionFolder(self):
+        """
+        """
+        files = self.getAllCurrentSelections()
+        for file in files:
+            try:
+                if os.path.isfile(file):
+                    os.remove(file)
+            except Exception as e:
+                print e
+

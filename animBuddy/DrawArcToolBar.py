@@ -36,7 +36,28 @@ class DrawArcToolBar:
                                             adjustableColumn = 1, 
                                             columnAttach = ([1, 'right', 0]), 
                                             parent = self.frameLayoutMain)  
-        cmds.rowLayout(numberOfColumns = 4)###    
+        cmds.rowLayout(numberOfColumns = 5)###    
+        cmds.columnLayout(width = 200)##
+        cmds.rowLayout(numberOfColumns = 3)#
+        self.buttonLineColor = cmds.button(width = 15,
+                                           height = 15, 
+                                           label = '', 
+                                           backgroundColor = self.pref.lineColor, 
+                                           c = self.lineColor)
+        cmds.text(label = "line width", width = 130)
+        self.textFieldLineWidth = cmds.textField(text = round(self.pref.lineWidth, 2), 
+                                                 width = 40,
+                                                 cc = self.lineWidthCB)
+        cmds.setParent("..")#
+        self.floatSliderLineWidth = cmds.floatSlider(min = 0, 
+                                                    max = 20, 
+                                                    width = 200,
+                                                    value = self.pref.lineWidth, 
+                                                    step = 0.1,
+                                                    annotation = 'Line Width of the MotionTrail.',
+                                                    dc = self.lineWidth)
+        cmds.setParent("..")##
+
         cmds.columnLayout(width = 200)##
         cmds.rowLayout(numberOfColumns = 2)#
         cmds.text(label = "dot size", width = 160)
@@ -106,6 +127,41 @@ class DrawArcToolBar:
         return all motion trails
         """
         return cmds.ls(type = "DrawNode")
+
+    def color(self, button, *args):
+        """
+        change color of button
+        """
+        result = cmds.colorEditor()
+        color = result.split(" ")
+        color = [float(x) for x in color if x]
+        color = color[:-1]
+        
+        cmds.button(button, e = True, backgroundColor = color)
+
+    def lineWidth(self, *args):
+        """
+        """
+        value = cmds.floatSlider(self.floatSliderLineWidth, q = True, v = True)
+        if self.allMotionTrails():
+            for mt in self.allMotionTrails():
+                cmds.setAttr(mt + '.lineWidth', round(value, 2))
+
+        cmds.textField(self.textFieldLineWidth, e = True, text = round(value, 2))
+
+    def lineWidthCB(self, *args):
+        """
+        change line width of motion trail
+        """
+        value = cmds.textField(self.textFieldLineWidth, q = True, text = True)
+        cmds.floatSlider(self.floatSliderLineWidth, e = True, v = float(value))
+
+        self.lineWidth()
+
+    def lineColor(self, *args):
+        """
+        """
+        self.color(self.buttonLineColor)
 
     def dotSize(self, *args):
         """

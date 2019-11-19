@@ -104,6 +104,7 @@ class UI(Preference.Preference):
                                                      value = 0.5, 
                                                      step = 0.1,
                                                      annotation = 'Easy Inbetween. Right click to reset the tool.',
+                                                     cc = self.afterDrop,
                                                      dc = self.easyInBetweenChange)
         cmds.popupMenu()
         cmds.menuItem(label = "Reset", command = self.afterDrop)
@@ -272,6 +273,7 @@ class UI(Preference.Preference):
     def easyInBetweenChange2(self, value = None, *args):
         """
         """
+        cmds.floatSlider(self.floatSliderEIBAmount, e = True, v = value)
         EIB.changeKey(value)
         
     #---------------------------------------------------------------------------------

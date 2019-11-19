@@ -22,19 +22,6 @@ def runChange(selKey, ratio):
     change key per ratio slider
     """
     selObj = cmds.ls(sl = True)[0]
-    """
-    try:
-        selKey = cmds.keyframe(sl = True, n = True, q = True)[0]
-    except:
-        "warning : please select anim curve"
-        cmds.confirmDialog( title='Confirm', 
-                            message='Please select anim curve', 
-                            button=['ok'], 
-                            defaultButton='ok', 
-                            cancelButton='ok', 
-                            dismissString='ok' )
-        return
-    """
     selAttr = selKey.split('_')[-1]
     
     if selKey:

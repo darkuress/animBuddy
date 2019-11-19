@@ -21,7 +21,7 @@ class UISelectionToolBar:
         """
         filePath = os.path.dirname(os.path.abspath(__file__))
         imagesPath = os.path.join(filePath, 'images')
-        iconSize = 22
+        iconSize = 25
         marginSize = 5
         self.SGP = SGP.SelectionGrp()
                
@@ -44,15 +44,31 @@ class UISelectionToolBar:
         cmds.button('asdfsdf')
         cmds.setParent("..")
         
-        cmds.rowLayout(numberOfColumns = 4)
+        cmds.rowLayout(numberOfColumns = 8)
         cmds.separator(height = 10, width = 10, style = 'none')
         self.buttonAdd = cmds.iconTextButton(style = 'iconOnly', 
                                              image1 = os.path.join(imagesPath, 'add.png'), 
                                              hi = os.path.join(imagesPath, 'add_hi.png'),
                                              width = iconSize, mw = marginSize, height = iconSize, mh = marginSize,
                                              label = 'add',
-                                             annotation = 'Closing Selection ToolBar', 
+                                             annotation = 'Add This Selection to ToolBar', 
                                              c = self.add) 
+        cmds.separator(height = 10, width = 10, style = 'none')
+        self.buttonExportGrp = cmds.iconTextButton(style = 'iconOnly', 
+                                                   image1 = os.path.join(imagesPath, 'savegrp.png'), 
+                                                   hi = os.path.join(imagesPath, 'savegrp_hi.png'),
+                                                   width = iconSize, mw = marginSize, height = iconSize,   mh = marginSize,
+                                                   label = 'close',
+                                                   annotation = 'Export This Selection Group',
+                                                   c = self.exportToolbar) 
+        self.buttonImportGrp = cmds.iconTextButton(style = 'iconOnly', 
+                                                   image1 = os.path.join(imagesPath, 'importgrp.png'), 
+                                                   hi = os.path.join(imagesPath, 'importgrp_hi.png'),
+                                                   width = iconSize, mw = marginSize, height = iconSize, mh = marginSize,
+                                                   label = 'import',
+                                                   annotation = 'Import Selectino Group',
+                                                   c = self.importToolbar) 
+        cmds.separator(height = 10, width = 10, style = 'none')
         self.buttonClose = cmds.iconTextButton(style = 'iconOnly', 
                                                image1 = os.path.join(imagesPath, 'close.png'), 
                                                hi = os.path.join(imagesPath, 'close_hi.png'),
@@ -148,7 +164,34 @@ class UISelectionToolBar:
         cmds.button(button, e = True, backgroundColor = color)
         
         self.SGP.saveColor(selection, color)
-        
+
+    def exportToolbar(self, *args):
+        """
+        export current selection grp 
+        """
+        result = cmds.promptDialog(
+                        title='Exporting This Selectino Groups',
+                        message='Enter Name:',
+                        button=['OK', 'Cancel'],
+                        defaultButton='OK',
+                        cancelButton='Cancel',
+                        dismissString='Cancel')       
+        if result == 'OK':
+            text = cmds.promptDialog(query=True, text=True)        
+        else:
+            return
+
+        # export
+        self.SGP.export(text)
+
+    def importToolbar(self, *args):
+        """
+        """
+        import UIImportSelectionGrp
+        reload(UIImportSelectionGrp)
+        ui = UIImportSelectionGrp.UIImportSelectionGrp()
+        ui.loadInMaya()        
+
     def close(self, *args):
         """
         """
@@ -160,16 +203,11 @@ class UISelectionToolBar:
     def loadInMaya(self, *args):
         """
         """
-        #cmds.showWindow(self.win)
+        try:
+            cmds.deleteUI('sgToolbar')   
+        except:
+            pass 
         allowedAreas = ['top', 'bottom']
         sgToolBar = cmds.toolBar('sgToolbar', area='bottom', content=self.win, allowedArea=allowedAreas )
         self.buildButton()
-'''        
-myWindow = cmds.window()
-buttonForm = cmds.formLayout( parent = myWindow )
-cmds.button( parent = buttonForm )
-allowedAreas = ['right', 'left']
-x = cmds.toolBar( area='bottom', content=myWindow, allowedArea=allowedAreas )
-#cmds.deleteUI(x)
-'''
 

@@ -26,7 +26,14 @@ class MotionTrail(object):
         """
         return self._endTime
     
-    def build(self, dotSize = 0.2, keyFrameSize = 0.25, timeBuffer = 10):
+    def build(self, 
+              dotSize = 0.2, 
+              keyFrameSize = 0.25, 
+              timeBuffer = 10,
+              dotColor = [1.0, 1.0, 0.0],
+              keyFrameColor = [0.0, 1.0, 0.0],
+              lineWidth = 3,
+              lineColor = [1.0, 1.0, 1.0]):
         """
         """
         filePath = os.path.dirname(os.path.abspath(__file__))
@@ -43,6 +50,16 @@ class MotionTrail(object):
         cmds.setAttr(self.mtName + ".sz", dotSize)
         cmds.setAttr(self.mtName + ".ksz", keyFrameSize)
         cmds.setAttr(self.mtName + ".tb", timeBuffer)
+        cmds.setAttr(self.mtName + ".dotColor0", dotColor[0])
+        cmds.setAttr(self.mtName + ".dotColor1", dotColor[1])
+        cmds.setAttr(self.mtName + ".dotColor2", dotColor[2])
+        cmds.setAttr(self.mtName + ".keyFrameColor0", keyFrameColor[0])
+        cmds.setAttr(self.mtName + ".keyFrameColor1", keyFrameColor[1])
+        cmds.setAttr(self.mtName + ".keyFrameColor2", keyFrameColor[2])
+        cmds.setAttr(self.mtName + ".lw", lineWidth)
+        cmds.setAttr(self.mtName + ".lineColor0", lineColor[0])
+        cmds.setAttr(self.mtName + ".lineColor1", lineColor[1])
+        cmds.setAttr(self.mtName + ".lineColor2", lineColor[2])
 
         longName = cmds.ls(self.mtName, l = True)[0]
         transform = cmds.ls(longName.split("|")[-2])[0]

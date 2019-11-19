@@ -36,18 +36,34 @@ class DrawNode(OpenMayaUI.MPxLocatorNode):
     @staticmethod
     def drawNodeInitializer():
         # input
-        sizeAttr = OpenMaya.MFnNumericAttribute()
-        keySizeAttr = OpenMaya.MFnNumericAttribute()
-        bufferAttr = OpenMaya.MFnNumericAttribute()
-        DrawNodeDrawOverride.size = sizeAttr.create("size", "sz", OpenMaya.MFnNumericData.kFloat, 0.15 )
-        DrawNodeDrawOverride.keySize = keySizeAttr.create("keyFrameSize", "ksz", OpenMaya.MFnNumericData.kFloat, 0.2 )
-        DrawNodeDrawOverride.timeBuffer = bufferAttr.create("timeBuffer", "tb", OpenMaya.MFnNumericData.kInt, 11)
-        sizeAttr.storable = True
-        keySizeAttr.storable = True
-        bufferAttr.storable = True
+        sizeAttr          = OpenMaya.MFnNumericAttribute()
+        keySizeAttr       = OpenMaya.MFnNumericAttribute()
+        bufferAttr        = OpenMaya.MFnNumericAttribute()
+        dotColorAttr      = OpenMaya.MFnNumericAttribute()
+        keyFrameColorAttr = OpenMaya.MFnNumericAttribute()
+        lineWidthAttr     = OpenMaya.MFnNumericAttribute()
+        lineColorAttr     = OpenMaya.MFnNumericAttribute()
+        DrawNodeDrawOverride.size            = sizeAttr.create("size", "sz", OpenMaya.MFnNumericData.kFloat, 0.15 )
+        DrawNodeDrawOverride.keySize         = keySizeAttr.create("keyFrameSize", "ksz", OpenMaya.MFnNumericData.kFloat, 0.2 )
+        DrawNodeDrawOverride.timeBuffer      = bufferAttr.create("timeBuffer", "tb", OpenMaya.MFnNumericData.kInt, 11)
+        DrawNodeDrawOverride.dotColor        = dotColorAttr.create("dotColor", "dc", OpenMaya.MFnNumericData.k3Float, 0.0)
+        DrawNodeDrawOverride.keyFrameColor   = keyFrameColorAttr.create("keyFrameColor", "kfc", OpenMaya.MFnNumericData.k3Float, 0.0)
+        DrawNodeDrawOverride.lineWidth       = lineWidthAttr.create("lineWidth", "lw", OpenMaya.MFnNumericData.kFloat, 3.0)
+        DrawNodeDrawOverride.lineColor       = lineColorAttr.create("lineColor", "lc", OpenMaya.MFnNumericData.k3Float, 0.0)
+        sizeAttr.storable          = True
+        keySizeAttr.storable       = True
+        bufferAttr.storable        = True
+        dotColorAttr.storable      = True
+        keyFrameColorAttr.storable = True
+        lineWidthAttr.storable     = True
+        lineColorAttr.storable     = True
         OpenMaya.MPxNode.addAttribute(DrawNodeDrawOverride.size)
         OpenMaya.MPxNode.addAttribute(DrawNodeDrawOverride.keySize)
         OpenMaya.MPxNode.addAttribute(DrawNodeDrawOverride.timeBuffer)
+        OpenMaya.MPxNode.addAttribute(DrawNodeDrawOverride.dotColor)
+        OpenMaya.MPxNode.addAttribute(DrawNodeDrawOverride.keyFrameColor)
+        OpenMaya.MPxNode.addAttribute(DrawNodeDrawOverride.lineWidth)
+        OpenMaya.MPxNode.addAttribute(DrawNodeDrawOverride.lineColor)
 
 class DrawNodeData(OpenMaya.MUserData):
     def __init__(self):
@@ -58,9 +74,13 @@ class DrawNodeData(OpenMaya.MUserData):
         self.points= []
 
 class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
-    size = None
-    keySize = None
-    timeBuffer = None
+    size          = None
+    keySize       = None
+    timeBuffer    = None
+    dotColor      = None
+    keyFrameColor = None
+    lineWidth     = None
+    lineColor     = None
 
     @staticmethod
     def creator(obj):
@@ -119,19 +139,23 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         drawManager.beginDrawable()
  
         drawManager.setDepthPriority(10000)
-        color1 = OpenMaya.MColor((0.5, 0.1, 0.8, 1.0))
-        color2 = OpenMaya.MColor((1.0, 1.0, 1.0, 1.0))
-        color3 = OpenMaya.MColor((1.0, 0.0, 0.0, 1.0))
+        dotColor      = cmds.getAttr(str(objPath) + '.dc')[0] + (1.0,)
+        keyFrameColor = cmds.getAttr(str(objPath) + '.kfc')[0] + (1.0,)
+        lineColor     = cmds.getAttr(str(objPath) + '.lc')[0] + (1.0,)
+        color1 = OpenMaya.MColor(dotColor)
+        color2 = OpenMaya.MColor(lineColor)
+        color3 = OpenMaya.MColor(keyFrameColor)
         
         prev = None
         allFrames = data.points.keys()
         allFrames.sort()
         
         for frame in allFrames:
-            point = data.points[frame][0]
-            point1 = OpenMaya.MPoint(point[0], point[1], point[2], 1)
-            size = cmds.getAttr(str(objPath) + '.sz')
-            keySize = cmds.getAttr(str(objPath) + '.ksz')
+            point     = data.points[frame][0]
+            point1    = OpenMaya.MPoint(point[0], point[1], point[2], 1)
+            size      = cmds.getAttr(str(objPath) + '.sz')
+            keySize   = cmds.getAttr(str(objPath) + '.ksz')
+            lineWidth = cmds.getAttr(str(objPath) + '.lw')
 
             if data.points[frame][1] == 1:
                 #key frame
@@ -143,7 +167,7 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
 
             if prev:
                 drawManager.setColor(color2)
-                drawManager.setLineWidth(3)
+                drawManager.setLineWidth(lineWidth)
                 drawManager.line(prev, point1)
             prev = point1
             

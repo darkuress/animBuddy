@@ -20,18 +20,30 @@ class Preference(object):
             self.iconSize = 30
 
         #-MotionTrail
+        if self.pref.has_key("lineWidth"):
+            self.lineWidth = self.pref["lineWidth"]
+        else:
+            self.lineWidth = 3
+
         if self.pref.has_key("dotSize"):
             self.dotSize = self.pref["dotSize"]
         else:
-            self.dotSize = 30
+            self.dotSize = 0.2
+            
         if self.pref.has_key("keyFrameSize"):
             self.keyFrameSize = self.pref["keyFrameSize"]
         else:
-            self.keyFrameSize = 30
+            self.keyFrameSize = 0.25
+
         if self.pref.has_key("timeBuffer"):
             self.timeBuffer = self.pref["timeBuffer"]
         else:
-            self.timeBuffer = 30
+            self.timeBuffer = 10
+
+        if self.pref.has_key("lineColor"):
+            self.lineColor = self.pref["lineColor"]
+        else:
+            self.lineColor = [1.0, 1.0, 1.0]            
 
     def construct(self):
         """
