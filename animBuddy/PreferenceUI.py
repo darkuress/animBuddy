@@ -37,7 +37,15 @@ class PreferenceUI(QDialog):
         splitter1 = QSplitter(QtCore.Qt.Horizontal)
         splitter1.setStretchFactor(1, 10)
         layoutSplitter1.addWidget(splitter1)
-        
+
+        layoutLineWidth         = QGridLayout()
+        labelLineWidth          = QLabel("Motion Trail Line Width")
+        self.lineEditLineWidth  = QLineEdit("")
+        self.lineEditLineWidth.setFixedWidth(80)
+        self.lineEditLineWidth.setText(str(round(self.pref.lineWidth, 2)))
+        layoutLineWidth.addWidget(labelLineWidth, 0, 0)
+        layoutLineWidth.addWidget(self.lineEditLineWidth, 0, 1)
+
         layoutDotSize           = QGridLayout()
         labelDotSize            = QLabel("Motion Trail Dot Size")
         self.lineEditDotSize    = QLineEdit("")
@@ -68,6 +76,7 @@ class PreferenceUI(QDialog):
  
         mainLayout.addLayout(layoutIconSize,   stretch=1)
         mainLayout.addLayout(layoutSplitter1,  stretch=1)
+        mainLayout.addLayout(layoutLineWidth,    stretch=1)
         mainLayout.addLayout(layoutDotSize,    stretch=1)
         mainLayout.addLayout(layoutKeyFrame,   stretch=1)
         mainLayout.addLayout(layoutTimeBuffer, stretch=1)
@@ -81,6 +90,7 @@ class PreferenceUI(QDialog):
         """
         """
         self.pref.iconSize     = int(self.lineEditIconSize.text())
+        self.pref.lineWidth    = float(self.lineEditLineWidth.text())
         self.pref.dotSize      = float(self.lineEditDotSize.text())
         self.pref.keyFrameSize = float(self.lineEditKeyFrame.text())
         self.pref.timeBuffer   = int(self.lineEditTimeBuffer.text())

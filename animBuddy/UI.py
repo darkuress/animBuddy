@@ -313,9 +313,13 @@ class UI(Preference.Preference):
         """
         self.pref = Preference.Preference()
         
-        DAC.run(dotSize = self.pref.dotSize, 
-                keyFrameSize = self.pref.keyFrameSize, 
-                timeBuffer = self.pref.timeBuffer)
+        DAC.run(dotSize       = self.pref.dotSize, 
+                keyFrameSize  = self.pref.keyFrameSize, 
+                timeBuffer    = self.pref.timeBuffer,
+                lineWidth     = self.pref.lineWidth,
+                lineColor     = self.pref.lineColor,
+                dotColor      = self.pref.dotColor,
+                keyFrameColor = self.pref.keyFrameColor)
 
     def deleteAll(self, *args):
         """

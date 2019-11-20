@@ -45,14 +45,27 @@ class Preference(object):
         else:
             self.lineColor = [1.0, 1.0, 1.0]            
 
+        if self.pref.has_key("dotColor"):
+            self.dotColor = self.pref["dotColor"]
+        else:
+            self.dotColor = [0.0, 0.0, 1.0]   
+
+        if self.pref.has_key("keyFrameColor"):
+            self.keyFrameColor = self.pref["keyFrameColor"]
+        else:
+            self.keyFrameColor = [1.0, 0.0, 0.0]  
+
     def construct(self):
         """
         construct preference as dict
         """
-        self.pref["iconSize"]     = self.iconSize
-        self.pref["dotSize"]      = self.dotSize
-        self.pref["keyFrameSize"] = self.keyFrameSize
-        self.pref["timeBuffer"]   = self.timeBuffer
+        self.pref["iconSize"]        = self.iconSize
+        self.pref["dotSize"]         = self.dotSize
+        self.pref["keyFrameSize"]    = self.keyFrameSize
+        self.pref["timeBuffer"]      = self.timeBuffer
+        self.pref["lineColor"]       = self.lineColor
+        self.pref["dotColor"]        = self.dotColor
+        self.pref["keyFrameColor"]   = self.keyFrameColor
         
     def write(self):
         """

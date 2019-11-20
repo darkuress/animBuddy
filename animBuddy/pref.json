@@ -1,6 +1,21 @@
 {
-  "iconSize": 30, 
   "keyFrameSize": 0.2, 
+  "iconSize": 30, 
+  "dotColor": [
+    0.34, 
+    0.0, 
+    1.0
+  ], 
+  "keyFrameColor": [
+    0.0, 
+    1.0, 
+    0.28
+  ], 
+  "lineColor": [
+    1.0, 
+    0.19, 
+    0.0
+  ], 
   "dotSize": 0.15, 
-  "timeBuffer": 11
+  "timeBuffer": 11.0
 }
