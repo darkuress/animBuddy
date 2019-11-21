@@ -124,9 +124,22 @@ if not os.path.isdir(ANIMBUDDY_INSTALL_PATH):
         print('cleaning up temporary files: {0}'.format(tmpdir))
         shutil.rmtree(tmpdir, ignore_errors=True)
 
+#adding to userSetup.py so that it runs when maya starts up
+userSetupFile = os.path.join(MAYA_SCRIPTS_PATH, 'userSetup.py')
+if not os.path.exists(userSetupFile):
+    f= open(userSetupFile,'w+')
+    f.close()
+
+f = open(userSetupFile, 'a')
+cmd = '\\n\\nimport maya.cmds as cmds\\n'
+cmd += '\\n\\nfrom animBuddy import UI\\n'
+cmd += 'reload(UI)\\n'
+cmd += 'x = UI.UI()\\n'
+cmd += 'cmds.evalDeferred(\"x.loadInMaya()\")\\n'
+f.write(cmd)
+f.close()
 
 from animBuddy import UI
 reload(UI)
-
 x = UI.UI()
 x.loadInMaya()
