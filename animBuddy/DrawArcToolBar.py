@@ -259,14 +259,15 @@ class DrawArcToolBar:
     def saveAsDefault(self, *args):
         """
         """
-        self.pref.dotSize       = round(cmds.floatSlider(self.floatSliderDotSize, q = True, v = True), 2)
-        self.pref.keyFrameSize  = round(cmds.floatSlider(self.floatSliderKeyFrameSize, q = True, v = True), 2)
-        self.pref.timeBuffer    = round(cmds.floatSlider(self.floatSliderTimeBufferSize, q = True, v = True), 0)
-        self.pref.lineColor     = cmds.button(self.buttonLineColor, q = True, backgroundColor = True) 
-        self.pref.lineColor     = [round(x, 2) for x in self.pref.lineColor]
-        self.pref.dotColor      = cmds.button(self.buttonDotColor, q = True, backgroundColor = True) 
-        self.pref.dotColor     = [round(x, 2) for x in self.pref.dotColor]
-        self.pref.keyFrameColor = cmds.button(self.buttonKeyFrameColor, q = True, backgroundColor = True) 
+        self.pref.lineWidth         = round(cmds.floatSlider(self.floatSliderLineWidth, q = True, v = True), 2)
+        self.pref.dotSize           = round(cmds.floatSlider(self.floatSliderDotSize, q = True, v = True), 2)
+        self.pref.keyFrameSize      = round(cmds.floatSlider(self.floatSliderKeyFrameSize, q = True, v = True), 2)
+        self.pref.timeBuffer        = round(cmds.floatSlider(self.floatSliderTimeBufferSize, q = True, v = True), 0)
+        self.pref.lineColor         = cmds.button(self.buttonLineColor, q = True, backgroundColor = True) 
+        self.pref.lineColor         = [round(x, 2) for x in self.pref.lineColor]
+        self.pref.dotColor          = cmds.button(self.buttonDotColor, q = True, backgroundColor = True) 
+        self.pref.dotColor          = [round(x, 2) for x in self.pref.dotColor]
+        self.pref.keyFrameColor     = cmds.button(self.buttonKeyFrameColor, q = True, backgroundColor = True) 
         self.pref.keyFrameColor     = [round(x, 2) for x in self.pref.keyFrameColor]
 
         self.pref.construct()

@@ -1,12 +1,14 @@
 import os
 import json
+from Utils import Util
+reload(Util)
 
 class Preference(object):
     def __init__(self):
         """
         preference
         """
-        filePath = os.path.dirname(os.path.abspath(__file__))
+        filePath = Util.dataPath()
         self.prefData = os.path.join(filePath, 'pref.json')
         self.pref = {}
 
@@ -59,6 +61,7 @@ class Preference(object):
         """
         construct preference as dict
         """
+        self.pref['lineWidth']       = self.lineWidth
         self.pref["iconSize"]        = self.iconSize
         self.pref["dotSize"]         = self.dotSize
         self.pref["keyFrameSize"]    = self.keyFrameSize
