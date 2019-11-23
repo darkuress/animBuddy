@@ -1,19 +1,18 @@
 import os
 import sys
+import shutil
 from maya import cmds
 from datetime import datetime, timedelta
 import glob
 import urllib2
 import tempfile
-import shutil
 
 import sys
 import subprocess
 import platform
 from os.path import expanduser
 import zipfile
-import maya.utils
-import maya.cmds
+import maya.cmds as cmds
 from functools import partial
 
 
@@ -112,7 +111,22 @@ if not os.path.exists(PIP_PATH):
 #cmd = '{0} install --upgrade --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,
 #                                                                ANIMBUDDY_GUI_RELEASE_PATH).split(' ')
 
-if not os.path.isdir(ANIMBUDDY_INSTALL_PATH):
+install = False
+if os.path.isdir(ANIMBUDDY_INSTALL_PATH):
+    q = cmds.confirmDialog( title='Delete Anim Buddy', 
+                            message='Anim Buddy Already Exists, Do you want to delete it?', 
+                            button=['Yes','No'], 
+                            defaultButton='Yes', 
+                            cancelButton='No', 
+                            dismissString='No' )
+    if q == 'Yes':
+        shutil.rmtree(ANIMBUDDY_INSTALL_PATH)
+        install = True
+    
+else:
+    install = True
+
+if install == True:
     cmd = '{0} install --ignore-installed --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,
                                                                     ANIMBUDDY_GUI_RELEASE_PATH).split(' ')
     print('Calling shell command: {0}'.format(cmd))
@@ -130,14 +144,23 @@ if not os.path.exists(userSetupFile):
     f= open(userSetupFile,'w+')
     f.close()
 
-f = open(userSetupFile, 'a')
-cmd = '\\n\\nimport maya.cmds as cmds\\n'
-cmd += '\\n\\nfrom animBuddy import UI\\n'
-cmd += 'reload(UI)\\n'
-cmd += 'x = UI.UI()\\n'
-cmd += 'cmds.evalDeferred(\"x.loadInMaya()\")\\n'
-f.write(cmd)
+append = True
+f = open(userSetupFile, 'r')
+for line in f:
+    if 'ANIMBUDDYBOOLALA' in line:
+        append = False
 f.close()
+
+if append:
+    f = open(userSetupFile, 'a')
+    cmd = '\\n\\n#ANIMBUDDYBOOLALA\\n'
+    cmd += 'import maya.cmds as cmds\\n'
+    cmd += 'from animBuddy import UI\\n'
+    cmd += 'reload(UI)\\n'
+    cmd += 'x = UI.UI()\\n'
+    cmd += 'cmds.evalDeferred(\"x.loadInMaya()\")\\n'
+    f.write(cmd)
+    f.close()
 
 from animBuddy import UI
 reload(UI)

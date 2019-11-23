@@ -1,20 +1,19 @@
 python("\n\
 import os\n\
 import sys\n\
+import shutil\n\
 from maya import cmds\n\
 from datetime import datetime, timedelta\n\
 import glob\n\
 import urllib2\n\
 import tempfile\n\
-import shutil\n\
 \n\
 import sys\n\
 import subprocess\n\
 import platform\n\
 from os.path import expanduser\n\
 import zipfile\n\
-import maya.utils\n\
-import maya.cmds\n\
+import maya.cmds as cmds\n\
 from functools import partial\n\
 \n\
 \n\
@@ -113,7 +112,22 @@ if not os.path.exists(PIP_PATH):\n\
 #cmd = '{0} install --upgrade --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,\n\
 #                                                                ANIMBUDDY_GUI_RELEASE_PATH).split(' ')\n\
 \n\
-if not os.path.isdir(ANIMBUDDY_INSTALL_PATH):\n\
+install = False\n\
+if os.path.isdir(ANIMBUDDY_INSTALL_PATH):\n\
+    q = cmds.confirmDialog( title='Delete Anim Buddy', \n\
+                            message='Anim Buddy Already Exists, Do you want to delete it?', \n\
+                            button=['Yes','No'], \n\
+                            defaultButton='Yes', \n\
+                            cancelButton='No', \n\
+                            dismissString='No' )\n\
+    if q == 'Yes':\n\
+        shutil.rmtree(ANIMBUDDY_INSTALL_PATH)\n\
+        install = True\n\
+    \n\
+else:\n\
+    install = True\n\
+\n\
+if install == True:\n\
     cmd = '{0} install --ignore-installed --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,\n\
                                                                     ANIMBUDDY_GUI_RELEASE_PATH).split(' ')\n\
     print('Calling shell command: {0}'.format(cmd))\n\
@@ -131,14 +145,23 @@ if not os.path.exists(userSetupFile):\n\
     f= open(userSetupFile,'w+')\n\
     f.close()\n\
 \n\
-f = open(userSetupFile, 'a')\n\
-cmd = '\\n\\nimport maya.cmds as cmds\\n'\n\
-cmd += '\\n\\nfrom animBuddy import UI\\n'\n\
-cmd += 'reload(UI)\\n'\n\
-cmd += 'x = UI.UI()\\n'\n\
-cmd += 'cmds.evalDeferred(\"x.loadInMaya()\")\\n'\n\
-f.write(cmd)\n\
+append = True\n\
+f = open(userSetupFile, 'r')\n\
+for line in f:\n\
+    if 'ANIMBUDDYBOOLALA' in line:\n\
+        append = False\n\
 f.close()\n\
+\n\
+if append:\n\
+    f = open(userSetupFile, 'a')\n\
+    cmd = '\\n\\n#ANIMBUDDYBOOLALA\\n'\n\
+    cmd += 'import maya.cmds as cmds\\n'\n\
+    cmd += 'from animBuddy import UI\\n'\n\
+    cmd += 'reload(UI)\\n'\n\
+    cmd += 'x = UI.UI()\\n'\n\
+    cmd += 'cmds.evalDeferred(\"x.loadInMaya()\")\\n'\n\
+    f.write(cmd)\n\
+    f.close()\n\
 \n\
 from animBuddy import UI\n\
 reload(UI)\n\
