@@ -16,7 +16,6 @@ import zipfile\n\
 import maya.cmds as cmds\n\
 from functools import partial\n\
 \n\
-\n\
 DEV = False\n\
 INSTALL_SSGUI_ONLY = False\n\
 \n\
@@ -112,32 +111,19 @@ if not os.path.exists(PIP_PATH):\n\
 #cmd = '{0} install --upgrade --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,\n\
 #                                                                ANIMBUDDY_GUI_RELEASE_PATH).split(' ')\n\
 \n\
-install = False\n\
 if os.path.isdir(ANIMBUDDY_INSTALL_PATH):\n\
-    q = cmds.confirmDialog( title='Delete Anim Buddy', \n\
-                            message='Anim Buddy Already Exists, Do you want to delete it?', \n\
-                            button=['Yes','No'], \n\
-                            defaultButton='Yes', \n\
-                            cancelButton='No', \n\
-                            dismissString='No' )\n\
-    if q == 'Yes':\n\
-        shutil.rmtree(ANIMBUDDY_INSTALL_PATH)\n\
-        install = True\n\
-    \n\
-else:\n\
-    install = True\n\
+    shutil.rmtree(ANIMBUDDY_INSTALL_PATH)\n\
 \n\
-if install == True:\n\
-    cmd = '{0} install --ignore-installed --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,\n\
-                                                                    ANIMBUDDY_GUI_RELEASE_PATH).split(' ')\n\
-    print('Calling shell command: {0}'.format(cmd))\n\
-    print(subprocess.check_output(cmd))\n\
+cmd = '{0} install --ignore-installed --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,\n\
+                                                                ANIMBUDDY_GUI_RELEASE_PATH).split(' ')\n\
+print('Calling shell command: {0}'.format(cmd))\n\
+print(subprocess.check_output(cmd))\n\
 \n\
 \n\
-    # Remove our temporary directory\n\
-    if delete_tmpdir and tmpdir:\n\
-        print('cleaning up temporary files: {0}'.format(tmpdir))\n\
-        shutil.rmtree(tmpdir, ignore_errors=True)\n\
+# Remove our temporary directory\n\
+if delete_tmpdir and tmpdir:\n\
+    print('cleaning up temporary files: {0}'.format(tmpdir))\n\
+    shutil.rmtree(tmpdir, ignore_errors=True)\n\
 \n\
 #adding to userSetup.py so that it runs when maya starts up\n\
 userSetupFile = os.path.join(MAYA_SCRIPTS_PATH, 'userSetup.py')\n\

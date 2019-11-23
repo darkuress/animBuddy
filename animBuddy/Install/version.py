@@ -5,6 +5,9 @@ import sys
 import logging
 logger = logging.getLogger("AnimBuddy")
 
+#This is Local Version
+VERSION = "0.0.9"
+
 def getLatestSetupPyFileFromRepo():
     """Parses latest setup.py's version number"""
     response = urllib2.urlopen(
@@ -13,11 +16,7 @@ def getLatestSetupPyFileFromRepo():
     return html.split("version = '")[1].split("',")[0]
 
 def getLatestSetupPyFileFromLocal():
-    """Checks locally installed packages version number"""
-    filePath = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    setupFile = os.path.join(filePath, "setup.py")
-    f = open(setupFile, "r")
-    return f.read().split("version = '")[1].split("',")[0]
+    return VERSION
 
 def getVersionDifference():
     """Returns the difference between local Package and latest Remote"""

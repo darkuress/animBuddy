@@ -25,6 +25,8 @@ from AnimCopySession import Core as ACS
 reload(ACS)
 from ViewportRefresh import Core as VPR
 reload(VPR)
+from Install import version
+reload(version)
 
 #- initialize window
 if cmds.window('animBuddyWin', ex = True):
@@ -251,6 +253,9 @@ class UI(Preference.Preference):
                                               label = 'preference',
                                               annotation = 'Preference')
         cmds.popupMenu()
+        cmds.menuItem(label = "About", c = self.about)
+        cmds.menuItem(label = "Check for update", c = self.versionCheck)
+        cmds.menuItem(label = "--------------")
         cmds.menuItem(label = "Preference", c = self.prefUI)
         cmds.menuItem(label = "--------------")
         cmds.menuItem(label = "Close", command = self.closeUI)
@@ -391,6 +396,38 @@ class UI(Preference.Preference):
             self.ui.show()
         except:
             self.ui.deleteLater()
+
+    def versionCheck(self, *args):
+        """
+        check version and update
+        """
+        if version.getVersionDifference():
+            question = cmds.confirmDialog(title ='Update', 
+                                          message ='New Version is Available\nDo you want to install it?', 
+                                          button = ['Yes', 'No'], 
+                                          defaultButton='Yes',
+                                          cancelButton='No', 
+                                          dismissString='No' )
+            if question == 'Yes':
+                from Install import install
+                reload(install)
+                install.run()
+        else:
+            cmds.confirmDialog(title ='Update', 
+                               message ='No update is available', 
+                               button = ['Ok'], 
+                               defaultButton='Ok', 
+                               dismissString='Ok' )
+   
+    def about(self, *args):
+        """
+        """
+        ver = version.getLatestSetupPyFileFromLocal()
+        cmds.confirmDialog(title ='Anim Buddy', 
+                           message ='Version %s' %ver, 
+                           button = ['Ok'], 
+                           defaultButton='Ok', 
+                           dismissString='Ok' )
 
     def closeUI(self, *args):
         """
