@@ -142,6 +142,8 @@ def run():
         f = open(userSetupFile, 'a')
         cmd = '\\n\\n#ANIMBUDDYBOOLALA\\n'
         cmd += 'import maya.cmds as cmds\\n'
+        cmd += 'import sys\\n'
+        cmd += 'sys.path.append(\"{}\")\\n'.format(MAYA_SCRIPTS_PATH)
         cmd += 'from animBuddy import UI\\n'
         cmd += 'reload(UI)\\n'
         cmd += 'x = UI.UI()\\n'

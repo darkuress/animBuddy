@@ -142,6 +142,8 @@ if append:\n\
     f = open(userSetupFile, 'a')\n\
     cmd = '\\n\\n#ANIMBUDDYBOOLALA\\n'\n\
     cmd += 'import maya.cmds as cmds\\n'\n\
+    cmd += 'import sys\\n'\n\
+    cmd += 'sys.path.append(\"{}\")\\n'.format(MAYA_SCRIPTS_PATH)\n\
     cmd += 'from animBuddy import UI\\n'\n\
     cmd += 'reload(UI)\\n'\n\
     cmd += 'x = UI.UI()\\n'\n\
