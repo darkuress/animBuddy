@@ -104,15 +104,17 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
             data = DrawNodeData()
         
         #todo nicer way of getting attrs
-        mtName = str(objPath)
-        data.name = cmds.getAttr(mtName + ".nodeName")
+        mtName          = str(objPath)
+        data.name       = cmds.getAttr(mtName + ".nodeName")
         data.startFrame = int(cmds.getAttr(mtName + '.startTime'))
         data.endFrame = int(cmds.getAttr(mtName + '.endTime'))
         
         points = {}
-        timeBuffer = cmds.getAttr(str(objPath) + '.tb')
-        keyFrames = list(set(cmds.keyframe(data.name, q = True, tc = True)))
-        keyFrames = [int(x) for x in keyFrames]
+        thisNode   = objPath.node()
+        timeBufferPlug   = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.timeBuffer)
+        timeBuffer = timeBufferPlug.asInt()
+        keyFrames  = list(set(cmds.keyframe(data.name, q = True, tc = True)))
+        keyFrames  = [int(x) for x in keyFrames]
 
         #for i in range(data.startFrame, data.endFrame + 1):
         for i in range(int(cmds.currentTime(q = True) - timeBuffer), int(cmds.currentTime(q = True) + timeBuffer + 1)):
@@ -146,16 +148,22 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         color2 = OpenMaya.MColor(lineColor)
         color3 = OpenMaya.MColor(keyFrameColor)
         
+        thisNode = objPath.node()
+        sizePlug      = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.size)
+        keySizePlug   = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.keySize)
+        lineWidthPlug = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.lineWidth)
+
+        size      = round(sizePlug.asFloat(), 2)
+        keySize   = round(keySizePlug.asFloat(), 2)
+        lineWidth = round(lineWidthPlug.asFloat(), 2)      
+
         prev = None
         allFrames = data.points.keys()
         allFrames.sort()
-        
+
         for frame in allFrames:
             point     = data.points[frame][0]
             point1    = OpenMaya.MPoint(point[0], point[1], point[2], 1)
-            size      = cmds.getAttr(str(objPath) + '.sz')
-            keySize   = cmds.getAttr(str(objPath) + '.ksz')
-            lineWidth = cmds.getAttr(str(objPath) + '.lw')
 
             if data.points[frame][1] == 1:
                 #key frame
