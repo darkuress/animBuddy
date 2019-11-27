@@ -16,6 +16,7 @@ import zipfile\n\
 import maya.cmds as cmds\n\
 from functools import partial\n\
 \n\
+\n\
 DEV = False\n\
 INSTALL_SSGUI_ONLY = False\n\
 \n\
@@ -53,6 +54,10 @@ elif PLATFORM == 'Darwin':\n\
     MAYA_SCRIPTS_PATH = ScriptInstallPath['Darwin']\n\
     PIP_PATH = os.path.join(expanduser('~'), 'Library', 'Python', '2.7', 'bin', 'pip2.7')\n\
 \n\
+if MAYA_SCRIPTS_PATH not in sys.path:\n\
+    for pth in sys.path:\n\
+        if 'maya/scripts' in pth:\n\
+            MAYA_SCRIPTS_PATH = pth\n\
 \n\
 ANIMBUDDY_INSTALL_PATH = '{0}animBuddy'.format(MAYA_SCRIPTS_PATH)\n\
 \n\
