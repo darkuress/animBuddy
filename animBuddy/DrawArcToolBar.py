@@ -71,7 +71,7 @@ class DrawArcToolBar:
                                                cc = self.dotSizeCB)
         cmds.setParent("..")#
         self.floatSliderDotSize = cmds.floatSlider(min = 0, 
-                                                   max = 1, 
+                                                   max = 20, 
                                                    width = 200,
                                                    value = self.pref.dotSize, 
                                                    step = 0.01,
@@ -92,7 +92,7 @@ class DrawArcToolBar:
                                                     cc = self.keyFrameSizeCB)
         cmds.setParent("..")#
         self.floatSliderKeyFrameSize = cmds.floatSlider(min = 0, 
-                                                        max = 1, 
+                                                        max = 20, 
                                                         width = 200,
                                                         value = self.pref.keyFrameSize, 
                                                         step = 0.01,
