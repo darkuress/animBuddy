@@ -3,6 +3,8 @@ import os
 from functools import partial
 import Preference
 reload(Preference)
+import MicroControl.Core as MCL
+reload(MCL) 
 import EasyInBetween.Core as EIB
 reload(EIB)
 import ExFootStep.Core as EFS
@@ -58,7 +60,7 @@ class UI(Preference.Preference):
                          marginWidth = 0,
                          labelIndent = 0,
                          collapsable = False,)
-        cmds.rowLayout(numberOfColumns = 11,
+        cmds.rowLayout(numberOfColumns = 12,
                        adjustableColumn = 1, 
                        columnAttach = ([2, 'right', 0]))
         
@@ -77,7 +79,29 @@ class UI(Preference.Preference):
         #for freeze tool check 
         cmds.refresh(su = False)
         self.frozen = False
-        
+        #- Micro Control- ---------------------------------------------------------------
+        cmds.rowLayout(numberOfColumns = 3)
+        self.textFieldMidroControl = cmds.textField(text = 0.01, width = 50)
+        cmds.columnLayout()
+        self.buttonAdd = cmds.iconTextButton(style = 'iconOnly', 
+                                             image1 = os.path.join(imagesPath, 'uparrow.png'), 
+                                             hi = os.path.join(imagesPath, 'uparrow_hi.png'),
+                                             width = iconSize, mw = marginSize, height = iconSize/2, mh = marginSize,
+                                             label = 'add',
+                                             npm = 1,
+                                             annotation = 'add this value to current channel selection',
+                                             c = partial(self.microControlRun, "add"))
+        self.buttonAdd = cmds.iconTextButton(style = 'iconOnly', 
+                                             image1 = os.path.join(imagesPath, 'dnarrow.png'), 
+                                             hi = os.path.join(imagesPath, 'dnarrow_hi.png'),
+                                             width = iconSize, mw = marginSize, height = iconSize/2, mh = marginSize,
+                                             label = 'sub',
+                                             npm = 1,
+                                             annotation = 'substract this value from current channel selection',
+                                             c = partial(self.microControlRun, "sub"))
+        cmds.setParent("..")
+        cmds.separator(height = 10, width = 10, style = 'none')
+        cmds.setParent("..")
         #- Easy inbetween ---------------------------------------------------------------
         wdth = 267
         cmds.rowLayout(numberOfColumns = 2)
@@ -109,6 +133,14 @@ class UI(Preference.Preference):
                                                      cc = self.afterDrop,
                                                      dc = self.easyInBetweenChange)
         cmds.popupMenu()
+        cmds.radioMenuItemCollection()
+        self.radioMenuItemModeObject = cmds.menuItem(label='Object Mode', 
+                                                     radioButton = True,
+                                                     c = partial(self.writeEIBMode, 'object') )
+        self.radioMenuItemModeKeyFrame = cmds.menuItem(label='KeyFrame Mode', 
+                                                       radioButton = False,
+                                                       c = partial(self.writeEIBMode, 'keyframe') )
+        cmds.menuItem(divider=True )
         cmds.menuItem(label = "Reset", command = self.afterDrop)
 
         cmds.frameLayout(labelVisible = False,
@@ -137,6 +169,8 @@ class UI(Preference.Preference):
         cmds.separator(hr= False, height = height, width = 40, style = sepStyle)
         cmds.setParent("..")        
         
+        self.readEIBMode()
+
         #- Snap Tools   -----------------------------------------------------------------                                   
         cmds.rowLayout(numberOfColumns = 4)
         self.buttonConIt = cmds.iconTextButton(style = 'iconOnly', 
@@ -263,13 +297,34 @@ class UI(Preference.Preference):
         cmds.separator(hr= False, height = height, width = 10, style = "none")
         cmds.setParent("..") 
 
+    #---------------------------------------------------------------------------------
+    def microControlRun(self, mode, *args):
+        """
+        @param mode string "add" or "sub"
+        """
+        print 
+        val = round ( float(cmds.textField(self.textFieldMidroControl, q = True, text = True)), 3)
+        if mode == "add":
+            MCL.run(val)
+        else:
+            MCL.run(val*-1)
+
     #---------------------------------------------------------------------------------   
     def easyInBetweenChange(self, *args):
         """
+        slider
         """
-        amount = cmds.floatSlider(self.floatSliderEIBAmount, q = True, v = True)          
-        EIB.changeKey(amount)
-     
+        amount = cmds.floatSlider(self.floatSliderEIBAmount, q = True, v = True)      
+        if cmds.menuItem(self.radioMenuItemModeObject, q = True, radioButton = True):
+            EIB.changeKey(amount)
+        elif cmds.menuItem(self.radioMenuItemModeKeyFrame, q = True, radioButton = True):
+            if amount > 1:
+                EIB.changeSelectedKey(1)
+            elif amount < 0:
+                EIB.changeSelectedKey(0)
+            else:
+                EIB.changeSelectedKey(amount)    
+
     def afterDrop(self, *args):
         """
         """
@@ -277,10 +332,38 @@ class UI(Preference.Preference):
 
     def easyInBetweenChange2(self, value = None, *args):
         """
+        dots
         """
         cmds.floatSlider(self.floatSliderEIBAmount, e = True, v = value)
-        EIB.changeKey(value)
-        
+        if cmds.menuItem(self.radioMenuItemModeObject, q = True, radioButton = True):
+            EIB.changeKey(value)
+        elif cmds.menuItem(self.radioMenuItemModeKeyFrame, q = True, radioButton = True):
+            if value > 1:
+                EIB.changeSelectedKey(1)
+            elif value < 0:
+                EIB.changeSelectedKey(0)
+            else:
+                EIB.changeSelectedKey(value)   
+
+    def readEIBMode(self):
+        """
+        """
+        self.pref = Preference.Preference()
+        if self.pref.eibMode == 'object':
+            cmds.menuItem(self.radioMenuItemModeObject, e = True, radioButton = True)
+            cmds.menuItem(self.radioMenuItemModeKeyFrame, e = True, radioButton = False)
+        elif self.pref.eibMode == 'keyframe':
+            cmds.menuItem(self.radioMenuItemModeObject, e = True, radioButton = False)
+            cmds.menuItem(self.radioMenuItemModeKeyFrame, e = True, radioButton = True)
+    
+    def writeEIBMode(self, mode, *args):
+        """
+        """
+        self.pref = Preference.Preference()
+        self.pref.eibMode = mode
+        self.pref.construct()
+        self.pref.write()
+
     #---------------------------------------------------------------------------------
     def fakeConIt(self, *args):
         """

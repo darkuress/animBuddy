@@ -1,7 +1,22 @@
 import maya.cmds as cmds
 
+def changeSelectedKey(ratio):
+    """
+    mode 2 selected key only
+    """
+    selObjs = cmds.ls(sl = True)
+    for selObj in selObjs:
+        curves = cmds.keyframe(selObj, sl = True, n = True, q = True)
+        if curves:
+            for cv in curves:
+                frames = cmds.keyframe(cv, sl = True, q = True)
+                for frame in frames:
+                    runChange(cv, ratio, frame = frame)
+        
+
 def changeKey(ratio):
     """
+    mode 1 regular 
     """
     selObjs = cmds.ls(sl = True)
     for selObj in selObjs:
@@ -17,7 +32,7 @@ def changeKey(ratio):
         for animCurve in animCurves:
             runChange(animCurve, ratio)
        
-def runChange(selKey, ratio):
+def runChange(selKey, ratio, frame = ''):
     """
     change key per ratio slider
     """
@@ -25,24 +40,17 @@ def runChange(selKey, ratio):
     selAttr = selKey.split('_')[-1]
     
     if selKey:
-        currentFrame = cmds.currentTime(q = True)
-        nearByKeyFrames = findCloseByKeyFrame(selKey, currentFrame)
+        if not frame:
+            frame = cmds.currentTime(q = True)
+        nearByKeyFrames = findCloseByKeyFrame(selKey, frame)
         
         if nearByKeyFrames[0] and nearByKeyFrames[1]:
             nearBeforeValue = cmds.keyframe(selKey, q = True, vc = True, t = (nearByKeyFrames[0], nearByKeyFrames[0]))[0]
             nearAfterValue = cmds.keyframe(selKey, q = True, vc = True, t = (nearByKeyFrames[1], nearByKeyFrames[1]))[0]
             baseValue = nearBeforeValue
             diffValue = nearAfterValue - nearBeforeValue
-            '''
-            elif not nearByKeyFrames[0]:
-                baseValue = cmds.keyframe(selKey, q = True, vc = True, t = (nearByKeyFrames[1], nearByKeyFrames[1]))[0]
-                diffValue = baseValue
-            elif not nearByKeyFrames[1]:
-                baseValue = cmds.keyframe(selKey, q = True, vc = True, t = (nearByKeyFrames[0], nearByKeyFrames[0]))[0]
-                diffValue = baseValue
-            '''
-        
-            cmds.setKeyframe(selObj, attribute = selAttr, t = currentFrame, v = baseValue + diffValue * ratio )
+      
+            cmds.setKeyframe(selObj, attribute = selAttr, t = frame, v = baseValue + diffValue * ratio )
        
 
 def findCloseByKeyFrame(selKey, frame):

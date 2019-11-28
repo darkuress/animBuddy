@@ -21,6 +21,12 @@ class Preference(object):
         else:
             self.iconSize = 30
 
+        #-EasyInbetween
+        if self.pref.has_key("eibMode"):
+            self.eibMode = self.pref["eibMode"]
+        else:
+            self.eibMode = 'object'        
+
         #-MotionTrail
         if self.pref.has_key("lineWidth"):
             self.lineWidth = self.pref["lineWidth"]
@@ -61,8 +67,9 @@ class Preference(object):
         """
         construct preference as dict
         """
-        self.pref['lineWidth']       = self.lineWidth
         self.pref["iconSize"]        = self.iconSize
+        self.pref['eibMode']         = self.eibMode
+        self.pref['lineWidth']       = self.lineWidth
         self.pref["dotSize"]         = self.dotSize
         self.pref["keyFrameSize"]    = self.keyFrameSize
         self.pref["timeBuffer"]      = self.timeBuffer
