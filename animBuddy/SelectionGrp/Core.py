@@ -83,9 +83,10 @@ class SelectionGrp:
         with open(location) as jsonFile:
             data = json.load(jsonFile)
         
-        allSel = data['selection']    
-        for sel in sels:
-            allSel.remove(sel)
+        allSel = data['selection']
+        if sels:    
+            for sel in sels:
+                allSel.remove(sel)
 
         cmds.select(cl = True)
         cmds.select(allSel)

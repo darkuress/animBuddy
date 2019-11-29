@@ -1,13 +1,16 @@
 import maya.cmds as cmds
 import os
 import json
+from animBuddy.Utils import Util
+reload(Util)
 
 class AnimCopySession:
     def __init__(self):
         """
         """
-        filePath = os.path.dirname(os.path.abspath(__file__))
-        self.animData = os.path.join(filePath, 'temp.json')
+        filePath = Util.dataPath()
+        #filePath = os.path.dirname(os.path.abspath(__file__))
+        self.animData = os.path.join(filePath, 'animCopySession.json')
         
         self.data = {}
         self.sels = cmds.ls(sl = True)
@@ -27,7 +30,7 @@ class AnimCopySession:
         attrs = cmds.listAttr(sel, keyable = True)
         for attr in attrs:
             self.data[sel][attr] = {'tc' : cmds.keyframe(sel + '.' + attr, q = True, tc = True), 
-                                'vc' : cmds.keyframe(sel + '.' + attr, q = True, vc = True)}
+                                    'vc' : cmds.keyframe(sel + '.' + attr, q = True, vc = True)}
                      
     def copy(self):
         """
@@ -45,13 +48,14 @@ class AnimCopySession:
             for attr in self.data[obj].keys():
                 # check if self.data is anim self.data or pose self.data
                 if isinstance(self.data[obj][attr], dict):
-                    for i in range(len(self.data[obj][attr]['tc'])):
-                        try:
-                            cmds.setKeyframe(obj + '.' + attr, 
-                                             t = self.data[obj][attr]['tc'][i],
-                                             v = self.data[obj][attr]['vc'][i])
-                        except:
-                            pass
+                    if not self.data[obj][attr]['tc'] == None:
+                        for i in range(len(self.data[obj][attr]['tc'])):
+                            try:
+                                cmds.setKeyframe(obj + '.' + attr, 
+                                                t = self.data[obj][attr]['tc'][i],
+                                                v = self.data[obj][attr]['vc'][i])
+                            except:
+                                pass
                 else:
                     try:
                         cmds.setAttr(obj + '.' + attr, self.data[obj][attr])
@@ -60,22 +64,32 @@ class AnimCopySession:
                         
         os.remove(self.animData) 
     
-    def run(self):
+    def run(self, mode = 'pose'):
         """
         """
         if os.path.exists(self.animData):
             print 'pasting animation...'
             self.paste()
+            return "paste"
         else:
             self.data = {}
             for sel in self.sels:
+                """
                 if cmds.keyframe(sel, q = True, tc = True):
                     print 'copying animation...', sel
                     self.copyAnim(sel)
                 else:
                     print 'copying pose........', sel
                     self.copyPose(sel)
+                """
+                if mode == 'pose':
+                    print 'copying pose........', sel
+                    self.copyPose(sel)
+                elif mode == 'anim':
+                    print 'copying animation...', sel
+                    self.copyAnim(sel)
             self.copy()
+            return "copy"
 
     def reset(self):
         """

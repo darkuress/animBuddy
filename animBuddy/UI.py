@@ -27,6 +27,8 @@ from AnimCopySession import Core as ACS
 reload(ACS)
 from ViewportRefresh import Core as VPR
 reload(VPR)
+from Decalcomanie import Core as DCN
+reload(DCN)
 from Install import version
 reload(version)
 
@@ -60,7 +62,7 @@ class UI(Preference.Preference):
                          marginWidth = 0,
                          labelIndent = 0,
                          collapsable = False,)
-        cmds.rowLayout(numberOfColumns = 12,
+        cmds.rowLayout(numberOfColumns = 13,
                        adjustableColumn = 1, 
                        columnAttach = ([2, 'right', 0]))
         
@@ -203,16 +205,26 @@ class UI(Preference.Preference):
                                                     c = self.snapIt)
         cmds.separator(hr= False, height = height, width = sepWidth, style = sepStyle)
         cmds.setParent("..")
-        
-        #- Selection Group---------------------------------------------------------------
+
+        #- Decalcomanie---------------------------------------------------------------
         cmds.rowLayout(numberOfColumns = 1)
-        self.buttonSelectionManager = cmds.iconTextButton(style = 'iconOnly', 
-                                                          image1 = os.path.join(imagesPath, 'manager.png'),
-                                                          hi = os.path.join(imagesPath, 'manager_hi.png'),                                                          
-                                                          width = iconSize, mw = marginSize, height = iconSize, mh = marginSize,
-                                                          label = 'manager',
-                                                          c = self.expandSelectionToolbar)
-        cmds.setParent("..")
+        self.buttonDecalcomanie = cmds.iconTextButton(style = 'iconOnly', 
+                                                      image1 = os.path.join(imagesPath, 'decalcomanie.png'), 
+                                                      hi = os.path.join(imagesPath, 'decalcomanie_hi.png'),
+                                                      width = iconSize*1.2, mw = marginSize, height = iconSize, mh = marginSize,
+                                                      label = 'decalcomanie',
+                                                      annotation = 'Copy Left or Right anim to Right or Left', 
+                                                      c = self.runDecalComanie)
+        cmds.popupMenu()
+        cmds.radioMenuItemCollection()
+        self.radioMenuItemDCNModePose = cmds.menuItem(label='Copy Pose of Current Frame', 
+                                                   radioButton = True,
+                                                   c = partial(self.writeDCNMode, 'pose') )
+        self.radioMenuItemDCNModeAnim = cmds.menuItem(label='Copy Animation', 
+                                                   radioButton = False,
+                                                   c = partial(self.writeDCNMode, 'anim') )
+        cmds.setParent("..") 
+        self.readDCNMode()
 
         #- Reset It---------------------------------------------------------------
         cmds.rowLayout(numberOfColumns = 1)
@@ -224,6 +236,7 @@ class UI(Preference.Preference):
                                                annotation = 'Resets values of current selected controller or any object', 
                                                c = self.resetIt)
         cmds.setParent("..") 
+
         
         #- Draw Arc---------------------------------------------------------------
         cmds.rowLayout(numberOfColumns = 2)
@@ -240,7 +253,16 @@ class UI(Preference.Preference):
         cmds.menuItem(label = "Delete All", c = self.deleteAll)       
         cmds.separator(hr= False, height = height, width = sepWidth, style = sepStyle)
         cmds.setParent("..") 
-
+        
+        #- Selection Group---------------------------------------------------------------
+        cmds.rowLayout(numberOfColumns = 1)
+        self.buttonSelectionManager = cmds.iconTextButton(style = 'iconOnly', 
+                                                          image1 = os.path.join(imagesPath, 'manager.png'),
+                                                          hi = os.path.join(imagesPath, 'manager_hi.png'),                                                          
+                                                          width = iconSize, mw = marginSize, height = iconSize, mh = marginSize,
+                                                          label = 'manager',
+                                                          c = self.expandSelectionToolbar)
+        cmds.setParent("..")
         #- Copy Paste Animation--------------------------------------------------
         cmds.rowLayout(numberOfColumns = 2)
         self.buttonCopyPaste = cmds.iconTextButton(style = 'iconOnly', 
@@ -252,10 +274,20 @@ class UI(Preference.Preference):
                                                    annotation = 'copy current animation or pose. Right click for reset tool. Preserves current session',
                                                    c = self.copySession)
         cmds.popupMenu()
+        cmds.radioMenuItemCollection()
+        self.radioMenuItemACSModePose = cmds.menuItem(label='Copy Pose of Current Frame', 
+                                                   radioButton = True,
+                                                   c = partial(self.writeACSMode, 'pose') )
+        self.radioMenuItemACSModeAnim = cmds.menuItem(label='Copy Animation', 
+                                                   radioButton = False,
+                                                   c = partial(self.writeACSMode, 'anim') )
+        cmds.menuItem(divider=True )
         cmds.menuItem(label = "Reset", command = self.copyReset)
         cmds.separator(hr= False, height = height, width = sepWidth, style = sepStyle)
         cmds.setParent("..")         
         
+        self.readACSMode()
+
         #- Freeze Viewport---------------------------------------------------------------
         cmds.rowLayout(numberOfColumns = 1)
         self.buttonReset = cmds.iconTextButton(style = 'iconOnly', 
@@ -426,15 +458,71 @@ class UI(Preference.Preference):
     def copySession(self, *args):
         """
         """
+        mode = 'pose'
+        if cmds.menuItem(self.radioMenuItemACSModeAnim, q = True, radioButton = True):
+            mode = 'anim'
         copy = ACS.AnimCopySession()
-        copy.run()
+        result = copy.run(mode = mode)
+
+        cmds.confirmDialog(title ='Anim Copy Session', 
+                           message ='Anim {} done!'.format(result), 
+                           button = ['Ok'], 
+                           defaultButton='Ok', 
+                           dismissString='Ok' )
 
     def copyReset(self, *args):
         """
         """
         copy = ACS.AnimCopySession()
         copy.reset() 
+
+    def readACSMode(self):
+        """
+        """
+        self.pref = Preference.Preference()
+        if self.pref.acsMode == 'pose':
+            cmds.menuItem(self.radioMenuItemACSModePose, e = True, radioButton = True)
+            cmds.menuItem(self.radioMenuItemACSModeAnim, e = True, radioButton = False)
+        elif self.pref.acsMode == 'anim':
+            cmds.menuItem(self.radioMenuItemACSModePose, e = True, radioButton = False)
+            cmds.menuItem(self.radioMenuItemACSModeAnim, e = True, radioButton = True)
     
+    def writeACSMode(self, mode, *args):
+        """
+        """
+        self.pref = Preference.Preference()
+        self.pref.acsMode = mode
+        self.pref.construct()
+        self.pref.write()
+
+    #---------------------------------------------------------------------------------
+    def runDecalComanie(self):
+        """
+        """
+        mode = 'pose'
+        if cmds.menuItem(self.radioMenuItemDCNModeAnim, q = True, radioButton = True):
+            mode = 'anim'
+        DCN.run(mode =mode)
+
+    def readDCNMode(self):
+        """
+        """
+        self.pref = Preference.Preference()
+        if self.pref.acsMode == 'pose':
+            cmds.menuItem(self.radioMenuItemDCNModePose, e = True, radioButton = True)
+            cmds.menuItem(self.radioMenuItemDCNModeAnim, e = True, radioButton = False)
+        elif self.pref.acsMode == 'anim':
+            cmds.menuItem(self.radioMenuItemDCNModePose, e = True, radioButton = False)
+            cmds.menuItem(self.radioMenuItemDCNModeAnim, e = True, radioButton = True)
+    
+    def writeDCNMode(self, mode, *args):
+        """
+        """
+        self.pref = Preference.Preference()
+        self.pref.dcnMode = mode
+        self.pref.construct()
+        self.pref.write()
+
     #---------------------------------------------------------------------------------  
     def resetIt(self, *args):
         """

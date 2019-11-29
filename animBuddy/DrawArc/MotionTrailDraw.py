@@ -113,9 +113,12 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         thisNode   = objPath.node()
         timeBufferPlug   = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.timeBuffer)
         timeBuffer = timeBufferPlug.asInt()
-        keyFrames  = list(set(cmds.keyframe(data.name, q = True, tc = True)))
-        keyFrames  = [int(x) for x in keyFrames]
-
+        
+        keyFrames = []
+        if cmds.keyframe(data.name, q = True, tc = True):
+            keyFrames  = list(set(cmds.keyframe(data.name, q = True, tc = True)))
+            keyFrames  = [int(x) for x in keyFrames]
+        
         #for i in range(data.startFrame, data.endFrame + 1):
         for i in range(int(cmds.currentTime(q = True) - timeBuffer), int(cmds.currentTime(q = True) + timeBuffer + 1)):
             point = cmds.getAttr("{}.wm".format(data.name), time = i)

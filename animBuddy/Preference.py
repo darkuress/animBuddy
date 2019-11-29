@@ -63,6 +63,18 @@ class Preference(object):
         else:
             self.keyFrameColor = [1.0, 0.0, 0.0]  
 
+        #- Anim Copy Session
+        if self.pref.has_key("acsMode"):
+            self.acsMode = self.pref["acsMode"]
+        else:
+            self.acsMode = 'pose'
+
+        #- Decalcomanie
+        if self.pref.has_key("dcnMode"):
+            self.acsMode = self.pref["dcnMode"]
+        else:
+            self.acsMode = 'pose'
+
     def construct(self):
         """
         construct preference as dict
@@ -76,7 +88,9 @@ class Preference(object):
         self.pref["lineColor"]       = self.lineColor
         self.pref["dotColor"]        = self.dotColor
         self.pref["keyFrameColor"]   = self.keyFrameColor
-        
+        self.pref['acsMode']         = self.acsMode
+        self.pref['dcnMode']         = self.dcnMode
+
     def write(self):
         """
         write as new pref file
