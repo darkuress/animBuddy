@@ -63,16 +63,27 @@ def run(mode = 'pose'):
                             data[selRep][attr] = cmds.getAttr(sel + '.' + attr) * -1
                         else:
                             data[selRep][attr] = cmds.getAttr(sel + '.' + attr)
-                        
-            #- paste part
+            else:
+                data[sel] = {}
+                revAttr = ['rotateY']
+                for attr in attrs:
+                    if attr in revAttr: 
+                        data[sel][attr] = cmds.getAttr(sel + '.' + attr) * -1
+                    else:
+                        data[sel][attr] = cmds.getAttr(sel + '.' + attr)                
+
+        #- paste part
+        for sel in sels:
             for obj in data.keys():
                 for attr in data[obj].keys():
-                    cmds.setAttr(obj + '.' + attr, data[obj][attr])
-
+                    try:
+                        cmds.setAttr(obj + '.' + attr, data[obj][attr])
+                    except:
+                        pass
     elif mode == 'anim':
         for sel in sels:
             attrs = cmds.listAttr(sel, keyable = True)
-            if sel[0] in ['l', 'L', 'r', 'R']:
+            if sel[0] in ['l', 'L', 'r', 'R'] and 'root' not in sel.lower():
                 result = re.match("^{}+".format(prefix(sel)[0]), sel)
                 selCut = sel[len(result.group(0)):]
                 selRep = prefix(sel)[1] + selCut
@@ -82,7 +93,7 @@ def run(mode = 'pose'):
                 if any(word in sel.lower() for word in arms):
                     for attr in attrs:
                         data[selRep][attr] = {'tc' : cmds.keyframe(sel + '.' + attr, q = True, tc = True), 
-                                                   'vc' : cmds.keyframe(sel + '.' + attr, q = True, vc = True)}
+                                              'vc' : cmds.keyframe(sel + '.' + attr, q = True, vc = True)}
                 else:
                     for attr in attrs:
                         if attr in revAttr: 
@@ -91,8 +102,19 @@ def run(mode = 'pose'):
                         else:
                             data[selRep][attr] = {'tc' : cmds.keyframe(sel + '.' + attr, q = True, tc = True), 
                                                   'vc' : cmds.keyframe(sel + '.' + attr, q = True, vc = True)}
-                        
+            else:
+                data[sel] = {}
+                revAttr = ['rotateY']
+                for attr in attrs:
+                    if attr in revAttr: 
+                        data[sel][attr] = {'tc' : cmds.keyframe(sel + '.' + attr, q = True, tc = True), 
+                                                'vc' : [-1 * x for x in cmds.keyframe(sel + '.' + attr, q = True, vc = True)]}
+                    else:
+                        data[sel][attr] = {'tc' : cmds.keyframe(sel + '.' + attr, q = True, tc = True), 
+                                                'vc' : cmds.keyframe(sel + '.' + attr, q = True, vc = True)}
+
             #- paste part
+        for sel in sels:
             for obj in data.keys():
                 for attr in data[obj].keys():
                     # check if data is anim data or pose data
