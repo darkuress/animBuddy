@@ -424,8 +424,19 @@ class UI(Preference.Preference):
         """
         """
         conRun = FCI.FakeConIt()
-        conRun.run()
-
+        result = conRun.run()
+        if result == 'Success':
+            cmds.confirmDialog(title ='Fake Conit', 
+                            message ='Fake Constraint was generatec\nRight Click on button to reset connection', 
+                            button = ['Ok'], 
+                            defaultButton='Ok', 
+                            dismissString='Ok' )
+        elif result == 'Failed':
+            cmds.confirmDialog(title ='Fake Conit', 
+                            message ='please select source and destination(s) to create Fake Constraint', 
+                            button = ['Ok'], 
+                            defaultButton='Ok', 
+                            dismissString='Ok' )
     def fakeConItReset(self, *args):
         """
         """

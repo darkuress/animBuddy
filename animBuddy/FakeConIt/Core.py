@@ -25,46 +25,56 @@ class FakeConIt:
             
     def run(self):
         """
-        """
-        if not self.getTargets():
-            "please select source and destination"
-            return
-
-        source = self.getTargets()[0]
-        targets = self.getTargets()[1:]
-        
-        if source and os.path.exists(self.conItDataPath):
+        """       
+        if os.path.exists(self.conItDataPath):
             with open(self.conItDataPath) as jsonFile:
                 data = json.load(jsonFile)
-                if data['source'] == source:
-                    targets = data['targets']
+                source = data['source']
+                targets = data['targets']
+                print source
+                print targets
+                #create fake locator to constraint
+                loc = cmds.spaceLocator(n = "fakeCon_loc")
+                cmds.xform(loc, t = data['transform'], ro = data['rotation'])
+                for target in data['targets']:
+                    try:
+                        cmds.parentConstraint(loc, target, mo = True, weight = 1)
+                    except:
+                        print "destination's translation or rotation might be locked"
+                        return
                     
-                    #create fake locator to constraint
-                    loc = cmds.spaceLocator(n = "fakeCon_loc")
-                    cmds.xform(loc, t = data['transform'], ro = data['rotation'])
-                    for target in data['targets']:
-                        try:
-                            cmds.parentConstraint(loc, target, mo = True, weight = 1)
-                        except:
-                            print "destination's translation or rotation might be locked"
-                            return
-                        
-                    #get current transform
-                    tr = cmds.xform(source, q = True, ws = True, t = True)
-                    ro = cmds.xform(source, q = True, ws = True, ro = True) 
+                #get current transform
+                tr = cmds.xform(source, q = True, ws = True, t = True)
+                ro = cmds.xform(source, q = True, ws = True, ro = True) 
 
-                    #rotate locator
-                    cmds.xform(loc, t = tr, ro = ro)
-                    
-                    for target in data['targets']:
-                        pcon = cmds.listRelatives(target, type = "parentConstraint")
-                        cmds.delete(pcon)
-                    
-                    cmds.delete(loc)
-                    
-                else:
-                    os.remove(self.conItDataPath)
-        
+                #rotate locator
+                cmds.xform(loc, t = tr, ro = ro)
+                
+                for target in data['targets']:
+                    pcon = cmds.listRelatives(target, type = "parentConstraint")
+                    cmds.delete(pcon)
+                
+                cmds.delete(loc)
+
+                self.write(source, targets)
+
+        else:
+            if not self.getTargets():
+                print "please select source and destination"
+                return "Failed" 
+            
+            #- create New
+            source = self.getTargets()[0]
+            targets = self.getTargets()[1:]
+
+            self.write(source, targets)
+
+            return "Success"
+
+    def write(self, source, targets):
+        """
+        write data
+        """        
         data = {}
         data['source'] = source
         data['targets'] = targets
@@ -78,7 +88,8 @@ class FakeConIt:
         """
         """
         try:
-            cmds.delete(cmds.ls("fakeCon_loc"))
+            if cmds.objExists("fakeCon_loc"):
+                cmds.delete("fakeCon_loc")
         except:
             pass
             
