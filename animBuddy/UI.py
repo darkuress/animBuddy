@@ -62,7 +62,7 @@ class UI(Preference.Preference):
                          marginWidth = 0,
                          labelIndent = 0,
                          collapsable = False,)
-        cmds.rowLayout(numberOfColumns = 13,
+        cmds.rowLayout(numberOfColumns = 14,
                        adjustableColumn = 1, 
                        columnAttach = ([2, 'right', 0]))
         
@@ -81,6 +81,29 @@ class UI(Preference.Preference):
         #for freeze tool check 
         cmds.refresh(su = False)
         self.frozen = False
+
+        #- Shift Key- ---------------------------------------------------------------
+        cmds.rowLayout(numberOfColumns = 4)
+        self.buttonToRight = cmds.iconTextButton(style = 'iconOnly', 
+                                                 image1 = os.path.join(imagesPath, 'uparrow.png'), 
+                                                 hi = os.path.join(imagesPath, 'uparrow_hi.png'),
+                                                 width = iconSize, mw = marginSize, height = iconSize, mh = marginSize,
+                                                 label = 'add',
+                                                 npm = 1,
+                                                 annotation = 'add this value to current channel selection',
+                                                 c = partial(self.microControlRun, "add"))
+        self.textFieldShiftKey = cmds.textField(text = 1, width = 50)
+        self.buttonToLeft = cmds.iconTextButton(style = 'iconOnly', 
+                                                image1 = os.path.join(imagesPath, 'dnarrow.png'), 
+                                                hi = os.path.join(imagesPath, 'dnarrow_hi.png'),
+                                                width = iconSize, mw = marginSize, height = iconSize, mh = marginSize,
+                                                label = 'sub',
+                                                npm = 1,
+                                                annotation = 'substract this value from current channel selection',
+                                                c = partial(self.microControlRun, "sub"))
+        cmds.separator(height = 10, width = 10, style = 'none')
+        cmds.setParent("..")
+
         #- Micro Control- ---------------------------------------------------------------
         cmds.rowLayout(numberOfColumns = 3)
         self.textFieldMidroControl = cmds.textField(text = 0.01, width = 50)
@@ -93,7 +116,7 @@ class UI(Preference.Preference):
                                              npm = 1,
                                              annotation = 'add this value to current channel selection',
                                              c = partial(self.microControlRun, "add"))
-        self.buttonAdd = cmds.iconTextButton(style = 'iconOnly', 
+        self.buttonSub = cmds.iconTextButton(style = 'iconOnly', 
                                              image1 = os.path.join(imagesPath, 'dnarrow.png'), 
                                              hi = os.path.join(imagesPath, 'dnarrow_hi.png'),
                                              width = iconSize, mw = marginSize, height = iconSize/2, mh = marginSize,
@@ -423,8 +446,11 @@ class UI(Preference.Preference):
     def expandSelectionToolbar(self, *args):
         """
         """
-        ui = UISelectionToolBar.UISelectionToolBar()
-        ui.loadInMaya()
+        if cmds.window('UISelectionToolBar', ex = True):
+            cmds.deleteUI('UISelectionToolBar')  
+        else:
+            ui = UISelectionToolBar.UISelectionToolBar()
+            ui.loadInMaya()
     
     #---------------------------------------------------------------------------------  
     def drawArc(self, *args):

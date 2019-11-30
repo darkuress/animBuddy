@@ -2,12 +2,12 @@ import maya.cmds as cmds
 import os
 import shutil
 import json
-from animBuddy.Utils import Util
-reload(Util)
+from animBuddy.Utils import System
+reload(System)
 
 class SelectionGrp:
     def __init__(self):
-        filePath = Util.dataPath()
+        filePath = System.dataPath()
         self.selectionGrpDataPath = os.path.join(filePath, 'SelectionGrpData')
         
         if not os.path.exists(self.selectionGrpDataPath):

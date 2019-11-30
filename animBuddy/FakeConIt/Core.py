@@ -1,11 +1,16 @@
 import maya.cmds as cmds
 import os
 import json
+from animBuddy.Utils import System
+reload(System)
 
 class FakeConIt:
     def __init__(self):
-        filePath = os.path.dirname(os.path.abspath(__file__))
-        self.conItDataPath = os.path.join(filePath, 'temp.json')
+        """
+        """
+        filePath = System.dataPath()
+        #filePath = os.path.dirname(os.path.abspath(__file__))
+        self.conItDataPath = os.path.join(filePath, 'fakeConIt.json')
 
     def getTargets(self):
         """

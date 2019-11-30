@@ -1,14 +1,14 @@
 import os
 import json
-from Utils import Util
-reload(Util)
+from Utils import System
+reload(System)
 
 class Preference(object):
     def __init__(self):
         """
         preference
         """
-        filePath = Util.dataPath()
+        filePath = System.dataPath()
         self.prefData = os.path.join(filePath, 'pref.json')
         self.pref = {}
 
@@ -71,9 +71,9 @@ class Preference(object):
 
         #- Decalcomanie
         if self.pref.has_key("dcnMode"):
-            self.acsMode = self.pref["dcnMode"]
+            self.dcnMode = self.pref["dcnMode"]
         else:
-            self.acsMode = 'pose'
+            self.dcnMode = 'pose'
 
     def construct(self):
         """

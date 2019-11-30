@@ -1,14 +1,14 @@
 import maya.cmds as cmds
 import os
 import json
-from animBuddy.Utils import Util
-reload(Util)
+from animBuddy.Utils import System
+reload(System)
 
 class AnimCopySession:
     def __init__(self):
         """
         """
-        filePath = Util.dataPath()
+        filePath = System.dataPath()
         #filePath = os.path.dirname(os.path.abspath(__file__))
         self.animData = os.path.join(filePath, 'animCopySession.json')
         
