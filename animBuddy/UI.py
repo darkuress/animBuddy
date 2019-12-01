@@ -29,6 +29,8 @@ from ViewportRefresh import Core as VPR
 reload(VPR)
 from Decalcomanie import Core as DCN
 reload(DCN)
+from ShiftKey import Core as SKY
+reload(SKY)
 from Install import version
 reload(version)
 
@@ -84,23 +86,26 @@ class UI(Preference.Preference):
 
         #- Shift Key- ---------------------------------------------------------------
         cmds.rowLayout(numberOfColumns = 4)
-        self.buttonToRight = cmds.iconTextButton(style = 'iconOnly', 
-                                                 image1 = os.path.join(imagesPath, 'uparrow.png'), 
-                                                 hi = os.path.join(imagesPath, 'uparrow_hi.png'),
-                                                 width = iconSize, mw = marginSize, height = iconSize, mh = marginSize,
-                                                 label = 'add',
-                                                 npm = 1,
-                                                 annotation = 'add this value to current channel selection',
-                                                 c = partial(self.microControlRun, "add"))
-        self.textFieldShiftKey = cmds.textField(text = 1, width = 50)
         self.buttonToLeft = cmds.iconTextButton(style = 'iconOnly', 
-                                                image1 = os.path.join(imagesPath, 'dnarrow.png'), 
-                                                hi = os.path.join(imagesPath, 'dnarrow_hi.png'),
+                                                 image1 = os.path.join(imagesPath, 'left.png'), 
+                                                 hi = os.path.join(imagesPath, 'left_hi.png'),
+                                                 width = iconSize, mw = marginSize, height = iconSize, mh = marginSize,
+                                                 label = 'sub',
+                                                 npm = 1,
+                                                 annotation = 'shift key to left',
+                                                 c = partial(self.shiftKey, "left"))
+        self.textFieldShiftKey = cmds.textField(text = 1, width = 50)
+        cmds.popupMenu()
+        self.menuItemShiftKeyClear = cmds.menuItem(label='reset',
+                                                   c = self.shiftKeyClear)
+        self.buttonToRight = cmds.iconTextButton(style = 'iconOnly', 
+                                                image1 = os.path.join(imagesPath, 'right.png'), 
+                                                hi = os.path.join(imagesPath, 'right_hi.png'),
                                                 width = iconSize, mw = marginSize, height = iconSize, mh = marginSize,
-                                                label = 'sub',
+                                                label = 'add',
                                                 npm = 1,
-                                                annotation = 'substract this value from current channel selection',
-                                                c = partial(self.microControlRun, "sub"))
+                                                annotation = 'shift key to right',
+                                                c = partial(self.shiftKey, "right"))
         cmds.separator(height = 10, width = 10, style = 'none')
         cmds.setParent("..")
 
@@ -353,11 +358,25 @@ class UI(Preference.Preference):
         cmds.setParent("..") 
 
     #---------------------------------------------------------------------------------
+    def shiftKey(self, mode = 'right'):
+        """
+        """
+        val = int(cmds.textField(self.textFieldShiftKey, q = True, text = True))
+        if mode == 'right':
+            SKY.run(amount = val)
+        elif mode == 'left':
+            SKY.run(amount = -1 * val)
+
+    def shiftKeyClear(self, *args):
+        """
+        """
+        SKY.clear()
+
+    #---------------------------------------------------------------------------------
     def microControlRun(self, mode, *args):
         """
         @param mode string "add" or "sub"
         """
-        print 
         val = round ( float(cmds.textField(self.textFieldMidroControl, q = True, text = True)), 3)
         if mode == "add":
             MCL.run(val)
