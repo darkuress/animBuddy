@@ -55,25 +55,28 @@ class UI(Preference.Preference):
         """
         super(UI, self).__init__()
         self.win = cmds.window('animBuddyWin', width = 1000, title = 'Easy Inbetween')
+        filePath = os.path.dirname(os.path.abspath(__file__))
+        imagesPath = os.path.join(filePath, 'images')
+        self.SGP = SelectionGrp.Core.SelectionGrp()
 
         cmds.frameLayout("main",
                          labelVisible = False,
-                         borderVisible = False, 
+                         borderVisible = False,
+                         bgs = True, 
                          width = 10,
                          marginHeight = 0,
                          marginWidth = 0,
                          labelIndent = 0,
-                         collapsable = False,)
-        cmds.rowLayout(numberOfColumns = 14,
+                         collapsable = False)
+
+        #----------------------------------------------------------------------------
+        cmds.rowLayout(numberOfColumns = 15,
                        adjustableColumn = 1, 
                        columnAttach = ([2, 'right', 0]))
-        
-        filePath = os.path.dirname(os.path.abspath(__file__))
-        imagesPath = os.path.join(filePath, 'images')
-        
-        self.SGP = SelectionGrp.Core.SelectionGrp()
-        
-        cmds.separator(height = 10, width = 700, style = 'none')
+        #- logo ---------------------------------------------------------------------
+        cmds.image(image = os.path.join(imagesPath, 'beaverLogo.png'))       
+                        
+        #cmds.separator(height = 10, width = 700, style = 'none')
         sepStyle = 'in'
         height = 20
         iconSize = self.iconSize
@@ -83,25 +86,25 @@ class UI(Preference.Preference):
         #for freeze tool check 
         cmds.refresh(su = False)
         self.frozen = False
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
         #- Shift Key- ---------------------------------------------------------------
         cmds.rowLayout(numberOfColumns = 4)
         self.buttonToLeft = cmds.iconTextButton(style = 'iconOnly', 
-                                                 image1 = os.path.join(imagesPath, 'left.png'), 
-                                                 hi = os.path.join(imagesPath, 'left_hi.png'),
-                                                 width = iconSize, mw = marginSize, height = iconSize, mh = marginSize,
-                                                 label = 'sub',
-                                                 npm = 1,
-                                                 annotation = 'shift key to left',
-                                                 c = partial(self.shiftKey, "left"))
-        self.textFieldShiftKey = cmds.textField(text = 1, width = 50)
+                                                image1 = os.path.join(imagesPath, 'left.png'), 
+                                                hi = os.path.join(imagesPath, 'left_hi.png'),
+                                                width = iconSize/1.2, mw = marginSize, height = iconSize/1.2, mh = marginSize,
+                                                label = 'sub',
+                                                npm = 1,
+                                                annotation = 'shift key to left',
+                                                c = partial(self.shiftKey, "left"))
+        self.textFieldShiftKey = cmds.textField(text = 1, width = 30)
         cmds.popupMenu()
         self.menuItemShiftKeyClear = cmds.menuItem(label='reset',
                                                    c = self.shiftKeyClear)
         self.buttonToRight = cmds.iconTextButton(style = 'iconOnly', 
                                                 image1 = os.path.join(imagesPath, 'right.png'), 
                                                 hi = os.path.join(imagesPath, 'right_hi.png'),
-                                                width = iconSize, mw = marginSize, height = iconSize, mh = marginSize,
+                                                width = iconSize/1.2, mw = marginSize, height = iconSize/1.2, mh = marginSize,
                                                 label = 'add',
                                                 npm = 1,
                                                 annotation = 'shift key to right',
@@ -116,7 +119,7 @@ class UI(Preference.Preference):
         self.buttonAdd = cmds.iconTextButton(style = 'iconOnly', 
                                              image1 = os.path.join(imagesPath, 'uparrow.png'), 
                                              hi = os.path.join(imagesPath, 'uparrow_hi.png'),
-                                             width = iconSize, mw = marginSize, height = iconSize/2, mh = marginSize,
+                                             width = iconSize/1.3, mw = marginSize, height = iconSize/2, mh = marginSize,
                                              label = 'add',
                                              npm = 1,
                                              annotation = 'add this value to current channel selection',
@@ -124,7 +127,7 @@ class UI(Preference.Preference):
         self.buttonSub = cmds.iconTextButton(style = 'iconOnly', 
                                              image1 = os.path.join(imagesPath, 'dnarrow.png'), 
                                              hi = os.path.join(imagesPath, 'dnarrow_hi.png'),
-                                             width = iconSize, mw = marginSize, height = iconSize/2, mh = marginSize,
+                                             width = iconSize/1.3, mw = marginSize, height = iconSize/2, mh = marginSize,
                                              label = 'sub',
                                              npm = 1,
                                              annotation = 'substract this value from current channel selection',
