@@ -59,7 +59,7 @@ if MAYA_SCRIPTS_PATH not in sys.path:\n\
         if 'maya/scripts' in pth:\n\
             MAYA_SCRIPTS_PATH = pth\n\
 \n\
-ANIMBUDDY_INSTALL_PATH = '{0}animBuddy'.format(MAYA_SCRIPTS_PATH)\n\
+ANIMBUDDY_INSTALL_PATH = os.path.join(MAYA_SCRIPTS_PATH, 'animBuddy') \n\
 \n\
 print('MAYA_SCRIPTS_PATH: {0}'.format(MAYA_SCRIPTS_PATH))\n\
 print('PYTHON_PATH: {0}'.format(PYTHON_PATH))\n\
@@ -116,7 +116,7 @@ if not os.path.exists(PIP_PATH):\n\
 #cmd = '{0} install --upgrade --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,\n\
 #                                                                ANIMBUDDY_GUI_RELEASE_PATH).split(' ')\n\
 \n\
-if os.path.isdir(ANIMBUDDY_INSTALL_PATH):\n\
+if os.path.exists(ANIMBUDDY_INSTALL_PATH):\n\
     shutil.rmtree(ANIMBUDDY_INSTALL_PATH)\n\
 \n\
 cmd = '{0} install --ignore-installed --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,\n\

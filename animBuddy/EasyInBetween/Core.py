@@ -49,9 +49,9 @@ def runChange(selKey, ratio, frame = ''):
             nearAfterValue = cmds.keyframe(selKey, q = True, vc = True, t = (nearByKeyFrames[1], nearByKeyFrames[1]))[0]
             baseValue = nearBeforeValue
             diffValue = nearAfterValue - nearBeforeValue
-      
+
+            cmds.setAttr(selObj + '.' + selAttr, baseValue + diffValue * ratio)
             cmds.setKeyframe(selObj, attribute = selAttr, t = frame, v = baseValue + diffValue * ratio )
-       
 
 def findCloseByKeyFrame(selKey, frame):
     allKeyFrames = cmds.keyframe(selKey, q =True, tc = True)

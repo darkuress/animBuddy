@@ -58,7 +58,7 @@ def run():
             if 'maya/scripts' in pth:
                 MAYA_SCRIPTS_PATH = pth
 
-    ANIMBUDDY_INSTALL_PATH = '{0}animBuddy'.format(MAYA_SCRIPTS_PATH)
+    ANIMBUDDY_INSTALL_PATH = os.path.join(MAYA_SCRIPTS_PATH, 'animBuddy') 
 
     print('MAYA_SCRIPTS_PATH: {0}'.format(MAYA_SCRIPTS_PATH))
     print('PYTHON_PATH: {0}'.format(PYTHON_PATH))
@@ -115,7 +115,7 @@ def run():
     #cmd = '{0} install --upgrade --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,
     #                                                                ANIMBUDDY_GUI_RELEASE_PATH).split(' ')
 
-    if os.path.isdir(ANIMBUDDY_INSTALL_PATH):
+    if os.path.exists(ANIMBUDDY_INSTALL_PATH):
         shutil.rmtree(ANIMBUDDY_INSTALL_PATH)
 
     cmd = '{0} install --ignore-installed --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,
