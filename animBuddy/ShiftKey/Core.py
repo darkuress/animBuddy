@@ -25,22 +25,28 @@ def run(amount = 1):
     dataPath = os.path.join(System.dataPath(), 'shiftKey.json')
     data = {}
     if not os.path.exists(dataPath):
-        time = getTime()
+        time = getTime()[0]
+        timeLineSelection = getTime()[1]
     else:
+        timeLineSelection = getTime()[1]
         with open(dataPath) as jsonFile:
             data = json.load(jsonFile)   
         if data.has_key('allAttrs'):
             prevSel = data['allAttrs']
+            prevTimeLineSelection = int(data['timeLineSelection'])
+            time = (data['time'][0], data['time'][1])
             if not allAttrs == prevSel:
-                time = getTime()
+                time = getTime()[0]
             else:
-                time = (data['time'][0], data['time'][1])
+                if prevTimeLineSelection == 0 and timeLineSelection == 1:
+                    time = getTime()[0]                   
 
     for attr in allAttrs:  
         cmds.keyframe(attr, edit = True, time = time, relative = True, timeChange = amount)
 
     data['time'] = (time[0] + amount, time[1] + amount )
     data['allAttrs'] = allAttrs
+    data['timeLineSelection'] = timeLineSelection
     
     #- writing
     with open(dataPath, 'w') as outfile:
@@ -49,10 +55,12 @@ def run(amount = 1):
 def getTime():
     """
     """
+    timeLineSelection = 1
     time = tuple(Maya.getSelectedTimeSlider())
     if time[1] - time[0] == 1:
         time = (cmds.playbackOptions(q = True, minTime = True), cmds.playbackOptions(q = True, maxTime = True))
-    return time
+        timeLineSelection = 0
+    return time, timeLineSelection
 
 def clear():
     """
