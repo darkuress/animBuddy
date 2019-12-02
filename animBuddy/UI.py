@@ -59,6 +59,8 @@ class UI(Preference.Preference):
         imagesPath = os.path.join(filePath, 'images')
         self.SGP = SelectionGrp.Core.SelectionGrp()
 
+        self.undoChunk = False
+
         cmds.frameLayout("main",
                          labelVisible = False,
                          borderVisible = False,
@@ -391,6 +393,9 @@ class UI(Preference.Preference):
         """
         slider
         """
+        if not self.undoChunk:
+            self.undoChunk = True
+            cmds.undoInfo(openChunk = True)
         amount = cmds.floatSlider(self.floatSliderEIBAmount, q = True, v = True)      
         if cmds.menuItem(self.radioMenuItemModeObject, q = True, radioButton = True):
             EIB.changeKey(amount)
@@ -401,10 +406,12 @@ class UI(Preference.Preference):
                 EIB.changeSelectedKey(0)
             else:
                 EIB.changeSelectedKey(amount)    
-
+        
     def afterDrop(self, *args):
         """
         """
+        self.undoChunk = False
+        cmds.undoInfo(closeChunk = True)
         cmds.floatSlider(self.floatSliderEIBAmount, e = True, v = 0.5) 
 
     def easyInBetweenChange2(self, value = None, *args):
