@@ -31,6 +31,8 @@ from Decalcomanie import Core as DCN
 reload(DCN)
 from ShiftKey import Core as SKY
 reload(SKY)
+from MagicLocator import Core as MGL
+reload(MGL)
 from Install import version
 reload(version)
 
@@ -72,7 +74,7 @@ class UI(Preference.Preference):
                          collapsable = False)
 
         #----------------------------------------------------------------------------
-        cmds.rowLayout(numberOfColumns = 15,
+        cmds.rowLayout(numberOfColumns = 16,
                        adjustableColumn = 1, 
                        columnAttach = ([2, 'right', 0]))
         #- logo ---------------------------------------------------------------------
@@ -207,7 +209,7 @@ class UI(Preference.Preference):
         self.readEIBMode()
 
         #- Snap Tools   -----------------------------------------------------------------                                   
-        cmds.rowLayout(numberOfColumns = 4)
+        cmds.rowLayout(numberOfColumns = 5)
         self.buttonConIt = cmds.iconTextButton(style = 'iconOnly', 
                                                image1 = os.path.join(imagesPath, 'conit.png'), 
                                                hi = os.path.join(imagesPath, 'conit_hi.png'),
@@ -227,8 +229,29 @@ class UI(Preference.Preference):
                                                     annotation = 'Ex Footstep : snaps to the last keyframe',
                                                     c = self.exFootStep)
         
-        
-        
+        #- Magic Locator---------------------------------------------------------------
+        cmds.rowLayout(numberOfColumns = 1)
+        self.buttonMagicLocator = cmds.iconTextButton(style = 'iconOnly', 
+                                                      image1 = os.path.join(imagesPath, 'mgloc.png'), 
+                                                      hi = os.path.join(imagesPath, 'mgloc_hi.png'),
+                                                      width = iconSize*1.2, mw = marginSize, height = iconSize, mh = marginSize,
+                                                      label = 'magic locator',
+                                                      annotation = 'select object and it will craete locator per option', 
+                                                      c = self.runMagicLocator)
+        cmds.popupMenu()
+        cmds.radioMenuItemCollection()
+        self.radioMenuItemMGLModeCont = cmds.menuItem(label='Constraint to object', 
+                                                   radioButton = True,
+                                                   c = partial(self.writeMGLMode, 'constraint') )
+        self.radioMenuItemMGLModeBake = cmds.menuItem(label='Bake', 
+                                                   radioButton = False,
+                                                   c = partial(self.writeMGLMode, 'bake') )
+        self.radioMenuItemMGLModeDrive = cmds.menuItem(label='Drive Object', 
+                                                   radioButton = False,
+                                                   c = partial(self.writeMGLMode, 'driver') )
+        cmds.setParent("..") 
+        self.readMGLMode()
+
         #- Snap It
         self.buttonExFootStep = cmds.iconTextButton(style = 'iconOnly', 
                                                     image1 = os.path.join(imagesPath, 'snapit.png'), 
@@ -558,6 +581,42 @@ class UI(Preference.Preference):
         """
         self.pref = Preference.Preference()
         self.pref.acsMode = mode
+        self.pref.construct()
+        self.pref.write()
+
+    #---------------------------------------------------------------------------------
+    def runMagicLocator(self):
+        """
+        """
+        mode = 'constraint'
+        if cmds.menuItem(self.radioMenuItemMGLModeBake, q = True, radioButton = True):
+            mode = 'bake'
+        elif cmds.menuItem(self.radioMenuItemMGLModeDrive, q = True, radioButton = True):
+            mode = 'driver'
+        MGL.run(mode = mode)
+
+    def readMGLMode(self):
+        """
+        """
+        self.pref = Preference.Preference()
+        if self.pref.mglMode == 'constraint':
+            cmds.menuItem(self.radioMenuItemMGLModeCont, e = True, radioButton = True)
+            cmds.menuItem(self.radioMenuItemMGLModeBake, e = True, radioButton = False)
+            cmds.menuItem(self.radioMenuItemMGLModeDrive, e = True, radioButton = False)
+        elif self.pref.mglMode == 'bake':
+            cmds.menuItem(self.radioMenuItemMGLModeCont, e = True, radioButton = False)
+            cmds.menuItem(self.radioMenuItemMGLModeBake, e = True, radioButton = True)
+            cmds.menuItem(self.radioMenuItemMGLModeDrive, e = True, radioButton = False)
+        elif self.pref.mglMode == 'driver':
+            cmds.menuItem(self.radioMenuItemMGLModeCont, e = True, radioButton = False)
+            cmds.menuItem(self.radioMenuItemMGLModeBake, e = True, radioButton = False)
+            cmds.menuItem(self.radioMenuItemMGLModeDrive, e = True, radioButton = True)  
+
+    def writeMGLMode(self, mode, *args):
+        """
+        """
+        self.pref = Preference.Preference()
+        self.pref.mglMode = mode
         self.pref.construct()
         self.pref.write()
 

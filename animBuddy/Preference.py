@@ -75,6 +75,11 @@ class Preference(object):
         else:
             self.dcnMode = 'pose'
 
+        #- MagicLocator
+        if self.pref.has_key("mglMode"):
+            self.mglMode = self.pref["mglMode"]
+        else:
+            self.mglMode = 'pose'
     def construct(self):
         """
         construct preference as dict
@@ -90,6 +95,7 @@ class Preference(object):
         self.pref["keyFrameColor"]   = self.keyFrameColor
         self.pref['acsMode']         = self.acsMode
         self.pref['dcnMode']         = self.dcnMode
+        self.pref['mglMode']         = self.mglMode
 
     def write(self):
         """
