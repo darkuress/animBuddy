@@ -26,7 +26,7 @@ def run(mode ='bake'):
         cmds.cutKey(sel)
         cmds.parentConstraint(loc, sel, mo = False, weight = 1)
 
-    cmds.select(cl = True)
+    cmds.select(sel, r = True)
 
 def bakeLoc(loc):
     """
