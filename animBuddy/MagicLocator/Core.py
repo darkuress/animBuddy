@@ -9,9 +9,7 @@ def run(mode ='bake'):
         "need to select controller"
 
     loc = "{}_mgLoc".format(sel)
-    if cmds.objExists(loc):
-        cmds.delete("{}_mgLoc".format(sel))
-        
+  
     loc = cmds.spaceLocator(n = "{}_mgLoc".format(sel))
     pCon = cmds.parentConstraint(sel, loc, mo = False, weight = 1)
 
@@ -29,7 +27,7 @@ def run(mode ='bake'):
         cmds.parentConstraint(loc, sel, mo = False, weight = 1)
 
     cmds.select(cl = True)
-    
+
 def bakeLoc(loc):
     """
     """
