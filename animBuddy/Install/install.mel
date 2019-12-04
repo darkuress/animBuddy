@@ -16,7 +16,6 @@ import zipfile\n\
 import maya.cmds as cmds\n\
 from functools import partial\n\
 \n\
-\n\
 DEV = False\n\
 INSTALL_SSGUI_ONLY = False\n\
 \n\
@@ -106,16 +105,6 @@ if not os.path.exists(PIP_PATH):\n\
                                                                             ANIMBUDDY_API_RELEASE_PATH).split(' ')\n\
 \n\
 # Install AnimBuddy\n\
-# * By using target, pip show won't find this package anymore\n\
-\n\
-#if os.path.isdir(ANIMBUDDY_INSTALL_PATH):\n\
-#    shutil.rmtree(ANIMBUDDY_INSTALL_PATH, ignore_errors=True)\n\
-#    # todo: delete as well SyncsketchGUI-1.0.0.dist-info\n\
-#    print('Deleting previous directory for a clean install {0} '.format(ANIMBUDDY_INSTALL_PATH))\n\
-\n\
-#cmd = '{0} install --upgrade --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,\n\
-#                                                                ANIMBUDDY_GUI_RELEASE_PATH).split(' ')\n\
-\n\
 if os.path.exists(ANIMBUDDY_INSTALL_PATH):\n\
     shutil.rmtree(ANIMBUDDY_INSTALL_PATH)\n\
 \n\
@@ -123,7 +112,6 @@ cmd = '{0} install --ignore-installed --target={1} {2}'.format(PIP_PATH, MAYA_SC
                                                                 ANIMBUDDY_GUI_RELEASE_PATH).split(' ')\n\
 print('Calling shell command: {0}'.format(cmd))\n\
 print(subprocess.check_output(cmd))\n\
-\n\
 \n\
 # Remove our temporary directory\n\
 if delete_tmpdir and tmpdir:\n\
