@@ -112,7 +112,13 @@ def run():
                                                                     ANIMBUDDY_GUI_RELEASE_PATH).split(' ')
     print('Calling shell command: {0}'.format(cmd))
     print(subprocess.check_output(cmd))
-    
+
+    # Install Requests
+    cmd = '{0} install --ignore-installed --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,
+                                                                    'requests').split(' ')
+    print('Calling shell command: {0}'.format(cmd))
+    print(subprocess.check_output(cmd))
+
     # Remove our temporary directory
     if delete_tmpdir and tmpdir:
         print('cleaning up temporary files: {0}'.format(tmpdir))
