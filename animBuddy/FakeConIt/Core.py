@@ -31,8 +31,8 @@ class FakeConIt:
                 data = json.load(jsonFile)
                 source = data['source']
                 targets = data['targets']
-                print source
-                print targets
+                print(source)
+                print(targets)
                 #create fake locator to constraint
                 loc = cmds.spaceLocator(n = "fakeCon_loc")
                 cmds.xform(loc, t = data['transform'], ro = data['rotation'])
@@ -40,7 +40,7 @@ class FakeConIt:
                     try:
                         cmds.parentConstraint(loc, target, mo = True, weight = 1)
                     except:
-                        print "destination's translation or rotation might be locked"
+                        print("destination's translation or rotation might be locked")
                         return
                     
                 #get current transform
@@ -49,12 +49,17 @@ class FakeConIt:
 
                 #rotate locator
                 cmds.xform(loc, t = tr, ro = ro)
-                
+                tempXform = {}
                 for target in data['targets']:
+                    tempXform[target] = {'tr' : cmds.xform(target, q = True, t = True),
+                                         'ro' : cmds.xform(target, q = True, ro = True)}
                     pcon = cmds.listRelatives(target, type = "parentConstraint")
-                    cmds.delete(pcon)
-                
+                    cmds.delete(pcon)                
+                                
                 cmds.delete(loc)
+
+                for target in data['targets']:
+                    cmds.xform(target, t = tempXform[target]['tr'], ro = tempXform[target]['ro'])
 
                 self.write(source, targets)
 

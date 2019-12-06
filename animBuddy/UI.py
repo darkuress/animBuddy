@@ -287,6 +287,7 @@ class UI(Preference.Preference):
                                                     hi = os.path.join(imagesPath, 'snapit_hi.png'), 
                                                     width = iconSize, mw = marginSize, height = iconSize, mh = marginSize,
                                                     label = 'manager',
+                                                    annotation = 'second selected thing will be snapped to the first selected thing',
                                                     c = self.snapIt)
         cmds.separator(hr= False, height = height, width = sepWidth, style = sepStyle)
         cmds.setParent("..")
