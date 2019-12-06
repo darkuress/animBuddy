@@ -7,8 +7,6 @@ from datetime import datetime, timedelta\n\
 import glob\n\
 import urllib2\n\
 import tempfile\n\
-\n\
-import sys\n\
 import subprocess\n\
 import platform\n\
 from os.path import expanduser\n\
@@ -150,6 +148,8 @@ if append:\n\
     cmd += 'cmds.evalDeferred(\"x.loadInMaya()\")\\n'\n\
     f.write(cmd)\n\
     f.close()\n\
+\n\
+sys.path.append(REQUEST_INSTALL_PATH)\n\
 \n\
 from animBuddy import UI\n\
 reload(UI)\n\
