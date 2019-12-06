@@ -1,3 +1,2 @@
 include README.md
 global-include *.png
-glabal-include *.pyc
