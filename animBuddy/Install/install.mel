@@ -137,11 +137,12 @@ for line in f:\n\
 f.close()\n\
 \n\
 if append:\n\
+    reqStr = REQUEST_INSTALL_PATH.replace('/', '//').replace('\\\\', '\\\\\\\\')\n\
     f = open(userSetupFile, 'a')\n\
     cmd = '\\n\\n#ANIMBUDDYBOOLALA\\n'\n\
     cmd += 'import maya.cmds as cmds\\n'\n\
     cmd += 'import sys\\n'\n\
-    cmd += 'sys.path.append(\"{}\")\\n'.format(REQUEST_INSTALL_PATH)\n\
+    cmd += 'sys.path.append(\"{}\")\\n'.format(reqStr)\n\
     cmd += 'from animBuddy import UI\\n'\n\
     cmd += 'reload(UI)\\n'\n\
     cmd += 'x = UI.UI()\\n'\n\
