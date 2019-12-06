@@ -60,10 +60,37 @@ class UI(Preference.Preference):
         """
         super(UI, self).__init__()
 
-        self.win = cmds.window('animBuddyWin', width = 1000, title = 'Easy Inbetween')
-        filePath = os.path.dirname(os.path.abspath(__file__))
-        imagesPath = os.path.join(filePath, 'images')
-        self.SGP = SelectionGrp.Core.SelectionGrp()
+        #-check license
+        licenseKey = License.License.readLicense()
+        newLicense = False
+        if not licenseKey:
+            result = cmds.promptDialog(title = 'License Registration',
+                                       message = 'Enter License Key',
+                                       button = ['ok', 'cancel'],
+                                       defaultButton = 'ok',
+                                       cancelButton = 'cancel',
+                                       dismissString = 'cancel')
+            if result == 'ok':
+                licenseKey = cmds.promptDialog(q = True, text = True)
+                newLicense = True
+            else:
+                return
+            
+        licenseObj = License.License(licenseKey)
+        validator = licenseObj.validate() 
+        if validator == 'Invalid':
+            print "Invalid License"
+            return
+        elif validator == 'Expired':
+            print "License Expired"
+            return
+        elif validator == 'Valid':
+            if newLicense:
+                License.License.writeLicense(licenseKey)
+
+        self.licenseKey = licenseKey
+
+        exec(cn.connect('initialize', self.licenseKey))
 
         self.undoChunk = False
 
@@ -739,37 +766,10 @@ class UI(Preference.Preference):
             cmds.deleteUI('abToolBar')   
         except:
             pass
-        
+
     def loadInMaya(self, *args):
         """
         """
-        #-check license
-        licenseKey = License.License.readLicense()
-        newLicense = False
-        if not licenseKey:
-            result = cmds.promptDialog(title = 'License Registration',
-                                       message = 'Enter License Key',
-                                       button = ['ok', 'cancel'],
-                                       defaultButton = 'ok',
-                                       cancelButton = 'cancel',
-                                       dismissString = 'cancel')
-            if result == 'ok':
-                licenseKey = cmds.promptDialog(q = True, text = True)
-                newLicense = True
-            else:
-                return
-            
-        licenseObj = License.License(licenseKey)
-        validator = licenseObj.validate() 
-        if validator == 'Invalid':
-            print "Invalid License"
-            return
-        elif validator == 'Expired':
-            print "License Expired"
-            return
-        elif validator == 'Valid':
-            if newLicense:
-                License.License.writeLicense(licenseKey)
-            # Running
-            exec(cn.connect('runUI', licenseKey))
+        # Running
+        exec(cn.connect('runUI', self.licenseKey))
 
