@@ -59,6 +59,7 @@ if MAYA_SCRIPTS_PATH not in sys.path:\n\
             MAYA_SCRIPTS_PATH = pth\n\
 \n\
 ANIMBUDDY_INSTALL_PATH = os.path.join(MAYA_SCRIPTS_PATH, 'animBuddy') \n\
+REQUEST_INSTALL_PATH = os.path.join(MAYA_SCRIPTS_PATH, 'requests')\n\
 \n\
 print('MAYA_SCRIPTS_PATH: {0}'.format(MAYA_SCRIPTS_PATH))\n\
 print('PYTHON_PATH: {0}'.format(PYTHON_PATH))\n\
@@ -114,7 +115,7 @@ print('Calling shell command: {0}'.format(cmd))\n\
 print(subprocess.check_output(cmd))\n\
 \n\
 # Install Requests\n\
-cmd = '{0} install --ignore-installed --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,\n\
+cmd = '{0} install --ignore-installed --target={1} {2}'.format(PIP_PATH, REQUEST_INSTALL_PATH,\n\
                                                                 'requests').split(' ')\n\
 print('Calling shell command: {0}'.format(cmd))\n\
 print(subprocess.check_output(cmd))\n\
@@ -141,6 +142,8 @@ if append:\n\
     f = open(userSetupFile, 'a')\n\
     cmd = '\\n\\n#ANIMBUDDYBOOLALA\\n'\n\
     cmd += 'import maya.cmds as cmds\\n'\n\
+    cmd += 'import sys\\n'\n\
+    cmd += 'sys.path.append(\"{}\")\\n'.format(REQUEST_INSTALL_PATH)\n\
     cmd += 'from animBuddy import UI\\n'\n\
     cmd += 'reload(UI)\\n'\n\
     cmd += 'x = UI.UI()\\n'\n\

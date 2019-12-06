@@ -59,6 +59,7 @@ def run():
                 MAYA_SCRIPTS_PATH = pth
 
     ANIMBUDDY_INSTALL_PATH = os.path.join(MAYA_SCRIPTS_PATH, 'animBuddy') 
+    REQUEST_INSTALL_PATH = os.path.join(MAYA_SCRIPTS_PATH, 'requests')
 
     print('MAYA_SCRIPTS_PATH: {0}'.format(MAYA_SCRIPTS_PATH))
     print('PYTHON_PATH: {0}'.format(PYTHON_PATH))
@@ -114,7 +115,7 @@ def run():
     print(subprocess.check_output(cmd))
 
     # Install Requests
-    cmd = '{0} install --ignore-installed --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,
+    cmd = '{0} install --ignore-installed --target={1} {2}'.format(PIP_PATH, REQUEST_INSTALL_PATH,
                                                                     'requests').split(' ')
     print('Calling shell command: {0}'.format(cmd))
     print(subprocess.check_output(cmd))
@@ -141,6 +142,8 @@ def run():
         f = open(userSetupFile, 'a')
         cmd = '\\n\\n#ANIMBUDDYBOOLALA\\n'
         cmd += 'import maya.cmds as cmds\\n'
+        cmd += 'import sys\\n'
+        cmd += 'sys.path.append(\"{}\")\\n'.format(REQUEST_INSTALL_PATH)
         cmd += 'from animBuddy import UI\\n'
         cmd += 'reload(UI)\\n'
         cmd += 'x = UI.UI()\\n'
