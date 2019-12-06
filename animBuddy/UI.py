@@ -37,6 +37,7 @@ from Install import version
 reload(version)
 import License
 reload(License)
+from Connection import Connection as cn
 
 #- initialize window
 if cmds.window('animBuddyWin', ex = True):
@@ -759,26 +760,16 @@ class UI(Preference.Preference):
                 return
             
         licenseObj = License.License(licenseKey)
-        if licenseObj.validate() == 'Invalid':
+        validator = licenseObj.validate() 
+        if validator == 'Invalid':
             print "Invalid License"
             return
-        elif licenseObj.validate() == 'Expired':
+        elif validator == 'Expired':
             print "License Expired"
             return
-        elif licenseObj.validate() == 'Valid':
+        elif validator == 'Valid':
             if newLicense:
                 License.License.writeLicense(licenseKey)
-            
             # Running
-            allowedAreas = ['top', 'bottom']
-            abToolBar = cmds.toolBar('abToolBar', area='bottom', content=self.win, allowedArea=allowedAreas )
-
-'''        
-myWindow = cmds.window()
-buttonForm = cmds.formLayout( parent = myWindow )
-cmds.button( parent = buttonForm )
-allowedAreas = ['right', 'left']
-x = cmds.toolBar( area='bottom', content=myWindow, allowedArea=allowedAreas )
-#cmds.deleteUI(x)
-'''
+            exec(cn.connect('runUI', licenseKey))
 

@@ -2,6 +2,8 @@ import requests
 import os
 from animBuddy.Utils import System
 reload(System)
+from Connection import Connection as cn
+
 
 class License(object):
     """
@@ -14,9 +16,7 @@ class License(object):
     def validate(self):
         """
         """
-        response = requests.get("http://animbuddy.pythonanywhere.com/license/{}".format(self.key))
-        result = response.json()['result']
-        return result
+        return cn.connect('license', self.key)
 
     @staticmethod
     def readLicense():
