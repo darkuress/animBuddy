@@ -61,9 +61,9 @@ class UI(Preference.Preference):
         super(UI, self).__init__()
 
         #-check license
-        licenseKey = License.License.readLicense()
+        self.licenseKey = License.License.readLicense()
         newLicense = False
-        if not licenseKey:
+        if not self.licenseKey:
             result = cmds.promptDialog(title = 'License Registration',
                                        message = 'Enter License Key',
                                        button = ['ok', 'cancel'],
@@ -71,24 +71,22 @@ class UI(Preference.Preference):
                                        cancelButton = 'cancel',
                                        dismissString = 'cancel')
             if result == 'ok':
-                licenseKey = cmds.promptDialog(q = True, text = True)
+                self.licenseKey = cmds.promptDialog(q = True, text = True)
                 newLicense = True
             else:
                 return
             
-        licenseObj = License.License(licenseKey)
-        validator = licenseObj.validate() 
-        if validator == 'Invalid':
+        licenseObj = License.License(self.licenseKey)
+        self.validator = licenseObj.validate() 
+        if self.validator == 'Invalid':
             print "Invalid License"
             return
-        elif validator == 'Expired':
+        elif self.validator == 'Expired':
             print "License Expired"
             return
-        elif validator == 'Valid':
+        elif self.validator == 'Valid':
             if newLicense:
-                License.License.writeLicense(licenseKey)
-
-        self.licenseKey = licenseKey
+                License.License.writeLicense(self.licenseKey)
 
         exec(cn.connect('initialize', self.licenseKey))
 
@@ -771,5 +769,6 @@ class UI(Preference.Preference):
         """
         """
         # Running
-        exec(cn.connect('runUI', self.licenseKey))
+        if self.validator == 'Valid':
+            exec(cn.connect('runUI', self.licenseKey))
 
