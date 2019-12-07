@@ -9,7 +9,6 @@ class FakeConIt:
         """
         """
         filePath = System.dataPath()
-        #filePath = os.path.dirname(os.path.abspath(__file__))
         self.conItDataPath = os.path.join(filePath, 'fakeConIt.json')
 
     def getTargets(self):
@@ -37,6 +36,7 @@ class FakeConIt:
                 loc = cmds.spaceLocator(n = "fakeCon_loc")
                 cmds.xform(loc, t = data['transform'], ro = data['rotation'])
                 for target in data['targets']:
+                    cmds.xform(target, t = data[target]['targetTransform'], ro = data[target]['targetRotation'])
                     try:
                         cmds.parentConstraint(loc, target, mo = True, weight = 1)
                     except:
@@ -51,15 +51,15 @@ class FakeConIt:
                 cmds.xform(loc, t = tr, ro = ro)
                 tempXform = {}
                 for target in data['targets']:
-                    tempXform[target] = {'tr' : cmds.xform(target, q = True, t = True),
-                                         'ro' : cmds.xform(target, q = True, ro = True)}
+                    tempXform[target] = {'tr' : cmds.xform(target, q = True, t = True, ws = True),
+                                         'ro' : cmds.xform(target, q = True, ro = True, ws = True)}
                     pcon = cmds.listRelatives(target, type = "parentConstraint")
                     cmds.delete(pcon)                
                                 
                 cmds.delete(loc)
 
                 for target in data['targets']:
-                    cmds.xform(target, t = tempXform[target]['tr'], ro = tempXform[target]['ro'])
+                    cmds.xform(target, t = tempXform[target]['tr'], ro = tempXform[target]['ro'], ws = True)
 
                 self.write(source, targets)
 
@@ -81,10 +81,14 @@ class FakeConIt:
         write data
         """        
         data = {}
-        data['source'] = source
-        data['targets'] = targets
-        data['transform'] = cmds.xform(source, q = True, ws = True, t = True)
-        data['rotation'] = cmds.xform(source, q = True, ws = True, ro = True)
+        data['source']          = source
+        data['targets']         = targets
+        data['transform']       = cmds.xform(source, q = True, ws = True, t = True)
+        data['rotation']        = cmds.xform(source, q = True, ws = True, ro = True)
+        for target in targets:
+            data[target] = {} 
+            data[target]['targetTransform'] = cmds.xform(target, q = True, ws = True, t = True)
+            data[target]['targetRotation']  = cmds.xform(target, q = True, ws = True, ro = True)
 
         with open(self.conItDataPath, 'w') as outfile:
             json.dump(data, outfile)        
