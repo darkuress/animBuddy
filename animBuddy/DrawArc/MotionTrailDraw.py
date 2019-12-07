@@ -1,6 +1,7 @@
 import sys
 import maya.api.OpenMaya as OpenMaya
 import maya.api.OpenMayaUI as OpenMayaUI
+import maya.api.OpenMayaAnim as OpenMayaAnim
 import maya.api.OpenMayaRender as OpenMayaRender
 
 import MotionTrailUtil as util
@@ -120,8 +121,27 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
             keyFrames  = [int(x) for x in keyFrames]
         
         #for i in range(data.startFrame, data.endFrame + 1):
-        for i in range(int(cmds.currentTime(q = True) - timeBuffer), int(cmds.currentTime(q = True) + timeBuffer + 1)):
-            point = cmds.getAttr("{}.wm".format(data.name), time = i)
+        currentTime = OpenMayaAnim.MAnimControl.currentTime()
+        for i in range(int(currentTime.value - timeBuffer), int(currentTime.value + timeBuffer + 1)):
+            #point = cmds.getAttr("{}.wm".format(data.name), time = i)
+            selection = OpenMaya.MSelectionList()
+            selection.add(data.name)
+            selectedNode = selection.getDependNode(0)
+            fnThisNode = OpenMaya.MFnDependencyNode(selectedNode)
+            worldMatrixAttr = fnThisNode.attribute("worldMatrix")
+            pointPlug = OpenMaya.MPlug(selectedNode, worldMatrixAttr)
+            pointPlug = pointPlug.elementByLogicalIndex(0)
+            
+            #Get matrix plug as MObject so we can get it's data.
+            timeContext = OpenMaya.MDGContext(OpenMaya.MTime(i))
+            pointObject = pointPlug.asMObject(timeContext)
+            
+            #Finally get the data
+            worldMatrixData = OpenMaya.MFnMatrixData(pointObject)
+            pointMMatrix = worldMatrixData.matrix()
+            point = []
+            for j in range(16):
+                point.append(pointMMatrix[j])
             relativePoint = util.makeCameraRelative(point, util.getCam(), i)
                         
             if i in keyFrames:
