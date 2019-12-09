@@ -1,5 +1,7 @@
 import re
+import math
 import maya.cmds as cmds
+from animBuddy.Utils import Maya
 
 def prefix(sel):
     prefix = ()
@@ -41,9 +43,6 @@ def run(mode = 'pose'):
     #- copy part
     sels = cmds.ls(sl = True)
     data = {}
-    revAttr = ['translateX', 'rotateY', 'rotateZ']
-    #- no change value
-    arms = ['clavicle', 'scapula', 'shoulder', 'elbow', 'wrist']
     if mode == 'pose':
         for sel in sels:
             attrs = cmds.listAttr(sel, keyable = True)
@@ -52,17 +51,8 @@ def run(mode = 'pose'):
                 selCut = sel[len(result.group(0)):]
                 selRep = prefix(sel)[1] + selCut
                 data[selRep] = {}
-
-                #- so many cases
-                if any(word in sel.lower() for word in arms):
-                    for attr in attrs:
-                        data[selRep][attr] = cmds.getAttr(sel + '.' + attr)
-                else:
-                    for attr in attrs:
-                        if attr in revAttr: 
-                            data[selRep][attr] = cmds.getAttr(sel + '.' + attr) * -1
-                        else:
-                            data[selRep][attr] = cmds.getAttr(sel + '.' + attr)
+                for attr in attrs:
+                    data[selRep][attr] = cmds.getAttr(sel + '.' + attr)
             else:
                 data[sel] = {}
                 revAttr = ['rotateY']
@@ -88,20 +78,9 @@ def run(mode = 'pose'):
                 selCut = sel[len(result.group(0)):]
                 selRep = prefix(sel)[1] + selCut
                 data[selRep] = {}
-
-                #- so many cases
-                if any(word in sel.lower() for word in arms):
-                    for attr in attrs:
+                for attr in attrs:
                         data[selRep][attr] = {'tc' : cmds.keyframe(sel + '.' + attr, q = True, tc = True), 
                                               'vc' : cmds.keyframe(sel + '.' + attr, q = True, vc = True)}
-                else:
-                    for attr in attrs:
-                        if attr in revAttr: 
-                            data[selRep][attr] = {'tc' : cmds.keyframe(sel + '.' + attr, q = True, tc = True), 
-                                                  'vc' : [-1 * x for x in cmds.keyframe(sel + '.' + attr, q = True, vc = True)]}
-                        else:
-                            data[selRep][attr] = {'tc' : cmds.keyframe(sel + '.' + attr, q = True, tc = True), 
-                                                  'vc' : cmds.keyframe(sel + '.' + attr, q = True, vc = True)}
             else:
                 data[sel] = {}
                 revAttr = ['rotateY']

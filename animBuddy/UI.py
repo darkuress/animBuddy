@@ -303,10 +303,10 @@ class UI(Preference.Preference):
                                                       c = self.runDecalComanie)
         cmds.popupMenu()
         cmds.radioMenuItemCollection()
-        self.radioMenuItemDCNModePose = cmds.menuItem(label='Copy Pose of Current Frame', 
+        self.radioMenuItemDCNModePose = cmds.menuItem(label='Mirror Pose of Current Frame', 
                                                    radioButton = True,
                                                    c = partial(self.writeDCNMode, 'pose') )
-        self.radioMenuItemDCNModeAnim = cmds.menuItem(label='Copy Animation', 
+        self.radioMenuItemDCNModeAnim = cmds.menuItem(label='Mirror Animation', 
                                                    radioButton = False,
                                                    c = partial(self.writeDCNMode, 'anim') )
         cmds.setParent("..") 
