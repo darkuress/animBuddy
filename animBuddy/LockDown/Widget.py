@@ -1,6 +1,8 @@
 import os
 import maya.cmds as cmds
 from functools import partial
+from animBuddy import Preference
+reload(Preference)
 import Core
 reload(Core)
 
@@ -8,8 +10,10 @@ reload(Core)
 class UIContainer():
     """
     """
-    menuItemShiftKeyClear = None
-    textFieldLockDown = None
+    menuItemLDNTranslation = None
+    menuItemLDNRotation    = None
+    menuItemLDNBoth        = None
+    textFieldLockDown   = None
 
 def build(parent,
           imagesPath,
@@ -25,9 +29,16 @@ def build(parent,
     cmds.columnLayout()
     UIContainer.textFieldLockDown = cmds.textField(text=3, width=42)
     cmds.popupMenu()
-    UIContainer.menuItemTranslation = cmds.menuItem(label='translate only', radioButton=True)
-    UIContainer.menuItemRotation    = cmds.menuItem(label='rotation only', radioButton=False)
-    UIContainer.menuItemBoth        = cmds.menuItem(label='both', radioButton=False)
+    cmds.radioMenuItemCollection()
+    UIContainer.menuItemLDNTranslation = cmds.menuItem(label='translate only', 
+                                                    radioButton=True,
+                                                    c=partial(writeLDNMode, 'translate'))
+    UIContainer.menuItemLDNRotation    = cmds.menuItem(label='rotation only', 
+                                                    radioButton=False,
+                                                    c=partial(writeLDNMode, 'rotate'))
+    UIContainer.menuItemLDNBoth        = cmds.menuItem(label='both', 
+                                                    radioButton=False,
+                                                    c=partial(writeLDNMode, 'both'))
     cmds.menuItem(divider=True)
     UIContainer.menuItemReset       = cmds.menuItem(label='clear key', c=clearKey)
     cmds.rowLayout(numberOfColumns=2)
@@ -54,6 +65,7 @@ def build(parent,
     cmds.setParent("..")
     cmds.setParent("..")
     cmds.setParent("..")
+    readLDNMode()
 
 def run(mode, *args):
     """
@@ -66,10 +78,10 @@ def run(mode, *args):
 
     if mode == 'reverse':
         doReverse = True   
-    if cmds.menuItem(UIContainer.menuItemTranslation, q=True, radioButton=True):
+    if cmds.menuItem(UIContainer.menuItemLDNTranslation, q=True, radioButton=True):
         doTranslate = True
         doRotate = False
-    elif cmds.menuItem(UIContainer.menuItemRotation, q=True, radioButton=True):
+    elif cmds.menuItem(UIContainer.menuItemLDNRotation, q=True, radioButton=True):
         doTranslate = False
         doRotate = True
     
@@ -82,3 +94,38 @@ def clearKey(*args):
     """
     """
     Core.clearKey()
+
+def readLDNMode():
+    """
+    """
+    UIContainer.pref = Preference.Preference()
+    if UIContainer.pref.ldnMode == 'translate':
+        cmds.menuItem(UIContainer.menuItemLDNTranslation,
+                      e=True, radioButton=True)
+        cmds.menuItem(UIContainer.menuItemLDNRotation,
+                      e=True, radioButton=False)
+        cmds.menuItem(UIContainer.menuItemLDNBoth,
+                      e=True, radioButton=False)
+    elif UIContainer.pref.ldnMode == 'rotate':
+        cmds.menuItem(UIContainer.menuItemLDNTranslation,
+                      e=True, radioButton=False)
+        cmds.menuItem(UIContainer.menuItemLDNRotation,
+                      e=True, radioButton=True)
+        cmds.menuItem(UIContainer.menuItemLDNBoth,
+                      e=True, radioButton=False)
+    elif UIContainer.pref.ldnMode == 'both':
+        cmds.menuItem(UIContainer.menuItemLDNTranslation,
+                      e=True, radioButton=False)
+        cmds.menuItem(UIContainer.menuItemLDNRotation,
+                      e=True, radioButton=False)
+        cmds.menuItem(UIContainer.menuItemLDNBoth,
+                      e=True, radioButton=True)
+
+
+def writeLDNMode(mode, *args):
+    """
+    """
+    UIContainer.pref = Preference.Preference()
+    UIContainer.pref.ldnMode = mode
+    UIContainer.pref.construct()
+    UIContainer.pref.write()

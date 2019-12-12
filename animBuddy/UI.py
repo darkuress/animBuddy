@@ -49,10 +49,10 @@ class UI(Preference.Preference):
         licenseObj = License.License(self.licenseKey)
         self.validator = licenseObj.validate() 
         if self.validator == 'Invalid':
-            print "Invalid License"
+            print("Invalid License")
             return
         elif self.validator == 'Expired':
-            print "License Expired"
+            print("License Expired")
             return
         elif self.validator == 'Valid':
             if newLicense:
@@ -77,7 +77,7 @@ class UI(Preference.Preference):
         # adding widgets
         widgets = ['ShiftKey', 'MicroControl','separator', 
                    'EasyInBetween', 'separator',
-                   'FakeConIt', 'ExFootStep', 'MagicLocator', 'SnapIt', 'LockDown', 'vertical',
+                   'MagicLocator', 'FakeConIt', 'ExFootStep', 'SnapIt', 'LockDown', 'vertical',
                    'Decalcomanie', 'ResetIt', 'DrawArc', 'vertical',
                    'SelectionGrp', 'AnimCopySession', 'vertical',
                    'ViewportRefresh', 'bhPlayblast']

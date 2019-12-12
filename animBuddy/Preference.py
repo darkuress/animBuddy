@@ -80,6 +80,13 @@ class Preference(object):
             self.mglMode = self.pref["mglMode"]
         else:
             self.mglMode = 'pose'
+
+        #-Lockdown
+        if self.pref.has_key("ldnMode"):
+            self.ldnMode = self.pref["ldnMode"]
+        else:
+            self.ldnMode = 'translate'
+
     def construct(self):
         """
         construct preference as dict
@@ -96,6 +103,7 @@ class Preference(object):
         self.pref['acsMode']         = self.acsMode
         self.pref['dcnMode']         = self.dcnMode
         self.pref['mglMode']         = self.mglMode
+        self.pref['ldnMode']         = self.ldnMode
 
     def write(self):
         """
