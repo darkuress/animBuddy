@@ -27,7 +27,7 @@ def build(parent,
     """
     cmds.rowLayout(numberOfColumns=1, parent = parent)
     cmds.columnLayout()
-    UIContainer.textFieldLockDown = cmds.textField(text=3, width=42)
+    UIContainer.textFieldLockDown = cmds.textField(text=3, width=43)
     cmds.popupMenu()
     cmds.radioMenuItemCollection()
     UIContainer.menuItemLDNTranslation = cmds.menuItem(label='translate only', 
@@ -44,9 +44,9 @@ def build(parent,
     cmds.rowLayout(numberOfColumns=2)
     cmds.iconTextButton(style='iconOnly',
                         image1=os.path.join(
-                            imagesPath, 'left.png'),
+                            imagesPath, 'lockdown_reverse.png'),
                         hi=os.path.join(
-                            imagesPath, 'left_hi.png'),
+                            imagesPath, 'lockdown_reverse_hi.png'),
                         width=iconSize/1.5, mw=marginSize, height=iconSize/1.5, mh=marginSize,
                         label='lock reverse',
                         npm=1,
@@ -54,9 +54,9 @@ def build(parent,
                         c=partial(run, 'reverse'))
     cmds.iconTextButton(style='iconOnly',
                         image1=os.path.join(
-                            imagesPath, 'right.png'),
+                            imagesPath, 'lockdown_forward.png'),
                         hi=os.path.join(
-                            imagesPath, 'right_hi.png'),
+                            imagesPath, 'lockdown_forward_hi.png'),
                         width=iconSize/1.5, mw=marginSize, height=iconSize/1.5, mh=marginSize,
                         label='lock forward',
                         npm=1,
