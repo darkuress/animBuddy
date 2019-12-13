@@ -13,6 +13,8 @@ from animBuddy.Install import version
 reload(version)
 from animBuddy.Install import install
 reload(install)
+from animBuddy import License
+reload(License)
 
 def build(parent, 
           imagesPath, 
@@ -30,9 +32,11 @@ def build(parent,
     cmds.popupMenu()
     cmds.menuItem(label = "About", c = about)
     cmds.menuItem(label = "Check for update", c = versionCheck)
-    cmds.menuItem(label = "--------------")
+    cmds.menuItem(divider = True)
     cmds.menuItem(label = "Preference", c = prefUI)
-    cmds.menuItem(label = "--------------")
+    cmds.menuItem(divider = True)
+    cmds.menuItem(label = "Change License Key", c = changeLicence)
+    cmds.menuItem(divider = True)
     cmds.menuItem(label = "Close", command = closeUI)
     
     cmds.separator(hr= False, height = height, width = 10, style = "none")
@@ -98,3 +102,29 @@ def closeUI(*args):
         cmds.deleteUI('abToolBar')   
     except:
         pass
+
+def changeLicence(*args):
+    """
+    """
+    licenseKey = ""
+    result = cmds.promptDialog(title = 'License Registration',
+                                message = 'Enter License Key',
+                                button = ['ok', 'cancel'],
+                                defaultButton = 'ok',
+                                cancelButton = 'cancel',
+                                dismissString = 'cancel')
+    if result == 'ok':
+        licenseKey = cmds.promptDialog(q = True, text = True)
+    else:
+        return
+
+    licenseObj = License.License(licenseKey)
+    validator = licenseObj.validate() 
+    if validator == 'Invalid':
+        print("Invalid License")
+        return
+    elif validator == 'Expired':
+        print("License Expired")
+        return
+    elif validator == 'Valid':
+        License.License.writeLicense(licenseKey)

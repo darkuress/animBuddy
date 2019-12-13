@@ -32,34 +32,15 @@ class UI(Preference.Preference):
 
         #-check license
         self.licenseKey = License.License.readLicense()
-        newLicense = False
+        self.validator = ''
+        
         if not self.licenseKey:
-            result = cmds.promptDialog(title = 'License Registration',
-                                       message = 'Enter License Key',
-                                       button = ['ok', 'cancel'],
-                                       defaultButton = 'ok',
-                                       cancelButton = 'cancel',
-                                       dismissString = 'cancel')
-            if result == 'ok':
-                self.licenseKey = cmds.promptDialog(q = True, text = True)
-                newLicense = True
-            else:
-                return
-            
-        licenseObj = License.License(self.licenseKey)
-        self.validator = licenseObj.validate() 
-        if self.validator == 'Invalid':
-            print("Invalid License")
+            self.licenseValidation()
+
+        if not self.licenseKey:
             return
-        elif self.validator == 'Expired':
-            print("License Expired")
-            return
-        elif self.validator == 'Valid':
-            if newLicense:
-                License.License.writeLicense(self.licenseKey)
 
         exec(cn.connect('initialize', self.licenseKey))
-
         self.undoChunk = False
 
         cmds.frameLayout("main",
@@ -91,7 +72,6 @@ class UI(Preference.Preference):
 
         self.sepStyle = 'in'
         self.height = 20
-        iconSize = self.iconSize
         self.marginSize = 5
         self.sepWidth = 30
         
@@ -118,10 +98,45 @@ class UI(Preference.Preference):
                          height = self.height, 
                          marginSize = self.marginSize)
 
+    def licenseKeyDialog(self):
+        """
+        """
+        result = cmds.promptDialog(title = 'License Registration',
+                                    message = 'Enter License Key',
+                                    button = ['ok', 'cancel'],
+                                    defaultButton = 'ok',
+                                    cancelButton = 'cancel',
+                                    dismissString = 'cancel')
+        if result == 'ok':
+            print cmds.promptDialog(q = True, text = True) 
+            if cmds.promptDialog(q = True, text = True):
+                return cmds.promptDialog(q = True, text = True)
+            else:
+                return "dummyString"
+        else:
+            return False       
+
+    def licenseValidation(self):
+        """
+        """
+        self.licenseKey = self.licenseKeyDialog()
+
+        if self.licenseKey:
+            licenseObj = License.License(self.licenseKey)
+            self.validator = licenseObj.validate() 
+
+            if self.validator == 'Invalid':
+                print("Invalid License")
+                self.licenseValidation()
+            elif self.validator == 'Expired':
+                print("License Expired")
+                self.licenseValidation()
+            elif self.validator == 'Valid':
+                License.License.writeLicense(self.licenseKey)
+
     def loadInMaya(self, *args):
         """
         """
         # Running
-        if self.validator == 'Valid':
-            exec(cn.connect('runUI', self.licenseKey))
+        exec(cn.connect('runUI', self.licenseKey))
 
