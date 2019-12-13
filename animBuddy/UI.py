@@ -80,9 +80,10 @@ class UI(Preference.Preference):
                    'MagicLocator', 'FakeConIt', 'ExFootStep', 'SnapIt', 'LockDown', 'vertical',
                    'Decalcomanie', 'ResetIt', 'DrawArc', 'vertical',
                    'SelectionGrp', 'AnimCopySession', 'vertical',
-                   'ViewportRefresh', 'bhPlayblast']
+                   'ViewportRefresh', 'bhPlayblast', 'vertical',
+                   'Misc']
         #-mainLayout------------------------------------------------------------------
-        self.mainLayout = cmds.rowLayout(numberOfColumns = len(widgets) + 3,
+        self.mainLayout = cmds.rowLayout(numberOfColumns = len(widgets) + 2,
                                          adjustableColumn = 1, 
                                          columnAttach = ([2, 'right', 0]))
         #- logo ---------------------------------------------------------------------
@@ -100,86 +101,6 @@ class UI(Preference.Preference):
         # ading widgets        
         for widget in widgets:
             self.addWidget(widget)   
-
-        # adding pref button
-        cmds.rowLayout(numberOfColumns = 3)
-        cmds.separator(hr= False, height = self.height, width = self.sepWidth, style = self.sepStyle)
-        self.buttonPref = cmds.iconTextButton(style = 'iconOnly', 
-                                              image1 = os.path.join(imagesPath, 'preference.png'), 
-                                              hi = os.path.join(imagesPath, 'preference_hi.png'),
-                                              width = iconSize/1.7, mw = self.marginSize, height = self.iconSize, mh = self.marginSize,
-                                              label = 'preference',
-                                              annotation = 'Preference')
-        cmds.popupMenu()
-        cmds.menuItem(label = "About", c = self.about)
-        cmds.menuItem(label = "Check for update", c = self.versionCheck)
-        cmds.menuItem(label = "--------------")
-        cmds.menuItem(label = "Preference", c = self.prefUI)
-        cmds.menuItem(label = "--------------")
-        cmds.menuItem(label = "Close", command = self.closeUI)
-        
-        cmds.separator(hr= False, height = self.height, width = 10, style = "none")
-        cmds.setParent("..") 
-   
-    def prefUI(self, *args):
-        """
-        """
-        import PreferenceUI
-        reload(PreferenceUI)
-        try:
-            self.ui.deleteLater()
-        except:
-            pass
-        
-        self.ui = PreferenceUI.PreferenceUI()
-        
-        try:
-            self.ui.show()
-        except:
-            self.ui.deleteLater()
-
-    def versionCheck(self, *args):
-        """
-        check version and update
-        """
-        if version.getVersionDifference():
-            question = cmds.confirmDialog(title ='Update', 
-                                          message ='New Version is Available\nDo you want to install it?', 
-                                          button = ['Yes', 'No'], 
-                                          defaultButton='Yes',
-                                          cancelButton='No', 
-                                          dismissString='No' )
-            if question == 'Yes':
-                from Install import install
-                reload(install)
-                install.run()
-        else:
-            cmds.confirmDialog(title ='Update', 
-                               message ='No update is available', 
-                               button = ['Ok'], 
-                               defaultButton='Ok', 
-                               dismissString='Ok' )
-   
-    def about(self, *args):
-        """
-        """
-        ver = version.getLatestSetupPyFileFromLocal()
-        cmds.confirmDialog(title ='Anim Buddy', 
-                           message ='Version %s' %ver, 
-                           button = ['Ok'], 
-                           defaultButton='Ok', 
-                           dismissString='Ok' )
-
-    def closeUI(self, *args):
-        """
-        close the toolbar
-        """
-        if cmds.window('animBuddyWin', ex = True):
-            cmds.deleteUI('animBuddyWin')    
-        try:
-            cmds.deleteUI('abToolBar')   
-        except:
-            pass
 
     def addWidget(self, module):
         """

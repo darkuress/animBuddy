@@ -24,16 +24,14 @@ def build(parent,
     cmds.rowLayout(numberOfColumns=3, parent=parent)
     UIContainer.textFieldMidroControl = cmds.textField(text=0.01, width=50)
     cmds.columnLayout()
-    buttonAdd = cmds.iconTextButton(style='iconOnly',
-                                    image1=os.path.join(
-                                        imagesPath, 'uparrow.png'),
-                                    hi=os.path.join(
-                                        imagesPath, 'uparrow_hi.png'),
-                                    width=iconSize/1.3, mw=marginSize, height=iconSize/2, mh=marginSize,
-                                    label='add',
-                                    npm=1,
-                                    annotation='add this value to current channel selection',
-                                    c=partial(microControlRun, "add"))
+    cmds.iconTextButton(style='iconOnly',
+                        image1=os.path.join(imagesPath, 'uparrow.png'),
+                        hi=os.path.join(imagesPath, 'uparrow_hi.png'),
+                        width=iconSize/1.3, mw=marginSize, height=iconSize/2, mh=marginSize,
+                        label='add',
+                        npm=1,
+                        annotation='add this value to current channel selection',
+                        c=partial(microControlRun, "add"))
     cmds.iconTextButton(style='iconOnly',
                         image1=os.path.join(imagesPath, 'dnarrow.png'),
                         hi=os.path.join(imagesPath, 'dnarrow_hi.png'),

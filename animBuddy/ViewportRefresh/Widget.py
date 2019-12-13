@@ -34,10 +34,11 @@ def build(parent,
 def freeze(*args):
     """
     """
-    print '......', UIContainer.frozen
     if UIContainer.frozen == True:
         cmds.refresh(su=False)
+        print('Viewport is unfrozen')
         UIContainer.frozen = False
     else:
         cmds.refresh(su=True)
+        print('Viewport is frozen')
         UIContainer.frozen = True

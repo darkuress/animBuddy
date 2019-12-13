@@ -18,8 +18,9 @@ class PreferenceUI(QDialog):
  
     def __init__(self, parent=None):
         """Constructor"""
-        super(PreferenceUI, self).__init__(parent)
+        super(PreferenceUI, self).__init__(parent=parent)
 
+        self.windowName = "preference_window"
         self.pref = Preference.Preference()
 
         mainLayout = QVBoxLayout()

@@ -63,7 +63,6 @@ def writeDCNMode(mode, *args):
     """
     """
     UIContainer.pref = Preference.Preference()
-    UIContainer.pref = Preference.Preference()
     UIContainer.pref.dcnMode = mode
     UIContainer.pref.construct()
     UIContainer.pref.write()
