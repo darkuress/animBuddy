@@ -25,9 +25,18 @@ def build(parent,
     @param parent : parent layout in maya
     @imagesPath : str path
     """
-    cmds.rowLayout(numberOfColumns=1, parent = parent)
-    cmds.columnLayout()
-    UIContainer.textFieldLockDown = cmds.textField(text=3, width=43)
+    cmds.rowLayout(numberOfColumns=3, parent = parent)
+    cmds.iconTextButton(style='iconOnly',
+                        image1=os.path.join(
+                            imagesPath, 'lockdown_reverse.png'),
+                        hi=os.path.join(
+                            imagesPath, 'lockdown_reverse_hi.png'),
+                        width=iconSize/1.5, mw=marginSize, height=iconSize, mh=marginSize,
+                        label='lock reverse',
+                        npm=1,
+                        annotation='lock reverse',
+                        c=partial(run, 'reverse'))
+    UIContainer.textFieldLockDown = cmds.textField(text=3, width=20)
     cmds.popupMenu()
     cmds.radioMenuItemCollection()
     UIContainer.menuItemLDNTranslation = cmds.menuItem(label='translate only', 
@@ -41,29 +50,16 @@ def build(parent,
                                                     c=partial(writeLDNMode, 'both'))
     cmds.menuItem(divider=True)
     UIContainer.menuItemReset       = cmds.menuItem(label='clear key', c=clearKey)
-    cmds.rowLayout(numberOfColumns=2)
-    cmds.iconTextButton(style='iconOnly',
-                        image1=os.path.join(
-                            imagesPath, 'lockdown_reverse.png'),
-                        hi=os.path.join(
-                            imagesPath, 'lockdown_reverse_hi.png'),
-                        width=iconSize/1.5, mw=marginSize, height=iconSize/1.5, mh=marginSize,
-                        label='lock reverse',
-                        npm=1,
-                        annotation='lock reverse',
-                        c=partial(run, 'reverse'))
     cmds.iconTextButton(style='iconOnly',
                         image1=os.path.join(
                             imagesPath, 'lockdown_forward.png'),
                         hi=os.path.join(
                             imagesPath, 'lockdown_forward_hi.png'),
-                        width=iconSize/1.5, mw=marginSize, height=iconSize/1.5, mh=marginSize,
+                        width=iconSize/1.5, mw=marginSize, height=iconSize, mh=marginSize,
                         label='lock forward',
                         npm=1,
                         annotation='lock forward',
                         c=partial(run, 'forward'))
-    cmds.setParent("..")
-    cmds.setParent("..")
     cmds.setParent("..")
     readLDNMode()
 
