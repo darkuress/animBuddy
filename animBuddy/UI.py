@@ -19,10 +19,6 @@ except:
     
 class UI(Preference.Preference):
     """
-    Suffix
-    EasyInBetween : EIB
-    ExFootStep    : EFS
-    SelectionGrp  : SGP
     """
     def __init__(self):
         """
