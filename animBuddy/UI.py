@@ -50,7 +50,6 @@ class UI(Preference.Preference):
                          collapsable = False)
 
         self.imagesPath = imagesPath
-
         # adding widgets
         widgets = ['ShiftKey', 'MicroControl','separator', 
                    'EasyInBetween', 'separator',
@@ -104,7 +103,6 @@ class UI(Preference.Preference):
                                     cancelButton = 'cancel',
                                     dismissString = 'cancel')
         if result == 'ok':
-            print cmds.promptDialog(q = True, text = True) 
             if cmds.promptDialog(q = True, text = True):
                 return cmds.promptDialog(q = True, text = True)
             else:
