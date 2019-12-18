@@ -157,4 +157,4 @@ reload(UI)\n\
 x = UI.UI()\n\
 x.loadInMaya()\n\
 \n\
-");;
+");
