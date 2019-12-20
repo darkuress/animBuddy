@@ -63,11 +63,11 @@ class UI(Preference.Preference):
                                          adjustableColumn = 1, 
                                          columnAttach = ([2, 'right', 0]))
         #- logo ---------------------------------------------------------------------
-        cmds.image(image = os.path.join(imagesPath, 'beaverLogo.png'))       
+        cmds.image(image = os.path.join(imagesPath, 'beaverLogo.png'), w = 96, h = 81)       
 
         self.sepStyle = 'in'
         self.height = 20
-        self.marginSize = 5
+        self.marginSize = 0
         self.sepWidth = 30
         
         # for freeze tool check 

@@ -21,8 +21,8 @@ class DrawArcToolBar:
         """
         filePath = os.path.dirname(os.path.abspath(__file__))
         imagesPath = os.path.join(filePath, 'images')
-        iconSize = 22
-        marginSize = 5
+        iconSize = 25
+        marginSize = 0
 
         #Preference
         self.pref = Preference.Preference()

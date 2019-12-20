@@ -27,8 +27,8 @@ def build(parent,
     """
     cmds.rowLayout(numberOfColumns=2)
     cmds.iconTextButton(style='iconOnly',
-                        image1=os.path.join(imagesPath, 'add_hi.xpm'),
-                        hi=os.path.join(imagesPath, 'add.xpm'),
+                        image1=os.path.join(imagesPath, 'arc_hi.png'),
+                        hi=os.path.join(imagesPath, 'arc.png'),
                         width=iconSize, mw=marginSize, height=iconSize, mh=marginSize,
                         label='arc',
                         annotation='MotionTrail tool',

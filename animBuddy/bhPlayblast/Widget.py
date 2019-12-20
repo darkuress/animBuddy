@@ -26,7 +26,7 @@ def build(parent,
 def playblast(*args):
     """
     """
-    from bhPlayblast import ui
+    from animBuddy.bhPlayblast import ui
     reload(ui)
 
     run = ui.UI()

@@ -31,7 +31,7 @@ def build(parent,
                             imagesPath, 'lockdown_reverse.png'),
                         hi=os.path.join(
                             imagesPath, 'lockdown_reverse_hi.png'),
-                        width=iconSize/1.5, mw=marginSize, height=iconSize, mh=marginSize,
+                        width=iconSize, mw=marginSize, height=iconSize, mh=marginSize,
                         label='lock reverse',
                         npm=1,
                         annotation='lock reverse',

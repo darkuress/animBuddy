@@ -27,7 +27,7 @@ def build(parent,
     @param parent : parent layout in maya
     @imagesPath : str path
     """
-    wdth = 267
+    wdth = 266
     cmds.rowLayout(numberOfColumns=2, parent=parent)
     cmds.columnLayout(width=wdth)
     cmds.frameLayout(labelVisible=False,
@@ -81,7 +81,7 @@ def build(parent,
         if i == 0 or i == 5 or i == 10:
             pic = 'dot_big.png'
         else:
-            pic = 'dot.png'
+            pic = 'dot_small.png'
         cmds.iconTextButton(style='iconOnly',
                             image1=os.path.join(imagesPath, pic),
                             label=str(value),

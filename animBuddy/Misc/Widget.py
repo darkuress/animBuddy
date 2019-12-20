@@ -26,7 +26,7 @@ def build(parent,
     cmds.iconTextButton(style = 'iconOnly', 
                         image1 = os.path.join(imagesPath, 'preference.png'), 
                         hi = os.path.join(imagesPath, 'preference_hi.png'),
-                        width = iconSize/1.7, mw = marginSize, height = iconSize, mh = marginSize,
+                        width = iconSize/2, mw = marginSize, height = iconSize, mh = marginSize,
                         label = 'preference',
                         annotation = 'Preference')
     cmds.popupMenu()
@@ -97,9 +97,9 @@ def closeUI(*args):
     close the toolbar
     """
     if cmds.window('animBuddyWin', ex = True):
-        cmds.deleteUI('animBuddyWin')    
+        cmds.evalDeferred('cmds.deleteUI("animBuddyWin")')    
     try:
-        cmds.deleteUI('abToolBar')   
+        cmds.evalDeferred('cmds.deleteUI("abToolBar")')  
     except:
         pass
 

@@ -22,7 +22,7 @@ class UISelectionToolBar:
         filePath = os.path.dirname(os.path.abspath(__file__))
         imagesPath = os.path.join(filePath, 'images')
         iconSize = 25
-        marginSize = 5
+        marginSize = 0
         self.SGP = SGP.SelectionGrp()
                
         self.win = cmds.window('UISelectionToolBar', width=500, title = 'Selection Manager')
@@ -87,7 +87,7 @@ class UISelectionToolBar:
         existingBtns = cmds.rowLayout(self.rowLayoutButtons, q = True, childArray = True)
         if existingBtns:
             for btns in existingBtns:
-                cmds.deleteUI(btns)
+                cmds.evalDeferred('cmds.deleteUI("%s")' %btns)
         # delete and recreate? 
         cmds.rowLayout(self.rowLayoutButtons, e = True, numberOfColumns = numSelections + 1)
         for selection in allSelections:
@@ -106,7 +106,7 @@ class UISelectionToolBar:
             cmds.menuItem(label = "Remove From Selection", command = partial(self.removeFromSelection, selection))
             cmds.menuItem(label = "---------------------")
             cmds.menuItem(label = "Delete", command = partial(self.delete, selection))
-    
+
     def select(self, selection, *args):
         """
         select from button
