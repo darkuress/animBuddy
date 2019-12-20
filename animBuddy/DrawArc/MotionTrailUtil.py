@@ -1,6 +1,7 @@
 import maya.cmds as cmds
 import maya.mel as mm
 from maya import OpenMaya
+import math
 
 def getApiMatrix(matrix):
     """
@@ -40,3 +41,13 @@ def makeCameraRelative(point, camera, time):
     relativePoint = (translation[0], translation[1], translation[2])
     
     return relativePoint
+
+def getDistance(point1, obj2):
+    """
+    """
+    obj1Trans = point1
+    obj2Trans = cmds.xform(obj2, q = True, t = True, ws = True)
+    dx = obj2Trans[0] - obj1Trans[0]
+    dy = obj2Trans[1] - obj1Trans[1]
+    dz = obj2Trans[2] - obj1Trans[2]
+    return math.sqrt(dx*dx + dy*dy + dz*dz)

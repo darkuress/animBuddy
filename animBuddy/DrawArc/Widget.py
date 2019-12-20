@@ -1,11 +1,11 @@
 from animBuddy import DrawArcToolBar
-import testRun
+import Core
 import os
 import maya.cmds as cmds
 from functools import partial
 from animBuddy import Preference
 reload(Preference)
-reload(testRun)
+reload(Core)
 reload(DrawArcToolBar)
 
 
@@ -48,7 +48,7 @@ def drawArc(*args):
     """
     UIContainer.pref = Preference.Preference()
 
-    testRun.run(dotSize=UIContainer.pref.dotSize,
+    Core.run(dotSize=UIContainer.pref.dotSize,
                 keyFrameSize=UIContainer.pref.keyFrameSize,
                 timeBuffer=UIContainer.pref.timeBuffer,
                 lineWidth=UIContainer.pref.lineWidth,
@@ -61,7 +61,7 @@ def deleteAll(*args):
     """
     delete all motion trails
     """
-    testRun.deleteAll()
+    Core.deleteAll()
 
 
 def drawArcToolbar(*args):

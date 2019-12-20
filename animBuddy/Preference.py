@@ -36,12 +36,12 @@ class Preference(object):
         if self.pref.has_key("dotSize"):
             self.dotSize = self.pref["dotSize"]
         else:
-            self.dotSize = 0.2
+            self.dotSize = 5
             
         if self.pref.has_key("keyFrameSize"):
             self.keyFrameSize = self.pref["keyFrameSize"]
         else:
-            self.keyFrameSize = 0.25
+            self.keyFrameSize = 7
 
         if self.pref.has_key("timeBuffer"):
             self.timeBuffer = self.pref["timeBuffer"]

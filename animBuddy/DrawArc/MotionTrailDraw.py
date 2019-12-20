@@ -174,11 +174,7 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         thisNode = objPath.node()
         sizePlug      = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.size)
         keySizePlug   = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.keySize)
-        lineWidthPlug = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.lineWidth)
-
-        size      = round(sizePlug.asFloat(), 2)
-        keySize   = round(keySizePlug.asFloat(), 2)
-        lineWidth = round(lineWidthPlug.asFloat(), 2)      
+        lineWidthPlug = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.lineWidth)     
 
         prev = None
         allFrames = data.points.keys()
@@ -187,6 +183,11 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         for frame in allFrames:
             point     = data.points[frame][0]
             point1    = OpenMaya.MPoint(point[0], point[1], point[2], 1)
+
+            sizeFactor = util.getDistance(point, util.getCam())/1500
+            size       = sizeFactor * round(sizePlug.asFloat(), 2)
+            keySize    = sizeFactor * round(keySizePlug.asFloat(), 2)
+            lineWidth  = round(lineWidthPlug.asFloat(), 2) 
 
             if data.points[frame][1] == 1:
                 #key frame
