@@ -26,8 +26,6 @@ ScriptInstallPath = {\n\
     'Windows': '{0}/maya/scripts/'.format(expanduser('~'))\n\
 }\n\
 \n\
-\n\
-\n\
 PLATFORM = platform.system()\n\
 MAYA_VERSION = cmds.about(apiVersion=True) / 10000\n\
 PYTHON_PATH = ''\n\
@@ -47,7 +45,7 @@ elif PLATFORM == 'Darwin':\n\
     MAYA_SCRIPTS_PATH = ScriptInstallPath['Darwin']\n\
     PIP_PATH = os.path.join(expanduser('~'), 'Library', 'Python', '2.7', 'bin', 'pip2.7')\n\
 \n\
-if MAYA_SCRIPTS_PATH not in sys.path:\n\
+if MAYA_SCRIPTS_PATH not in sys.path and MAYA_SCRIPTS_PATH[:-1] not in sys.path:\n\
     for pth in sys.path:\n\
         if 'maya/scripts' in pth:\n\
             MAYA_SCRIPTS_PATH = pth\n\

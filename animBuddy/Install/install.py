@@ -26,8 +26,6 @@ def run():
         'Windows': '{0}/maya/scripts/'.format(expanduser('~'))
     }
 
-
-
     PLATFORM = platform.system()
     MAYA_VERSION = cmds.about(apiVersion=True) / 10000
     PYTHON_PATH = ''
@@ -47,7 +45,7 @@ def run():
         MAYA_SCRIPTS_PATH = ScriptInstallPath['Darwin']
         PIP_PATH = os.path.join(expanduser('~'), 'Library', 'Python', '2.7', 'bin', 'pip2.7')
 
-    if MAYA_SCRIPTS_PATH not in sys.path:
+    if MAYA_SCRIPTS_PATH not in sys.path and MAYA_SCRIPTS_PATH[:-1] not in sys.path:
         for pth in sys.path:
             if 'maya/scripts' in pth:
                 MAYA_SCRIPTS_PATH = pth
