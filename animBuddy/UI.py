@@ -37,19 +37,7 @@ class UI(Preference.Preference):
             return
 
         exec(cn.connect('initialize', self.licenseKey))
-        self.undoChunk = False
 
-        cmds.frameLayout("main",
-                         labelVisible = False,
-                         borderVisible = False,
-                         bgs = True, 
-                         width = 10,
-                         marginHeight = 0,
-                         marginWidth = 0,
-                         labelIndent = 0,
-                         collapsable = False)
-
-        self.imagesPath = imagesPath
         # adding widgets
         widgets = ['ShiftKey', 'MicroControl','separator', 
                    'EasyInBetween', 'separator',
