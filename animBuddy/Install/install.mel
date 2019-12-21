@@ -14,13 +14,11 @@ import zipfile\n\
 import maya.cmds as cmds\n\
 from functools import partial\n\
 \n\
-DEV = False\n\
 INSTALL_SSGUI_ONLY = False\n\
 \n\
 MAYA_API_VERSION = int(str(cmds.about(apiVersion=True))[:4])\n\
 \n\
-ANIMBUDDY_GUI_RELEASE_PATH = 'https://github.com/darkuress/animBuddy/archive/release.zip'\n\
-ANIMBUDDY_API_RELEASE_PATH = 'https://github.com/darkuress/python-api/archive/v1.0.4.zip'\n\
+ANIMBUDDY_API_RELEASE_PATH = 'https://github.com/darkuress/animBuddy/archive/release.zip'\n\
 \n\
 ScriptInstallPath = {\n\
     'Darwin': '{0}/Library/Preferences/Autodesk/maya/scripts/'.format(expanduser('~')),\n\
@@ -32,10 +30,8 @@ ScriptInstallPath = {\n\
 \n\
 PLATFORM = platform.system()\n\
 MAYA_VERSION = cmds.about(apiVersion=True) / 10000\n\
-IN_MAYA = False\n\
 PYTHON_PATH = ''\n\
 MAYA_SCRIPTS_PATH = ''\n\
-FFMPEG_PATH = ''\n\
 PIP_PATH = ''\n\
 tmpdir = None\n\
 delete_tmpdir = False\n\
@@ -99,16 +95,12 @@ if not os.path.exists(PIP_PATH):\n\
     print('Calling shell command: {0}'.format(cmd))\n\
     print(subprocess.check_output(cmd))\n\
 \n\
-    # Install Dependencies\n\
-    cmd = '{0} install --force-reinstall --user {1} pyyaml requests[security]'.format(PIP_PATH,\n\
-                                                                            ANIMBUDDY_API_RELEASE_PATH).split(' ')\n\
-\n\
 # Install AnimBuddy\n\
 if os.path.exists(ANIMBUDDY_INSTALL_PATH):\n\
     shutil.rmtree(ANIMBUDDY_INSTALL_PATH)\n\
 \n\
 cmd = '{0} install --ignore-installed --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,\n\
-                                                                ANIMBUDDY_GUI_RELEASE_PATH).split(' ')\n\
+                                                                ANIMBUDDY_API_RELEASE_PATH).split(' ')\n\
 print('Calling shell command: {0}'.format(cmd))\n\
 print(subprocess.check_output(cmd))\n\
 \n\
