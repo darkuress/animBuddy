@@ -180,6 +180,7 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         allFrames = data.points.keys()
         allFrames.sort()
 
+        #making dot absolute value
         cam = util.getCam()
         point     = data.points[allFrames[0]][0]
         sizeFactor = util.getDistance(point, cam)/1500
