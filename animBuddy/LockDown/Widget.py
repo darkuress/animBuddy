@@ -55,7 +55,7 @@ def build(parent,
                             imagesPath, 'lockdown_forward.png'),
                         hi=os.path.join(
                             imagesPath, 'lockdown_forward_hi.png'),
-                        width=iconSize/1.5, mw=marginSize, height=iconSize, mh=marginSize,
+                        width=iconSize, mw=marginSize, height=iconSize, mh=marginSize,
                         label='lock forward',
                         npm=1,
                         annotation='lock forward',
