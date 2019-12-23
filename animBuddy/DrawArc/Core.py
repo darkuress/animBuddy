@@ -1,14 +1,23 @@
 import maya.cmds as cmds
+import pymel.core as pm
 import MotionTrail as mt
 reload(mt)
 
 def deleteAll():
     """
     """
+    deleted = False
     if cmds.ls("*MotionTrail*mainHandle_all"):
         cmds.delete(cmds.ls("*MotionTrail*mainHandle_all"))
-    else:
-        print "No Motion Trail in the Scene"
+        deleted = True
+
+    if pm.ls("*:*mainHandle_all"):
+        for x in pm.ls("*:*mainHandle_all"):
+            cmds.delete(x.name())
+            deleted = True
+    
+    if not deleted:
+        print("no Motion trail in the scene")
 
 def run(dotSize = 5, 
         keyFrameSize = 750.25, 
