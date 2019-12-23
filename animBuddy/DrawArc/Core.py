@@ -15,7 +15,12 @@ def deleteAll():
         for x in pm.ls("*:*mainHandle_all"):
             cmds.delete(x.name())
             deleted = True
-    
+
+    if pm.ls("*:*:*mainHandle_all"):
+        for x in pm.ls("*:*:*mainHandle_all"):
+            cmds.delete(x.name())
+            deleted = True
+
     if not deleted:
         print("no Motion trail in the scene")
 
