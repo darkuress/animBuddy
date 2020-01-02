@@ -25,7 +25,7 @@ def build(parent,
                           c = resetIt)
       cmds.setParent("..") 
 
-def resetIt(self, *args):
+def resetIt(*args):
       """
       reset it 
       """
