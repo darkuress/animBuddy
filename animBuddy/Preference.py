@@ -46,7 +46,7 @@ class Preference(object):
         if self.pref.has_key("timeBuffer"):
             self.timeBuffer = self.pref["timeBuffer"]
         else:
-            self.timeBuffer = 10
+            self.timeBuffer = 6
 
         if self.pref.has_key("lineColor"):
             self.lineColor = self.pref["lineColor"]
