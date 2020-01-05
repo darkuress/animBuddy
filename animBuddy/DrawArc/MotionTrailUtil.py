@@ -1,13 +1,13 @@
 import maya.cmds as cmds
 import maya.mel as mm
-from maya import OpenMaya
+#from maya import OpenMaya
+import maya.api.OpenMaya as OpenMaya
 import math
 
 def getApiMatrix(matrix):
     """
     """
-    mat = OpenMaya.MMatrix()
-    OpenMaya.MScriptUtil.createMatrixFromList(matrix, mat)
+    mat = OpenMaya.MMatrix(matrix)
     
     return mat
 
@@ -19,7 +19,7 @@ def getCam():
     cam = cmds.lookThru(q = True)
     return cam    
     
-def makeCameraRelative(point, camera, time):
+def makeCameraRelative(pointMatrix, camera, time):
     """
     sets points of given motionTrail to projected points to given camera from 
     given startTime to length of motionTrail Points
@@ -33,7 +33,6 @@ def makeCameraRelative(point, camera, time):
     
     camLocal = getApiMatrix(cmds.getAttr(camera + ".wm", time = time))
     camWorldCurrent = getApiMatrix(cmds.getAttr(camera + '.wm', time = cmds.currentTime(q = True)))
-    pointMatrix = getApiMatrix(point)
     localMatrix = pointMatrix * camLocal.inverse()
     worldMatrix = localMatrix * camWorldCurrent
     mt = OpenMaya.MTransformationMatrix(worldMatrix)

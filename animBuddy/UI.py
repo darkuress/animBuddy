@@ -51,7 +51,7 @@ class UI(Preference.Preference):
                                          adjustableColumn = 1, 
                                          columnAttach = ([2, 'right', 0]))
         #- logo ---------------------------------------------------------------------
-        cmds.image(image = os.path.join(imagesPath, 'beaverLogo.png'), w = 96, h = 81)       
+        cmds.image(image = os.path.join(imagesPath, 'beaverLogo.png'), w = 48, h = 41)       
 
         self.sepStyle = 'in'
         self.height = 20

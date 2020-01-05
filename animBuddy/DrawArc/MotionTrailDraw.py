@@ -74,6 +74,13 @@ class DrawNodeData(OpenMaya.MUserData):
         self.endFrame = 0
         self.points= []
 
+        self.dotColor = (1.0, 1.0, 0.0, 1.0)
+        self.keyFrameColor = (1.0, 0.0, 0.0, 1.0)
+        self.lineColor = (1.0, 0.0, 1.0, 1.0)
+        self.lineWidth = None
+        self.size      = None
+        self.keySize   = None
+
 class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
     size          = None
     keySize       = None
@@ -139,18 +146,37 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
             #Finally get the data
             worldMatrixData = OpenMaya.MFnMatrixData(pointObject)
             pointMMatrix = worldMatrixData.matrix()
-            point = []
-            for j in range(16):
-                point.append(pointMMatrix[j])
-            relativePoint = util.makeCameraRelative(point, util.getCam(), i)
-                        
+            relativePoint = util.makeCameraRelative(pointMMatrix, util.getCam(), i)   
+
             if i in keyFrames:
                 points[i] = (relativePoint, 1)
             else:
                 points[i] = (relativePoint, 0)
-                
-        
         data.points = points
+
+        dotColor      = cmds.getAttr(str(objPath) + '.dc')[0] + (1.0,)
+        keyFrameColor = cmds.getAttr(str(objPath) + '.kfc')[0] + (1.0,)
+        lineColor     = cmds.getAttr(str(objPath) + '.lc')[0] + (1.0,)
+        data.dotColor      = OpenMaya.MColor(dotColor)
+        data.lineColor     = OpenMaya.MColor(lineColor)
+        data.keyFrameColor = OpenMaya.MColor(keyFrameColor)
+        
+        thisNode = objPath.node()
+        sizePlug      = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.size)
+        keySizePlug   = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.keySize)
+        lineWidthPlug = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.lineWidth)     
+
+        allFrames = data.points.keys()
+        allFrames.sort()
+        
+        #making dot absolute value
+        cam = util.getCam()
+        point     = data.points[allFrames[0]][0]
+        sizeFactor = util.getDistance(point, cam)/1500
+        
+        data.size       = sizeFactor * round(sizePlug.asFloat(), 2)
+        data.keySize    = sizeFactor * round(keySizePlug.asFloat(), 2)
+        data.lineWidth  = round(lineWidthPlug.asFloat(), 2) 
         
         return data
  
@@ -162,31 +188,11 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         if not isinstance(locatordata, DrawNodeData):
             return
         drawManager.beginDrawable()
- 
         drawManager.setDepthPriority(10000)
-        dotColor      = cmds.getAttr(str(objPath) + '.dc')[0] + (1.0,)
-        keyFrameColor = cmds.getAttr(str(objPath) + '.kfc')[0] + (1.0,)
-        lineColor     = cmds.getAttr(str(objPath) + '.lc')[0] + (1.0,)
-        color1 = OpenMaya.MColor(dotColor)
-        color2 = OpenMaya.MColor(lineColor)
-        color3 = OpenMaya.MColor(keyFrameColor)
-        
-        thisNode = objPath.node()
-        sizePlug      = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.size)
-        keySizePlug   = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.keySize)
-        lineWidthPlug = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.lineWidth)     
 
         prev = None
         allFrames = data.points.keys()
         allFrames.sort()
-
-        #making dot absolute value
-        cam = util.getCam()
-        point     = data.points[allFrames[0]][0]
-        sizeFactor = util.getDistance(point, cam)/1500
-        size       = sizeFactor * round(sizePlug.asFloat(), 2)
-        keySize    = sizeFactor * round(keySizePlug.asFloat(), 2)
-        lineWidth  = round(lineWidthPlug.asFloat(), 2) 
 
         for frame in allFrames:
             point     = data.points[frame][0]
@@ -194,15 +200,15 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
 
             if data.points[frame][1] == 1:
                 #key frame
-                drawManager.setColor(color3)
-                drawManager.sphere(point1, keySize, filled = True)
+                drawManager.setColor(data.keyFrameColor)
+                drawManager.sphere(point1, data.keySize, filled = True)
             else:
-                drawManager.setColor(color1)
-                drawManager.sphere(point1, size, filled = True)
+                drawManager.setColor(data.dotColor)
+                drawManager.sphere(point1, data.size, filled = True)
 
             if prev:
-                drawManager.setColor(color2)
-                drawManager.setLineWidth(lineWidth)
+                drawManager.setColor(data.lineColor)
+                drawManager.setLineWidth(data.lineWidth)
                 drawManager.line(prev, point1)
             prev = point1
             
