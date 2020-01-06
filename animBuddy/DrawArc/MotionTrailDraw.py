@@ -126,19 +126,17 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         if cmds.keyframe(data.name, q = True, tc = True):
             keyFrames  = list(set(cmds.keyframe(data.name, q = True, tc = True)))
             keyFrames  = [int(x) for x in keyFrames]
-        
-        #for i in range(data.startFrame, data.endFrame + 1):
+
         currentTime = OpenMayaAnim.MAnimControl.currentTime()
+        selection = OpenMaya.MSelectionList()
+        selection.add(data.name)
+        selectedNode = selection.getDependNode(0)
+        fnThisNode = OpenMaya.MFnDependencyNode(selectedNode)
+        worldMatrixAttr = fnThisNode.attribute("worldMatrix")
+        pointPlug = OpenMaya.MPlug(selectedNode, worldMatrixAttr)
+        pointPlug = pointPlug.elementByLogicalIndex(0)
+
         for i in range(int(currentTime.value - timeBuffer), int(currentTime.value + timeBuffer + 1)):
-            #point = cmds.getAttr("{}.wm".format(data.name), time = i)
-            selection = OpenMaya.MSelectionList()
-            selection.add(data.name)
-            selectedNode = selection.getDependNode(0)
-            fnThisNode = OpenMaya.MFnDependencyNode(selectedNode)
-            worldMatrixAttr = fnThisNode.attribute("worldMatrix")
-            pointPlug = OpenMaya.MPlug(selectedNode, worldMatrixAttr)
-            pointPlug = pointPlug.elementByLogicalIndex(0)
-            
             #Get matrix plug as MObject so we can get it's data.
             timeContext = OpenMaya.MDGContext(OpenMaya.MTime(i))
             pointObject = pointPlug.asMObject(timeContext)
