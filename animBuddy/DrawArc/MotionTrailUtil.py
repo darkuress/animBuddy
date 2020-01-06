@@ -29,7 +29,7 @@ def makeCameraRelative(pointMatrix, camera, time):
     @param int startTime : start of MotionTrail
     """
     if not cmds.objExists(camera):
-        return (point[12], point[13], point[14])
+        return (pointMatrix[12], pointMatrix[13], pointMatrix[14])
     
     camLocal = getApiMatrix(cmds.getAttr(camera + ".wm", time = time))
     camWorldCurrent = getApiMatrix(cmds.getAttr(camera + '.wm', time = cmds.currentTime(q = True)))

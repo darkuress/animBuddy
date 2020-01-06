@@ -100,7 +100,10 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
  
     def __init__(self, obj):
         OpenMayaRender.MPxDrawOverride.__init__(self, obj, DrawNodeDrawOverride.draw)
- 
+
+    def getDepNode(self, n):
+        return OpenMaya.MGlobal.getSelectionListByName(n).getDependNode(0)
+
     def supportedDrawAPIs(self):
         ## this plugin supports both GL and DX
         return OpenMayaRender.MRenderer.kOpenGL | OpenMayaRender.MRenderer.kDirectX11 | OpenMayaRender.MRenderer.kOpenGLCoreProfile
@@ -110,13 +113,13 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         data = oldData
         if not isinstance(data, DrawNodeData):
             data = DrawNodeData()
-        
-        #todo nicer way of getting attrs
-        mtName          = str(objPath)
-        data.name       = cmds.getAttr(mtName + ".nodeName")
-        data.startFrame = int(cmds.getAttr(mtName + '.startTime'))
-        data.endFrame = int(cmds.getAttr(mtName + '.endTime'))
-        
+
+        mtObj = self.getDepNode(str(objPath))
+        objMfn = OpenMaya.MFnDependencyNode(mtObj)
+        data.name = objMfn.findPlug('nodeName', False).asString()
+        data.startFrame = objMfn.findPlug('startTime', False).asInt()
+        data.endFrame = objMfn.findPlug('endTime', False).asInt()
+
         points = {}
         thisNode   = objPath.node()
         timeBufferPlug   = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.timeBuffer)
@@ -136,6 +139,7 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         pointPlug = OpenMaya.MPlug(selectedNode, worldMatrixAttr)
         pointPlug = pointPlug.elementByLogicalIndex(0)
 
+        activeCam = util.getCam()
         for i in range(int(currentTime.value - timeBuffer), int(currentTime.value + timeBuffer + 1)):
             #Get matrix plug as MObject so we can get it's data.
             timeContext = OpenMaya.MDGContext(OpenMaya.MTime(i))
@@ -144,33 +148,35 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
             #Finally get the data
             worldMatrixData = OpenMaya.MFnMatrixData(pointObject)
             pointMMatrix = worldMatrixData.matrix()
-            relativePoint = util.makeCameraRelative(pointMMatrix, util.getCam(), i)   
+            relativePoint = util.makeCameraRelative(pointMMatrix, activeCam, i)   
 
             if i in keyFrames:
                 points[i] = (relativePoint, 1)
             else:
                 points[i] = (relativePoint, 0)
-        data.points = points
-
-        dotColor      = cmds.getAttr(str(objPath) + '.dc')[0] + (1.0,)
-        keyFrameColor = cmds.getAttr(str(objPath) + '.kfc')[0] + (1.0,)
-        lineColor     = cmds.getAttr(str(objPath) + '.lc')[0] + (1.0,)
-        data.dotColor      = OpenMaya.MColor(dotColor)
-        data.lineColor     = OpenMaya.MColor(lineColor)
-        data.keyFrameColor = OpenMaya.MColor(keyFrameColor)
         
-        thisNode = objPath.node()
+        dotColorPlug      = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.dotColor)
+        keyFrameColorPlug = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.keyFrameColor)
+        lineColorPlug     = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.lineColor)
         sizePlug      = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.size)
         keySizePlug   = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.keySize)
-        lineWidthPlug = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.lineWidth)     
+        lineWidthPlug = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.lineWidth)    
 
+        dotColor = (dotColorPlug.child(0).asFloat(), dotColorPlug.child(1).asFloat(), dotColorPlug.child(2).asFloat(), 1.0)
+        keyFrameColor = (keyFrameColorPlug.child(0).asFloat(), keyFrameColorPlug.child(1).asFloat(), keyFrameColorPlug.child(2).asFloat(), 1.0)
+        lineColor = (lineColorPlug.child(0).asFloat(), lineColorPlug.child(1).asFloat(), lineColorPlug.child(2).asFloat(), 1.0)
+
+        data.dotColor      = OpenMaya.MColor(dotColor)
+        data.lineColor     = OpenMaya.MColor(lineColor)
+        data.keyFrameColor = OpenMaya.MColor(keyFrameColor) 
+
+        data.points = points
         allFrames = data.points.keys()
         allFrames.sort()
         
         #making dot absolute value
-        cam = util.getCam()
         point     = data.points[allFrames[0]][0]
-        sizeFactor = util.getDistance(point, cam)/1500
+        sizeFactor = util.getDistance(point, activeCam)/1500
         
         data.size       = sizeFactor * round(sizePlug.asFloat(), 2)
         data.keySize    = sizeFactor * round(keySizePlug.asFloat(), 2)
@@ -194,21 +200,21 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
 
         for frame in allFrames:
             point     = data.points[frame][0]
-            point1    = OpenMaya.MPoint(point[0], point[1], point[2], 1)
+            mpoint    = OpenMaya.MPoint(point[0], point[1], point[2], 1)
 
             if data.points[frame][1] == 1:
                 #key frame
                 drawManager.setColor(data.keyFrameColor)
-                drawManager.sphere(point1, data.keySize, filled = True)
+                drawManager.sphere(mpoint, data.keySize, filled = True)
             else:
                 drawManager.setColor(data.dotColor)
-                drawManager.sphere(point1, data.size, filled = True)
+                drawManager.sphere(mpoint, data.size, filled = True)
 
             if prev:
                 drawManager.setColor(data.lineColor)
                 drawManager.setLineWidth(data.lineWidth)
-                drawManager.line(prev, point1)
-            prev = point1
+                drawManager.line(prev, mpoint)
+            prev = mpoint
             
         drawManager.endDrawable()
 
