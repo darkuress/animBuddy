@@ -131,9 +131,7 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
             keyFrames  = [int(x) for x in keyFrames]
 
         currentTime = OpenMayaAnim.MAnimControl.currentTime()
-        selection = OpenMaya.MSelectionList()
-        selection.add(data.name)
-        selectedNode = selection.getDependNode(0)
+        selectedNode = self.getDepNode(data.name)
         fnThisNode = OpenMaya.MFnDependencyNode(selectedNode)
         worldMatrixAttr = fnThisNode.attribute("worldMatrix")
         pointPlug = OpenMaya.MPlug(selectedNode, worldMatrixAttr)
@@ -143,13 +141,14 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         for i in range(int(currentTime.value - timeBuffer), int(currentTime.value + timeBuffer + 1)):
             #Get matrix plug as MObject so we can get it's data.
             timeContext = OpenMaya.MDGContext(OpenMaya.MTime(i))
+            #become expensive
             pointObject = pointPlug.asMObject(timeContext)
             
             #Finally get the data
             worldMatrixData = OpenMaya.MFnMatrixData(pointObject)
             pointMMatrix = worldMatrixData.matrix()
             relativePoint = util.makeCameraRelative(pointMMatrix, activeCam, i)   
-
+            
             if i in keyFrames:
                 points[i] = (relativePoint, 1)
             else:
@@ -158,13 +157,13 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         dotColorPlug      = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.dotColor)
         keyFrameColorPlug = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.keyFrameColor)
         lineColorPlug     = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.lineColor)
-        sizePlug      = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.size)
-        keySizePlug   = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.keySize)
-        lineWidthPlug = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.lineWidth)    
+        sizePlug          = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.size)
+        keySizePlug       = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.keySize)
+        lineWidthPlug     = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.lineWidth)    
 
-        dotColor = (dotColorPlug.child(0).asFloat(), dotColorPlug.child(1).asFloat(), dotColorPlug.child(2).asFloat(), 1.0)
+        dotColor      = (dotColorPlug.child(0).asFloat(), dotColorPlug.child(1).asFloat(), dotColorPlug.child(2).asFloat(), 1.0)
         keyFrameColor = (keyFrameColorPlug.child(0).asFloat(), keyFrameColorPlug.child(1).asFloat(), keyFrameColorPlug.child(2).asFloat(), 1.0)
-        lineColor = (lineColorPlug.child(0).asFloat(), lineColorPlug.child(1).asFloat(), lineColorPlug.child(2).asFloat(), 1.0)
+        lineColor     = (lineColorPlug.child(0).asFloat(), lineColorPlug.child(1).asFloat(), lineColorPlug.child(2).asFloat(), 1.0)
 
         data.dotColor      = OpenMaya.MColor(dotColor)
         data.lineColor     = OpenMaya.MColor(lineColor)
