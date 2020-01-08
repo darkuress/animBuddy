@@ -72,11 +72,12 @@ class DrawNodeData(OpenMaya.MUserData):
         self.name = None
         self.startFrame = 0
         self.endFrame = 0
-        self.points= []
+        self.points= {}
+        self.keyFrames = []
 
-        self.dotColor = (1.0, 1.0, 0.0, 1.0)
-        self.keyFrameColor = (1.0, 0.0, 0.0, 1.0)
-        self.lineColor = (1.0, 0.0, 1.0, 1.0)
+        self.dotColor      = OpenMaya.MColor()
+        self.keyFrameColor = OpenMaya.MColor()
+        self.lineColor     = OpenMaya.MColor()
         self.lineWidth = None
         self.size      = None
         self.keySize   = None
@@ -101,6 +102,10 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
     def __init__(self, obj):
         OpenMayaRender.MPxDrawOverride.__init__(self, obj, DrawNodeDrawOverride.draw)
 
+        self.isPointCached = False
+        self.allPoints = {}
+        self.callbacks = []
+
     def getDepNode(self, n):
         return OpenMaya.MGlobal.getSelectionListByName(n).getDependNode(0)
 
@@ -120,7 +125,6 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         data.startFrame = objMfn.findPlug('startTime', False).asInt()
         data.endFrame = objMfn.findPlug('endTime', False).asInt()
 
-        points = {}
         thisNode   = objPath.node()
         timeBufferPlug   = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.timeBuffer)
         timeBuffer = timeBufferPlug.asInt()
@@ -138,21 +142,43 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         pointPlug = pointPlug.elementByLogicalIndex(0)
 
         activeCam = util.getCam()
-        for i in range(int(currentTime.value - timeBuffer), int(currentTime.value + timeBuffer + 1)):
-            #Get matrix plug as MObject so we can get it's data.
+
+        #check if translate attribute is changed
+        self.deleteCallbacks()
+        self.callbacks.append(OpenMayaAnim.MAnimMessage.addAnimKeyframeEditCheckCallback(self.keyFrameAddedCallback))
+        self.callbacks.append(OpenMayaAnim.MAnimMessage.addAnimKeyframeEditedCallback(self.keyFrameEditedCallback))
+        self.callbacks.append(OpenMaya.MEventMessage.addEventCallback('graphEditorChanged', self.graphEditorChangedCallback))
+        
+        if not self.isPointCached:
+            self.allPoints = {}
+            for i in range(data.startFrame, data.endFrame):
             timeContext = OpenMaya.MDGContext(OpenMaya.MTime(i))
-            #become expensive
-            pointObject = pointPlug.asMObject(timeContext)
             
             #Finally get the data
-            worldMatrixData = OpenMaya.MFnMatrixData(pointObject)
-            pointMMatrix = worldMatrixData.matrix()
-            relativePoint = util.makeCameraRelative(pointMMatrix, activeCam, i)   
+                pointMMatrix = OpenMaya.MFnMatrixData(pointPlug.asMObject(timeContext)).matrix()
+                relativePoint = (pointMMatrix[12], pointMMatrix[13], pointMMatrix[14])
+
+                if i in keyFrames:
+                    self.allPoints[i] = (relativePoint, 1)
+                else:
+                    self.allPoints[i] = (relativePoint, 0)
+            self.isPointCached = True
+
+        points = {}
+        for i in range(int(currentTime.value - timeBuffer), int(currentTime.value + timeBuffer + 1)):
+            #Get matrix plug as MObject so we can get it's data.
             
+            try:
+                points[i] = self.allPoints[i]
+            except:
+                pass
+            """
             if i in keyFrames:
-                points[i] = (relativePoint, 1)
+                points[i] = (self.allPoints[i][0], 1)
             else:
-                points[i] = (relativePoint, 0)
+                points[i] = (self.allPoints[i][0], 0)
+            """
+        data.points = points
         
         dotColorPlug      = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.dotColor)
         keyFrameColorPlug = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.keyFrameColor)
@@ -169,7 +195,6 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         data.lineColor     = OpenMaya.MColor(lineColor)
         data.keyFrameColor = OpenMaya.MColor(keyFrameColor) 
 
-        data.points = points
         allFrames = data.points.keys()
         allFrames.sort()
         
@@ -216,6 +241,32 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
             prev = mpoint
             
         drawManager.endDrawable()
+
+    def keyFrameAddedCallback(self, node, client_data):
+        """
+        if it's keyed cache is not valid
+        """
+        self.isPointCached = False
+        return True
+
+    def keyFrameEditedCallback(self, nodes, client_data):
+        """
+        if it's keyed cache is not valid
+        """
+        self.isPointCached = False
+        return True
+
+    def graphEditorChangedCallback(self, client_data):
+        self.isPointCached = False
+
+    def deleteCallbacks(self):
+        """
+        delete all the callbacks
+        """
+        if self.callbacks:
+            for cb in self.callbacks:
+                OpenMaya.MMessage.removeCallback(cb)
+                self.callbacks.remove(cb)
 
 def initializePlugin(mobject):
     plugin = OpenMaya.MFnPlugin(mobject, "Jonghwan Hwang", "1.0", "Any")
