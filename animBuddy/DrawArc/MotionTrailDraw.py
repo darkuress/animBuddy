@@ -139,7 +139,7 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         fnThisNode = OpenMaya.MFnDependencyNode(selectedNode)
         worldMatrixAttr = fnThisNode.attribute("worldMatrix")
         pointPlug = OpenMaya.MPlug(selectedNode, worldMatrixAttr)
-        pointPlug = pointPlug.elementByLogicalIndex(0)
+        pointPlug = pointPlug.elementByLogicalIndex(0)     
 
         activeCam = util.getCam()
 
@@ -152,9 +152,9 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         if not self.isPointCached:
             self.allPoints = {}
             for i in range(data.startFrame, data.endFrame):
-            timeContext = OpenMaya.MDGContext(OpenMaya.MTime(i))
-            
-            #Finally get the data
+                timeContext = OpenMaya.MDGContext(OpenMaya.MTime(i))
+                
+                #Finally get the data  
                 pointMMatrix = OpenMaya.MFnMatrixData(pointPlug.asMObject(timeContext)).matrix()
                 relativePoint = (pointMMatrix[12], pointMMatrix[13], pointMMatrix[14])
 
@@ -179,7 +179,7 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
                 points[i] = (self.allPoints[i][0], 0)
             """
         data.points = points
-        
+
         dotColorPlug      = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.dotColor)
         keyFrameColorPlug = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.keyFrameColor)
         lineColorPlug     = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.lineColor)
