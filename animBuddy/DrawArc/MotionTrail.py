@@ -33,7 +33,8 @@ class MotionTrail(object):
               dotColor = [1.0, 1.0, 0.0],
               keyFrameColor = [0.0, 1.0, 0.0],
               lineWidth = 3,
-              lineColor = [1.0, 1.0, 1.0]):
+              lineColor = [1.0, 1.0, 1.0],
+              style = 'Double'):
         """
         """
         filePath = os.path.dirname(os.path.abspath(__file__))
@@ -60,6 +61,11 @@ class MotionTrail(object):
         cmds.setAttr(self.mtName + ".lineColor0", lineColor[0])
         cmds.setAttr(self.mtName + ".lineColor1", lineColor[1])
         cmds.setAttr(self.mtName + ".lineColor2", lineColor[2])
+        if style == 'Double':
+            mode = 1
+        elif style == 'Single':
+            mode = 2
+        cmds.setAttr(self.mtName + ".mode", mode)
 
         longName = cmds.ls(self.mtName, l = True)[0]
         transform = cmds.ls(longName.split("|")[-2])[0]

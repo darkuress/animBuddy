@@ -46,15 +46,18 @@ def drawArc(*args):
     """
     Motion trail 
     """
+    from animBuddy import Preference
+    reload(Preference)
     UIContainer.pref = Preference.Preference()
 
     Core.run(dotSize=UIContainer.pref.dotSize,
-                keyFrameSize=UIContainer.pref.keyFrameSize,
-                timeBuffer=UIContainer.pref.timeBuffer,
-                lineWidth=UIContainer.pref.lineWidth,
-                lineColor=UIContainer.pref.lineColor,
-                dotColor=UIContainer.pref.dotColor,
-                keyFrameColor=UIContainer.pref.keyFrameColor)
+            keyFrameSize=UIContainer.pref.keyFrameSize,
+            timeBuffer=UIContainer.pref.timeBuffer,
+            lineWidth=UIContainer.pref.lineWidth,
+            lineColor=UIContainer.pref.lineColor,
+            dotColor=UIContainer.pref.dotColor,
+            keyFrameColor=UIContainer.pref.keyFrameColor,
+            style = UIContainer.pref.mtStyle)
 
 
 def deleteAll(*args):

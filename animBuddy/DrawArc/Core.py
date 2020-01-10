@@ -30,7 +30,8 @@ def run(dotSize = 5,
         dotColor = [0.5, 0, 0.5],
         keyFrameColor = [0.0, 1.0, 0.0],
         lineWidth = 3,
-        lineColor = [1.0, 1.0, 1.0]):
+        lineColor = [1.0, 1.0, 1.0],
+        style = 'Double'):
     """
     """
     selection = cmds.ls(selection = True, long = True)
@@ -54,7 +55,8 @@ def run(dotSize = 5,
                               dotColor = dotColor,
                               keyFrameColor = keyFrameColor,
                               lineWidth = lineWidth,
-                              lineColor = lineColor)
+                              lineColor = lineColor,
+                              style = style)
         cmds.select(selection)
     
 if __name__ == "__main__":

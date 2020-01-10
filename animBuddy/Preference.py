@@ -63,10 +63,15 @@ class Preference(object):
         else:
             self.keyFrameColor = [1.0, 0.0, 0.0]  
 
-        if self.pref.has_key("timeBufferColore"):
-            self.timeBufferColor = self.pref["timeBufferColore"]
+        if self.pref.has_key("timeBufferColor"):
+            self.timeBufferColor = self.pref["timeBufferColor"]
         else:
-            self.timeBufferColor = [0.5, 0.5, 0.0]  
+            self.timeBufferColor = [0.0, 1.0, 0.0]  
+
+        if self.pref.has_key("mtStyle"):
+            self.mtStyle = self.pref["mtStyle"]
+        else:
+            self.mtStyle = "Double"  
 
         #- Anim Copy Session
         if self.pref.has_key("acsMode"):
@@ -106,6 +111,7 @@ class Preference(object):
         self.pref["dotColor"]        = self.dotColor
         self.pref["keyFrameColor"]   = self.keyFrameColor
         self.pref["timeBufferColor"] = self.timeBufferColor
+        self.pref["mtStyle"]         = self.mtStyle
         self.pref['acsMode']         = self.acsMode
         self.pref['dcnMode']         = self.dcnMode
         self.pref['mglMode']         = self.mglMode

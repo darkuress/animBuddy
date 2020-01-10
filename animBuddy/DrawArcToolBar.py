@@ -36,7 +36,7 @@ class DrawArcToolBar:
                                             adjustableColumn = 1, 
                                             columnAttach = ([1, 'right', 0]), 
                                             parent = self.frameLayoutMain)  
-        cmds.rowLayout(numberOfColumns = 5)###    
+        cmds.rowLayout(numberOfColumns = 6)###    
         cmds.columnLayout(width = 200)##
         cmds.rowLayout(numberOfColumns = 3)#
         self.buttonLineColor = cmds.button(width = 15,
@@ -103,10 +103,10 @@ class DrawArcToolBar:
         cmds.columnLayout(width = 200)##
         cmds.rowLayout(numberOfColumns = 3)#
         self.buttonTimeBufferColor = cmds.button(width = 15,
-                                                  height = 15, 
-                                                  label = '', 
-                                                  backgroundColor = self.pref.timeBufferColor, 
-                                                  c = self.timeBufferColor)
+                                                 height = 15, 
+                                                 label = '', 
+                                                 backgroundColor = self.pref.timeBufferColor, 
+                                                 c = self.timeBufferColor)
         cmds.text(label = "timebuffer size", width = 140)
         self.textFieldTimeBuffer = cmds.textField(text = round(self.pref.timeBuffer, 0), 
                                                   width = 40, 
@@ -119,6 +119,13 @@ class DrawArcToolBar:
                                                           step = 1,
                                                           annotation = 'Time Buffer size.',
                                                           dc = self.timeBufferSize)
+        cmds.setParent("..")##
+        cmds.rowLayout(numberOfColumns = 3)##
+        cmds.separator(hr= False, height = 10, width = 10, style = "none")
+        self.optionMenuStyle = cmds.optionMenu(label='Style', cc = self.styleCB)
+        self.menuItemDouble = cmds.menuItem(label='Double')
+        self.menuItemSingle = cmds.menuItem(label='Single')
+        self.optionMenuStyle = cmds.optionMenu(self.optionMenuStyle, e = True, value = self.pref.mtStyle)
         cmds.setParent("..")##
         cmds.setParent("..")###
 
@@ -166,6 +173,8 @@ class DrawArcToolBar:
 
         cmds.textField(self.textFieldLineWidth, e = True, text = round(value, 2))
 
+        self.saveAsDefault()
+
     def lineWidthCB(self, *args):
         """
         change line width of motion trail
@@ -185,7 +194,9 @@ class DrawArcToolBar:
                 cmds.setAttr(mt + '.lineColor0', color[0])
                 cmds.setAttr(mt + '.lineColor1', color[1])
                 cmds.setAttr(mt + '.lineColor2', color[2])
-                
+
+        self.saveAsDefault()
+
     def dotSize(self, *args):
         """
         """
@@ -195,6 +206,8 @@ class DrawArcToolBar:
                 cmds.setAttr(mt + '.size', round(value, 2))
 
         cmds.textField(self.textFieldDotSize, e = True, text = round(value, 2))
+
+        self.saveAsDefault()
 
     def dotSizeCB(self, *args):
         """
@@ -215,6 +228,8 @@ class DrawArcToolBar:
                 cmds.setAttr(mt + '.dotColor1', color[1])
                 cmds.setAttr(mt + '.dotColor2', color[2])
 
+        self.saveAsDefault()
+
     def keyFrameSize(self, *args):
         """
         """
@@ -224,6 +239,8 @@ class DrawArcToolBar:
                 cmds.setAttr(mt + '.ksz', round(value, 2))
 
         cmds.textField(self.textFieldKeyFrameSize, e = True, text = round(value, 2))
+
+        self.saveAsDefault()
 
     def keyFrameSizeCB(self, *args):
         """
@@ -244,6 +261,8 @@ class DrawArcToolBar:
                 cmds.setAttr(mt + '.keyFrameColor1', color[1])
                 cmds.setAttr(mt + '.keyFrameColor2', color[2])
 
+        self.saveAsDefault()
+
     def timeBufferSize(self, *args):
         """
         """
@@ -252,6 +271,8 @@ class DrawArcToolBar:
             for mt in self.allMotionTrails():
                 cmds.setAttr(mt + '.tb', int(round(value, 2)))
         cmds.textField(self.textFieldTimeBuffer, e = True, text = round(value, 0))
+
+        self.saveAsDefault()
 
     def timeBufferSizeCB(self, *args):
         """
@@ -271,6 +292,20 @@ class DrawArcToolBar:
                 cmds.setAttr(mt + '.travelerColor0', color[0])
                 cmds.setAttr(mt + '.travelerColor1', color[1])
                 cmds.setAttr(mt + '.travelerColor2', color[2])
+        
+        self.saveAsDefault()
+
+    def styleCB(self, *args):
+        """
+        """
+        value = cmds.optionMenu(self.optionMenuStyle, q = True, value = True)
+        for mt in self.allMotionTrails():
+            if value == 'Double':
+                cmds.setAttr(mt + '.mode', 1)
+            elif value == 'Single':
+                cmds.setAttr(mt + '.mode', 2)
+        
+        self.saveAsDefault()
 
     def saveAsDefault(self, *args):
         """
@@ -285,7 +320,9 @@ class DrawArcToolBar:
         self.pref.dotColor          = [round(x, 2) for x in self.pref.dotColor]
         self.pref.keyFrameColor     = cmds.button(self.buttonKeyFrameColor, q = True, backgroundColor = True) 
         self.pref.keyFrameColor     = [round(x, 2) for x in self.pref.keyFrameColor]
-
+        self.pref.timeBufferColor     = cmds.button(self.buttonTimeBufferColor, q = True, backgroundColor = True) 
+        self.pref.timeBufferColor     = [round(x, 2) for x in self.pref.timeBufferColor]
+        self.pref.mtStyle           = cmds.optionMenu(self.optionMenuStyle, q = True, value = True)
         self.pref.construct()
         self.pref.write()
 

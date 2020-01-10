@@ -258,10 +258,11 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
                     drawManager.line(prevFull, mpoint)
                 prevFull = mpoint
 
+        #midVal = min(visualFrames) + (max(visualFrames)+1 - min(visualFrames))/2
         for frame in visualFrames:
             point     = data.points[frame][0]
             mpoint    = OpenMaya.MPoint(point[0], point[1], point[2], 1)
-            """
+            
             if data.points[frame][1] == 1:
                 #key frame
                 drawManager.setColor(data.keyFrameColor)
@@ -269,8 +270,15 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
             else:
                 drawManager.setColor(data.dotColor)
                 drawManager.sphere(mpoint, data.size, filled = True)
-            """
+            
             if prev:
+                """
+                div = abs(float(midVal - frame))
+                if not div == 0:
+                    color = OpenMaya.MColor((float(data.travelerColor.r/2*div), float(data.travelerColor.g/2*div), float(data.travelerColor.b/2*div), 1.0))
+                else:
+                    color = OpenMaya.MColor((1.0, 1.0, 0.0, 1.0))
+                """
                 drawManager.setColor(data.travelerColor)
                 drawManager.setLineWidth(data.lineWidth)
                 drawManager.line(prev, mpoint)
