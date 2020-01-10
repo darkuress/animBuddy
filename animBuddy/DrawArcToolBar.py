@@ -101,8 +101,13 @@ class DrawArcToolBar:
         cmds.setParent("..")##
 
         cmds.columnLayout(width = 200)##
-        cmds.rowLayout(numberOfColumns = 2)#
-        cmds.text(label = "time buffer size", width = 160)
+        cmds.rowLayout(numberOfColumns = 3)#
+        self.buttonTimeBufferColor = cmds.button(width = 15,
+                                                  height = 15, 
+                                                  label = '', 
+                                                  backgroundColor = self.pref.timeBufferColor, 
+                                                  c = self.timeBufferColor)
+        cmds.text(label = "timebuffer size", width = 140)
         self.textFieldTimeBuffer = cmds.textField(text = round(self.pref.timeBuffer, 0), 
                                                   width = 40, 
                                                   cc = self.timeBufferSizeCB)
@@ -255,6 +260,17 @@ class DrawArcToolBar:
         cmds.floatSlider(self.floatSliderTimeBufferSize, e = True, v = int(value))
 
         self.timeBufferSize()
+
+    def timeBufferColor(self, *args):
+        """
+        """
+        color = self.color(self.buttonTimeBufferColor)
+
+        if self.allMotionTrails():
+            for mt in self.allMotionTrails():
+                cmds.setAttr(mt + '.travelerColor0', color[0])
+                cmds.setAttr(mt + '.travelerColor1', color[1])
+                cmds.setAttr(mt + '.travelerColor2', color[2])
 
     def saveAsDefault(self, *args):
         """

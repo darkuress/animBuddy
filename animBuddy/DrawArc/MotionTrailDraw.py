@@ -44,6 +44,8 @@ class DrawNode(OpenMayaUI.MPxLocatorNode):
         keyFrameColorAttr = OpenMaya.MFnNumericAttribute()
         lineWidthAttr     = OpenMaya.MFnNumericAttribute()
         lineColorAttr     = OpenMaya.MFnNumericAttribute()
+        travelerColorAttr = OpenMaya.MFnNumericAttribute()
+        modeAttr          = OpenMaya.MFnNumericAttribute()
         DrawNodeDrawOverride.size            = sizeAttr.create("size", "sz", OpenMaya.MFnNumericData.kFloat, 0.15 )
         DrawNodeDrawOverride.keySize         = keySizeAttr.create("keyFrameSize", "ksz", OpenMaya.MFnNumericData.kFloat, 0.2 )
         DrawNodeDrawOverride.timeBuffer      = bufferAttr.create("timeBuffer", "tb", OpenMaya.MFnNumericData.kInt, 11)
@@ -51,6 +53,8 @@ class DrawNode(OpenMayaUI.MPxLocatorNode):
         DrawNodeDrawOverride.keyFrameColor   = keyFrameColorAttr.create("keyFrameColor", "kfc", OpenMaya.MFnNumericData.k3Float, 0.0)
         DrawNodeDrawOverride.lineWidth       = lineWidthAttr.create("lineWidth", "lw", OpenMaya.MFnNumericData.kFloat, 3.0)
         DrawNodeDrawOverride.lineColor       = lineColorAttr.create("lineColor", "lc", OpenMaya.MFnNumericData.k3Float, 0.0)
+        DrawNodeDrawOverride.travelerColor   = travelerColorAttr.create("travelerColor", "tlc", OpenMaya.MFnNumericData.k3Float, 0.0)
+        DrawNodeDrawOverride.mode            = modeAttr.create("mode", "md", OpenMaya.MFnNumericData.kInt, 1)
         sizeAttr.storable          = True
         keySizeAttr.storable       = True
         bufferAttr.storable        = True
@@ -58,6 +62,8 @@ class DrawNode(OpenMayaUI.MPxLocatorNode):
         keyFrameColorAttr.storable = True
         lineWidthAttr.storable     = True
         lineColorAttr.storable     = True
+        travelerColorAttr.storable = True
+        modeAttr.storable          = True
         OpenMaya.MPxNode.addAttribute(DrawNodeDrawOverride.size)
         OpenMaya.MPxNode.addAttribute(DrawNodeDrawOverride.keySize)
         OpenMaya.MPxNode.addAttribute(DrawNodeDrawOverride.timeBuffer)
@@ -65,6 +71,8 @@ class DrawNode(OpenMayaUI.MPxLocatorNode):
         OpenMaya.MPxNode.addAttribute(DrawNodeDrawOverride.keyFrameColor)
         OpenMaya.MPxNode.addAttribute(DrawNodeDrawOverride.lineWidth)
         OpenMaya.MPxNode.addAttribute(DrawNodeDrawOverride.lineColor)
+        OpenMaya.MPxNode.addAttribute(DrawNodeDrawOverride.travelerColor)    
+        OpenMaya.MPxNode.addAttribute(DrawNodeDrawOverride.mode)
 
 class DrawNodeData(OpenMaya.MUserData):
     def __init__(self):
@@ -73,14 +81,19 @@ class DrawNodeData(OpenMaya.MUserData):
         self.startFrame = 0
         self.endFrame = 0
         self.points= {}
+        self.allPoints = {}
         self.keyFrames = []
 
         self.dotColor      = OpenMaya.MColor()
         self.keyFrameColor = OpenMaya.MColor()
         self.lineColor     = OpenMaya.MColor()
+        self.travelerColor = OpenMaya.MColor()
         self.lineWidth = None
         self.size      = None
         self.keySize   = None
+
+        #mode 2 = timebuffer only, 1 = all frames
+        self.mode     = 1
 
 class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
     size          = None
@@ -90,6 +103,7 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
     keyFrameColor = None
     lineWidth     = None
     lineColor     = None
+    travelerColor = None
 
     @staticmethod
     def creator(obj):
@@ -118,7 +132,7 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         data = oldData
         if not isinstance(data, DrawNodeData):
             data = DrawNodeData()
-
+        
         mtObj = self.getDepNode(str(objPath))
         objMfn = OpenMaya.MFnDependencyNode(mtObj)
         data.name = objMfn.findPlug('nodeName', False).asString()
@@ -128,6 +142,8 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         thisNode   = objPath.node()
         timeBufferPlug   = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.timeBuffer)
         timeBuffer = timeBufferPlug.asInt()
+        modePlug = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.mode)
+        data.mode = modePlug.asInt()
         
         keyFrames = []
         if cmds.keyframe(data.name, q = True, tc = True):
@@ -172,17 +188,14 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
                 points[i] = self.allPoints[i]
             except:
                 pass
-            """
-            if i in keyFrames:
-                points[i] = (self.allPoints[i][0], 1)
-            else:
-                points[i] = (self.allPoints[i][0], 0)
-            """
+
         data.points = points
+        data.allPoints = self.allPoints
 
         dotColorPlug      = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.dotColor)
         keyFrameColorPlug = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.keyFrameColor)
         lineColorPlug     = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.lineColor)
+        travelerColorPlug = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.travelerColor)
         sizePlug          = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.size)
         keySizePlug       = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.keySize)
         lineWidthPlug     = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.lineWidth)    
@@ -190,9 +203,11 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         dotColor      = (dotColorPlug.child(0).asFloat(), dotColorPlug.child(1).asFloat(), dotColorPlug.child(2).asFloat(), 1.0)
         keyFrameColor = (keyFrameColorPlug.child(0).asFloat(), keyFrameColorPlug.child(1).asFloat(), keyFrameColorPlug.child(2).asFloat(), 1.0)
         lineColor     = (lineColorPlug.child(0).asFloat(), lineColorPlug.child(1).asFloat(), lineColorPlug.child(2).asFloat(), 1.0)
+        travelerColor = (travelerColorPlug.child(0).asFloat(), travelerColorPlug.child(1).asFloat(), travelerColorPlug.child(2).asFloat(), 1.0)
 
         data.dotColor      = OpenMaya.MColor(dotColor)
         data.lineColor     = OpenMaya.MColor(lineColor)
+        data.travelerColor = OpenMaya.MColor(travelerColor)
         data.keyFrameColor = OpenMaya.MColor(keyFrameColor) 
 
         allFrames = data.points.keys()
@@ -219,13 +234,34 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         drawManager.setDepthPriority(10000)
 
         prev = None
-        allFrames = data.points.keys()
-        allFrames.sort()
+        visualFrames = data.points.keys()
+        visualFrames.sort()
 
-        for frame in allFrames:
+        # draw all
+        if data.mode == 1:
+            prevFull = None
+            allFrames = data.allPoints.keys()
+            allFrames.sort()
+            for frame in allFrames:
+                point     = data.allPoints[frame][0]
+                mpoint    = OpenMaya.MPoint(point[0], point[1], point[2], 1)           
+                if data.allPoints[frame][1] == 1:
+                    #key frame
+                    drawManager.setColor(data.keyFrameColor)
+                    drawManager.sphere(mpoint, data.keySize, filled = True)
+                else:
+                    drawManager.setColor(data.dotColor)
+                    drawManager.sphere(mpoint, data.size, filled = True)               
+                if prevFull:
+                    drawManager.setColor(data.lineColor)
+                    drawManager.setLineWidth(data.lineWidth)
+                    drawManager.line(prevFull, mpoint)
+                prevFull = mpoint
+
+        for frame in visualFrames:
             point     = data.points[frame][0]
             mpoint    = OpenMaya.MPoint(point[0], point[1], point[2], 1)
-
+            """
             if data.points[frame][1] == 1:
                 #key frame
                 drawManager.setColor(data.keyFrameColor)
@@ -233,9 +269,9 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
             else:
                 drawManager.setColor(data.dotColor)
                 drawManager.sphere(mpoint, data.size, filled = True)
-
+            """
             if prev:
-                drawManager.setColor(data.lineColor)
+                drawManager.setColor(data.travelerColor)
                 drawManager.setLineWidth(data.lineWidth)
                 drawManager.line(prev, mpoint)
             prev = mpoint
