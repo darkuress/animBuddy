@@ -39,7 +39,8 @@ class UI(Preference.Preference):
         exec(cn.connect('initialize', self.licenseKey))
 
         # adding widgets
-        widgets = ['ShiftKey', 'MicroControl','separator', 
+        widgets = ['Justin', 'separator', 
+                   'ShiftKey', 'MicroControl','separator', 
                    'EasyInBetween', 'separator',
                    'MagicLocator', 'FakeConIt', 'ExFootStep', 'SnapIt', 'LockDown', 'vertical',
                    'Decalcomanie', 'ResetIt', 'DrawArc', 'vertical',
