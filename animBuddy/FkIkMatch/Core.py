@@ -36,20 +36,43 @@ def getPrefix():
     else:
         return sel.split(":")[0] + ":"
 
+def getChar():
+    sel = cmds.ls(sl = True, l = True)[0]
+    char = sel.split("|")[0]
+
+    return char    
+
+def getFromSelected(char, obj):
+    """
+    """
+    long_name = ''
+    all_objs = cmds.ls(obj, l = True)
+    for one_obj in all_objs:
+        if one_obj.split("|")[0] == char:
+            long_name = one_obj
+    return long_name
+
 def fkToIkConv(prefix = '', side = "LArm:"):
     """
-    """   
+    """
+    char = getChar()
     shoulder_ctrl = prefix + side + Data.shoulder_ctrl
     elbow_ctrl = prefix + side + Data.elbow_ctrl
     wrist_ctrl = prefix + side + Data.wrist_ctrl
     ik_ctrl = prefix + side + Data.ik_ctrl
+    
+    shoulder_ctrl = getFromSelected(char, shoulder_ctrl)
+    elbow_ctrl = getFromSelected(char, elbow_ctrl)
+    wrist_ctrl = getFromSelected(char, wrist_ctrl)
+    ik_ctrl = getFromSelected(char, ik_ctrl)
 
     shoulder_pos = cmds.xform(shoulder_ctrl, t = True, q = True, ws = True)
     elbow_pos = cmds.xform(elbow_ctrl, t = True, q = True, ws = True) 
     wrist_pos = cmds.xform(wrist_ctrl, t = True, q = True, ws = True)
 
-    cmds.setAttr(prefix + side + Data.blend_node + Data.blend_attr, 0)
-    cmds.setAttr(prefix + side + Data.blend_node + Data.pv_attr, 0)
+    blend_node = getFromSelected(char, prefix + side + Data.blend_node)
+    cmds.setAttr(blend_node + Data.blend_attr, 0)
+    cmds.setAttr(blend_node + Data.pv_attr, 0)
 
     cmds.xform(ik_ctrl, t = wrist_pos, ws = True)
 
@@ -78,6 +101,7 @@ def fkToIkConv(prefix = '', side = "LArm:"):
 def ikToFkConv(prefix = '', side = "LArm:"):
     """
     """
+    char = getChar()
     shoulder_jnt = prefix + side + Data.shoulder_jnt
     elbow_jnt = prefix + side + Data.elbow_jnt
     shoulder_ctrl = prefix + side + Data.shoulder_ctrl
@@ -85,10 +109,18 @@ def ikToFkConv(prefix = '', side = "LArm:"):
     wrist_ctrl = prefix + side + Data.wrist_ctrl
     ik_ctrl = prefix + side + Data.ik_ctrl
 
+    shoulder_jnt = getFromSelected(char, shoulder_jnt)
+    elbow_jnt = getFromSelected(char, elbow_jnt)
+    shoulder_ctrl = getFromSelected(char, shoulder_ctrl)
+    elbow_ctrl = getFromSelected(char, elbow_ctrl)
+    wrist_ctrl = getFromSelected(char, wrist_ctrl)
+    ik_ctrl = getFromSelected(char, ik_ctrl)
+
     shoulder_rot = cmds.xform(shoulder_jnt, q = True, ro = True)
     elbow_rot = cmds.xform(elbow_jnt, q = True, ro = True)
 
-    cmds.setAttr(prefix + side + Data.blend_node + Data.blend_attr, 1)
+    blend_node = getFromSelected(char, prefix + side + Data.blend_node)
+    cmds.setAttr(blend_node + Data.blend_attr, 1)
 
     cmds.xform(shoulder_ctrl, ro = shoulder_rot)
     cmds.xform(elbow_ctrl, ro = elbow_rot)
@@ -104,7 +136,9 @@ def ikToFkConv(prefix = '', side = "LArm:"):
 def convert(prefix = "", side = "LArm:"):
     """
     """
+    char = getChar()
     blend_node = prefix + side + Data.blend_node
+    blend_node = getFromSelected(char, blend_node)
     state = cmds.getAttr(blend_node + Data.blend_attr)
 
     if state == 1:
