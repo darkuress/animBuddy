@@ -33,7 +33,11 @@ class UIJustinToolbar:
                                             columnAttach = ([2, 'right', 0]), 
                                             parent = self.frameLayoutMain)       
 
-        cmds.rowLayout(numberOfColumns = 1)
+        cmds.rowLayout(numberOfColumns = 4)
+        self.checkBoxBake = cmds.checkBox(label = "bake", cc = self.bakeTextBoxEnable)
+        self.textFieldStartFrame = cmds.textField(width = 50, text = cmds.playbackOptions(minTime = True, q = True))
+        self.textFieldEndFrame = cmds.textField(width = 50, text = cmds.playbackOptions(maxTime = True, q = True))
+        self._bakeTextBoxCB()
         cmds.button(label = 'FKIK', c = self.fkikSwitch)
         cmds.setParent("..")
         cmds.rowLayout(numberOfColumns = 1)
@@ -45,11 +49,20 @@ class UIJustinToolbar:
                                                annotation = 'Closing Selection ToolBar', 
                                                c = self.close)        
         cmds.setParent("..") 
+        cmds.setParent("..")
     
     def fkikSwitch(self, *args):
         """
         """
-        Core.convert(prefix = Core.getPrefix(), side = Core.getSide())
+        bake = False
+        if cmds.checkBox(self.checkBoxBake, q = True, v = True):
+            bake = True
+        if bake:
+            startFrame = int(cmds.textField(self.textFieldStartFrame, q = True, text = True))
+            endFrame = int(cmds.textField(self.textFieldEndFrame, q = True, text = True))
+            Core.bake(frame = [startFrame, endFrame])
+        else:
+            Core.convert(prefix = Core.getPrefix(), side = Core.getSide())
 
     def close(self, *args):
         """
@@ -59,6 +72,21 @@ class UIJustinToolbar:
         except:
             pass        
 
+    def _bakeTextBoxCB(self):
+        """
+        """
+        enable = False
+        if cmds.checkBox(self.checkBoxBake, q = True, v = True):
+            enable = True
+        cmds.textField(self.textFieldStartFrame, e = True, en = enable)
+        cmds.textField(self.textFieldEndFrame, e = True, en = enable)
+        
+
+    def bakeTextBoxEnable(self, args):
+        """
+        """
+        self._bakeTextBoxCB()
+
     def loadInMaya(self, *args):
         """
         """
@@ -67,4 +95,4 @@ class UIJustinToolbar:
         except:
             pass 
         allowedAreas = ['top', 'bottom']
-        justinToolBar = cmds.toolBar('justinToolbar', area='bottom', content=self.win, allowedArea=allowedAreas )
+        cmds.toolBar('justinToolbar', area='bottom', content=self.win, allowedArea=allowedAreas )
