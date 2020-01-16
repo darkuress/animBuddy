@@ -28,18 +28,21 @@ class UIJustinToolbar:
                                                 w = 10, 
                                                 borderVisible = False, 
                                                 parent = self.win)
-        self.rowLayoutMain = cmds.rowLayout(numberOfColumns = 3, 
+        self.rowLayoutMain = cmds.rowLayout(numberOfColumns = 4, 
                                             adjustableColumn = 1, 
                                             columnAttach = ([2, 'right', 0]), 
-                                            parent = self.frameLayoutMain)       
-
-        cmds.rowLayout(numberOfColumns = 4)
+                                            parent = self.frameLayoutMain)
+    
+        cmds.rowLayout(numberOfColumns = 1)
+        cmds.setParent("..")
+        cmds.rowLayout(numberOfColumns = 7)
+        cmds.button(label = 'FKIK', c = self.fkikSwitch)
+        cmds.separator(height = 10, width = 10, style = 'none')
         self.checkBoxBake = cmds.checkBox(label = "bake", cc = self.bakeTextBoxEnable)
         self.textFieldStartFrame = cmds.textField(width = 50, text = cmds.playbackOptions(minTime = True, q = True))
         self.textFieldEndFrame = cmds.textField(width = 50, text = cmds.playbackOptions(maxTime = True, q = True))
         self._bakeTextBoxCB()
-        cmds.button(label = 'FKIK', c = self.fkikSwitch)
-        cmds.setParent("..")
+        cmds.separator(height = 10, width = 10, style = 'none')
         cmds.rowLayout(numberOfColumns = 1)
         self.buttonClose = cmds.iconTextButton(style = 'iconOnly', 
                                                image1 = os.path.join(imagesPath, 'close.png'), 
