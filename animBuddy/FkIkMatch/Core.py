@@ -25,22 +25,30 @@ class Data(object):
 def getSide():
     """
     """
-    sel = cmds.ls(sl = True)[0]
-    
-    return sel.split(":")[-2] + ":"
+    if cmds.ls(sl = True):
+        sel = cmds.ls(sl = True)[0]
+        return sel.split(":")[-2] + ":"
+    else:
+        return ""
 
 def getPrefix():
-    sel = cmds.ls(sl = True)[0]
-    if len(sel.split(":")) == 2:
-        return ""
+    if cmds.ls(sl = True):
+        sel = cmds.ls(sl = True)[0]
+        if len(sel.split(":")) == 2:
+            return ""
+        else:
+            return sel.split(":")[0] + ":"
     else:
-        return sel.split(":")[0] + ":"
+        return ""
 
 def getChar():
-    sel = cmds.ls(sl = True, l = True)[0]
-    char = sel.split("|")[0]
+    if cmds.ls(sl = True):
+        sel = cmds.ls(sl = True, l = True)[0]
+        char = sel.split("|")[0]
 
-    return char    
+        return char 
+    else:
+        return ""   
 
 def getFromSelected(char, obj):
     """
@@ -166,6 +174,8 @@ def convert(prefix = "", side = "LArm:"):
     char = getChar()
     blend_node = prefix + side + Data.blend_node
     blend_node = getFromSelected(char, blend_node)
+    if not blend_node:
+        return 
     state = cmds.getAttr(blend_node + Data.blend_attr)
 
     if state == 1:
@@ -190,9 +200,10 @@ def bake(frame = []):
     
     data = {}
     cmds.refresh(su = True)
+    
     if state == 1:
         #copy data
-        for fr in range(frame[0], frame[1]):
+        for fr in range(frame[0], frame[1] + 1):
             cmds.currentTime(fr)
             data[fr] = fkToIkConv(prefix = prefix, side = side, convert = False)
             cmds.select(sel)
@@ -201,7 +212,8 @@ def bake(frame = []):
         #paste data
         temp_loc_ctrl = cmds.spaceLocator()
         temp_loc_pv = cmds.spaceLocator()
-        for fr in range(frame[0], frame[1]):
+        for fr in range(frame[0], frame[1] + 1):
+            print fr
             #fk to ik
             cmds.currentTime(fr)
             cmds.setAttr(blend_node + Data.blend_attr, 0)
@@ -235,14 +247,14 @@ def bake(frame = []):
     
     elif state == 0:
         #copy data
-        for fr in range(frame[0], frame[1]):
+        for fr in range(frame[0], frame[1] + 1):
             cmds.currentTime(fr)
             data[fr] = ikToFkConv(prefix = prefix, side = side, convert = False)
             cmds.select(sel)
         cmds.setKeyframe(blend_node, attribute = Data.blend_attr, t = [frame[0] - 1, frame[0] -1])
         #paste data
         temp_loc = cmds.spaceLocator()
-        for fr in range(frame[0], frame[1]):
+        for fr in range(frame[0], frame[1] + 1):
             #fk to ik
             cmds.currentTime(fr)
             cmds.setAttr(blend_node + Data.blend_attr, 1)

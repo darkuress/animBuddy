@@ -58,8 +58,8 @@ class UIJustinToolbar:
         if cmds.checkBox(self.checkBoxBake, q = True, v = True):
             bake = True
         if bake:
-            startFrame = int(cmds.textField(self.textFieldStartFrame, q = True, text = True))
-            endFrame = int(cmds.textField(self.textFieldEndFrame, q = True, text = True))
+            startFrame = int(float(cmds.textField(self.textFieldStartFrame, q = True, text = True)))
+            endFrame = int(float(cmds.textField(self.textFieldEndFrame, q = True, text = True)))
             Core.bake(frame = [startFrame, endFrame])
         else:
             Core.convert(prefix = Core.getPrefix(), side = Core.getSide())
