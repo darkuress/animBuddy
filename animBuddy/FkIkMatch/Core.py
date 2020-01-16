@@ -213,7 +213,6 @@ def bake(frame = []):
         temp_loc_ctrl = cmds.spaceLocator()
         temp_loc_pv = cmds.spaceLocator()
         for fr in range(frame[0], frame[1] + 1):
-            print fr
             #fk to ik
             cmds.currentTime(fr)
             cmds.setAttr(blend_node + Data.blend_attr, 0)
