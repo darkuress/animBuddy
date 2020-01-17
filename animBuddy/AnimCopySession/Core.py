@@ -59,8 +59,8 @@ class AnimCopySession:
                         for i in range(len(self.data[obj][attr]['tc'])):
                             try:
                                 cmds.setKeyframe(obj + '.' + attr, 
-                                                t = self.data[obj][attr]['tc'][i],
-                                                v = self.data[obj][attr]['vc'][i])
+                                                 t = self.data[obj][attr]['tc'][i],
+                                                 v = self.data[obj][attr]['vc'][i])
                                 cmds.keyTangent(obj + '.' + attr, 
                                                 inTangentType = data[obj][attr]['inTangentType'][i],
                                                 outTangentType = data[obj][attr]['outTangentType'][i], 

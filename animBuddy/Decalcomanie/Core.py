@@ -112,8 +112,6 @@ def run(mode = 'pose'):
                                            'inWeight' : cmds.keyTangent(sel + '.' + attr, inWeight = True, q = True),
                                            'outWeight' : cmds.keyTangent(sel + '.' + attr, outWeight = True, q = True),
                                            'weightedTangents' : cmds.keyTangent(sel + '.' + attr, weightedTangents = True, q = True)}
-
-        print data
         #- paste part
         for sel in sels:
             for obj in data.keys():
@@ -123,12 +121,10 @@ def run(mode = 'pose'):
                         if not data[obj][attr]['tc'] == None:
                             for i in range(len(data[obj][attr]['tc'])):
                                 try:
-                                    print data[obj][attr]['outTangentType'][i]
                                     cmds.setKeyframe(obj + '.' + attr, 
                                                     t = data[obj][attr]['tc'][i],
                                                     v = data[obj][attr]['vc'][i])
                                     cmds.keyTangent(obj + '.' + attr,
-                                                    t = (data[obj][attr]['tc'][i], data[obj][attr]['tc'][i]),
                                                     inTangentType = data[obj][attr]['inTangentType'][i],
                                                     outTangentType = data[obj][attr]['outTangentType'][i],
                                                     inAngle = data[obj][attr]['inAngle'][i],
