@@ -80,19 +80,31 @@ def run(mode = 'pose'):
                 data[selRep] = {}
                 for attr in attrs:
                         data[selRep][attr] = {'tc' : cmds.keyframe(sel + '.' + attr, q = True, tc = True), 
-                                              'vc' : cmds.keyframe(sel + '.' + attr, q = True, vc = True)}
+                                              'vc' : cmds.keyframe(sel + '.' + attr, q = True, vc = True),
+                                              'inTangentType' : cmds.keyTangent(sel + '.' + attr, inTangentType = True, q = True),
+                                              'outTangentType' : cmds.keyTangent(sel + '.' + attr, outTangentType = True, q = True),
+                                              'inAngle' : cmds.keyTangent(sel + '.' + attr, inAngle = True, q = True),
+                                              'outAngle' : cmds.keyTangent(sel + '.' + attr, outAngle = True, q = True)}
             else:
                 data[sel] = {}
                 revAttr = ['rotateY']
                 for attr in attrs:
                     if attr in revAttr: 
                         data[sel][attr] = {'tc' : cmds.keyframe(sel + '.' + attr, q = True, tc = True), 
-                                                'vc' : [-1 * x for x in cmds.keyframe(sel + '.' + attr, q = True, vc = True)]}
+                                           'vc' : [-1 * x for x in cmds.keyframe(sel + '.' + attr, q = True, vc = True)],
+                                           'inTangentType' : cmds.keyTangent(sel + '.' + attr, inTangentType = True, q = True),
+                                           'outTangentType' : cmds.keyTangent(sel + '.' + attr, outTangentType = True, q = True),
+                                           'inAngle' : cmds.keyTangent(sel + '.' + attr, inAngle = True, q = True),
+                                           'outAngle' : cmds.keyTangent(sel + '.' + attr, outAngle = True, q = True)}
                     else:
                         data[sel][attr] = {'tc' : cmds.keyframe(sel + '.' + attr, q = True, tc = True), 
-                                                'vc' : cmds.keyframe(sel + '.' + attr, q = True, vc = True)}
+                                           'vc' : cmds.keyframe(sel + '.' + attr, q = True, vc = True),
+                                           'inTangentType' : cmds.keyTangent(sel + '.' + attr, inTangentType = True, q = True),
+                                           'outTangentType' : cmds.keyTangent(sel + '.' + attr, outTangentType = True, q = True),
+                                           'inAngle' : cmds.keyTangent(sel + '.' + attr, inAngle = True, q = True),
+                                           'outAngle' : cmds.keyTangent(sel + '.' + attr, outAngle = True, q = True)}
 
-            #- paste part
+        #- paste part
         for sel in sels:
             for obj in data.keys():
                 for attr in data[obj].keys():
@@ -104,5 +116,10 @@ def run(mode = 'pose'):
                                     cmds.setKeyframe(obj + '.' + attr, 
                                                     t = data[obj][attr]['tc'][i],
                                                     v = data[obj][attr]['vc'][i])
+                                    cmds.keyTangent(obj + '.' + attr, 
+                                                    inTangentType = data[obj][attr]['inTangentType'][i],
+                                                    outTangentType = data[obj][attr]['outTangentType'][i], 
+                                                    inAngle = data[obj][attr]['inAngle'][i],
+                                                    outAngle = data[obj][attr]['outAngle'][i])
                                 except:
                                     pass

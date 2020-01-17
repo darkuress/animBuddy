@@ -30,7 +30,11 @@ class AnimCopySession:
         attrs = cmds.listAttr(sel, keyable = True)
         for attr in attrs:
             self.data[sel][attr] = {'tc' : cmds.keyframe(sel + '.' + attr, q = True, tc = True), 
-                                    'vc' : cmds.keyframe(sel + '.' + attr, q = True, vc = True)}
+                                    'vc' : cmds.keyframe(sel + '.' + attr, q = True, vc = True),
+                                    'inTangentType' : cmds.keyTangent(sel + '.' + attr, inTangentType = True, q = True),
+                                    'outTangentType' : cmds.keyTangent(sel + '.' + attr, outTangentType = True, q = True),
+                                    'inAngle' : cmds.keyTangent(sel + '.' + attr, inAngle = True, q = True),
+                                    'outAngle' : cmds.keyTangent(sel + '.' + attr, outAngle = True, q = True)}
                      
     def copy(self):
         """
@@ -54,6 +58,11 @@ class AnimCopySession:
                                 cmds.setKeyframe(obj + '.' + attr, 
                                                 t = self.data[obj][attr]['tc'][i],
                                                 v = self.data[obj][attr]['vc'][i])
+                                cmds.keyTangent(obj + '.' + attr, 
+                                                inTangentType = data[obj][attr]['inTangentType'][i],
+                                                outTangentType = data[obj][attr]['outTangentType'][i], 
+                                                inAngle = data[obj][attr]['inAngle'][i],
+                                                outAngle = data[obj][attr]['outAngle'][i])
                             except:
                                 pass
                 else:
