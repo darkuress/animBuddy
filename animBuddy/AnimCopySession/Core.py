@@ -34,7 +34,10 @@ class AnimCopySession:
                                     'inTangentType' : cmds.keyTangent(sel + '.' + attr, inTangentType = True, q = True),
                                     'outTangentType' : cmds.keyTangent(sel + '.' + attr, outTangentType = True, q = True),
                                     'inAngle' : cmds.keyTangent(sel + '.' + attr, inAngle = True, q = True),
-                                    'outAngle' : cmds.keyTangent(sel + '.' + attr, outAngle = True, q = True)}
+                                    'outAngle' : cmds.keyTangent(sel + '.' + attr, outAngle = True, q = True),
+                                    'inWeight' : cmds.keyTangent(sel + '.' + attr, inWeight = True, q = True),
+                                    'outWeight' : cmds.keyTangent(sel + '.' + attr, outWeight = True, q = True),
+                                    'weightedTangents' : cmds.keyTangent(sel + '.' + attr, weightedTangents = True, q = True)}
                      
     def copy(self):
         """
@@ -62,7 +65,10 @@ class AnimCopySession:
                                                 inTangentType = data[obj][attr]['inTangentType'][i],
                                                 outTangentType = data[obj][attr]['outTangentType'][i], 
                                                 inAngle = data[obj][attr]['inAngle'][i],
-                                                outAngle = data[obj][attr]['outAngle'][i])
+                                                outAngle = data[obj][attr]['outAngle'][i],
+                                                inWeight = data[obj][attr]['inWeight'][i],
+                                                outWeight = data[obj][attr]['outWeight'][i],
+                                                weightedTangents = data[obj][attr]['weightedTangents'][i])
                             except:
                                 pass
                 else:

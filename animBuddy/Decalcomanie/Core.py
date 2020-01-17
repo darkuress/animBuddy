@@ -79,12 +79,15 @@ def run(mode = 'pose'):
                 selRep = prefix(sel)[1] + selCut
                 data[selRep] = {}
                 for attr in attrs:
-                        data[selRep][attr] = {'tc' : cmds.keyframe(sel + '.' + attr, q = True, tc = True), 
-                                              'vc' : cmds.keyframe(sel + '.' + attr, q = True, vc = True),
-                                              'inTangentType' : cmds.keyTangent(sel + '.' + attr, inTangentType = True, q = True),
-                                              'outTangentType' : cmds.keyTangent(sel + '.' + attr, outTangentType = True, q = True),
-                                              'inAngle' : cmds.keyTangent(sel + '.' + attr, inAngle = True, q = True),
-                                              'outAngle' : cmds.keyTangent(sel + '.' + attr, outAngle = True, q = True)}
+                    data[selRep][attr] = {'tc' : cmds.keyframe(sel + '.' + attr, q = True, tc = True), 
+                                            'vc' : cmds.keyframe(sel + '.' + attr, q = True, vc = True),
+                                            'inTangentType' : cmds.keyTangent(sel + '.' + attr, inTangentType = True, q = True),
+                                            'outTangentType' : cmds.keyTangent(sel + '.' + attr, outTangentType = True, q = True),
+                                            'inAngle' : cmds.keyTangent(sel + '.' + attr, inAngle = True, q = True),
+                                            'outAngle' : cmds.keyTangent(sel + '.' + attr, outAngle = True, q = True),
+                                            'inWeight' : cmds.keyTangent(sel + '.' + attr, inWeight = True, q = True),
+                                            'outWeight' : cmds.keyTangent(sel + '.' + attr, outWeight = True, q = True),
+                                            'weightedTangents' : cmds.keyTangent(sel + '.' + attr, weightedTangents = True, q = True)}
             else:
                 data[sel] = {}
                 revAttr = ['rotateY']
@@ -95,15 +98,22 @@ def run(mode = 'pose'):
                                            'inTangentType' : cmds.keyTangent(sel + '.' + attr, inTangentType = True, q = True),
                                            'outTangentType' : cmds.keyTangent(sel + '.' + attr, outTangentType = True, q = True),
                                            'inAngle' : cmds.keyTangent(sel + '.' + attr, inAngle = True, q = True),
-                                           'outAngle' : cmds.keyTangent(sel + '.' + attr, outAngle = True, q = True)}
+                                           'outAngle' : cmds.keyTangent(sel + '.' + attr, outAngle = True, q = True),
+                                           'inWeight' : cmds.keyTangent(sel + '.' + attr, inWeight = True, q = True),
+                                           'outWeight' : cmds.keyTangent(sel + '.' + attr, outWeight = True, q = True),
+                                           'weightedTangents' : cmds.keyTangent(sel + '.' + attr, weightedTangents = True, q = True)}
                     else:
                         data[sel][attr] = {'tc' : cmds.keyframe(sel + '.' + attr, q = True, tc = True), 
                                            'vc' : cmds.keyframe(sel + '.' + attr, q = True, vc = True),
                                            'inTangentType' : cmds.keyTangent(sel + '.' + attr, inTangentType = True, q = True),
                                            'outTangentType' : cmds.keyTangent(sel + '.' + attr, outTangentType = True, q = True),
                                            'inAngle' : cmds.keyTangent(sel + '.' + attr, inAngle = True, q = True),
-                                           'outAngle' : cmds.keyTangent(sel + '.' + attr, outAngle = True, q = True)}
+                                           'outAngle' : cmds.keyTangent(sel + '.' + attr, outAngle = True, q = True),
+                                           'inWeight' : cmds.keyTangent(sel + '.' + attr, inWeight = True, q = True),
+                                           'outWeight' : cmds.keyTangent(sel + '.' + attr, outWeight = True, q = True),
+                                           'weightedTangents' : cmds.keyTangent(sel + '.' + attr, weightedTangents = True, q = True)}
 
+        print data
         #- paste part
         for sel in sels:
             for obj in data.keys():
@@ -113,13 +123,18 @@ def run(mode = 'pose'):
                         if not data[obj][attr]['tc'] == None:
                             for i in range(len(data[obj][attr]['tc'])):
                                 try:
+                                    print data[obj][attr]['outTangentType'][i]
                                     cmds.setKeyframe(obj + '.' + attr, 
                                                     t = data[obj][attr]['tc'][i],
                                                     v = data[obj][attr]['vc'][i])
-                                    cmds.keyTangent(obj + '.' + attr, 
+                                    cmds.keyTangent(obj + '.' + attr,
+                                                    t = (data[obj][attr]['tc'][i], data[obj][attr]['tc'][i]),
                                                     inTangentType = data[obj][attr]['inTangentType'][i],
-                                                    outTangentType = data[obj][attr]['outTangentType'][i], 
+                                                    outTangentType = data[obj][attr]['outTangentType'][i],
                                                     inAngle = data[obj][attr]['inAngle'][i],
-                                                    outAngle = data[obj][attr]['outAngle'][i])
+                                                    outAngle = data[obj][attr]['outAngle'][i],
+                                                    inWeight = data[obj][attr]['inWeight'][i],
+                                                    outWeight = data[obj][attr]['outWeight'][i],
+                                                    weightedTangents = data[obj][attr]['weightedTangents'][i])
                                 except:
                                     pass
