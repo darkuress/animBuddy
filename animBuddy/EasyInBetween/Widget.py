@@ -137,6 +137,7 @@ def easyInBetweenChange2(value=None, *args):
             Core.changeSelectedKey(0)
         else:
             Core.changeSelectedKey(value)
+    afterDrop()
 
 
 def readEIBMode():
