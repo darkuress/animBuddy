@@ -4,14 +4,6 @@ from functools import partial
 from animBuddy.FkIkMatch import Core
 reload(Core)
 
-#- initialize window
-if cmds.window('UIJustinToolBar', ex = True):
-    cmds.deleteUI('UIJustinToolBar')    
-try:
-    cmds.deleteUI('justinToolbar')   
-except:
-    pass 
-
 class UIJustinToolbar:
     """
     """
@@ -23,6 +15,8 @@ class UIJustinToolbar:
         imagesPath = os.path.join(filePath, 'images')
         iconSize = 25
         marginSize = 0
+        if cmds.window('UIJustinToolBar', ex = True):
+            return
         self.win = cmds.window('UIJustinToolBar', width=500, title = 'Justin Manager')
         self.frameLayoutMain = cmds.frameLayout(labelVisible = False, 
                                                 w = 10, 
@@ -36,7 +30,9 @@ class UIJustinToolbar:
         cmds.rowLayout(numberOfColumns = 1)
         cmds.setParent("..")
         cmds.rowLayout(numberOfColumns = 7)
-        cmds.button(label = 'FKIK', c = self.fkikSwitch)
+        cmds.button(label = 'FKIK',
+                    annotation = 'select any arm controller and run', 
+                    c = self.fkikSwitch)
         cmds.separator(height = 10, width = 10, style = 'none')
         self.checkBoxBake = cmds.checkBox(label = "bake", cc = self.bakeTextBoxEnable)
         self.textFieldStartFrame = cmds.textField(width = 50, text = cmds.playbackOptions(minTime = True, q = True))
@@ -93,9 +89,6 @@ class UIJustinToolbar:
     def loadInMaya(self, *args):
         """
         """
-        try:
-            cmds.deleteUI('justinToolbar')   
-        except:
-            pass 
-        allowedAreas = ['top', 'bottom']
-        cmds.toolBar('justinToolbar', area='bottom', content=self.win, allowedArea=allowedAreas )
+        if not cmds.toolBar('justinToolbar', exists = True):  
+            allowedAreas = ['top', 'bottom']
+            cmds.toolBar('justinToolbar', area='bottom', content=self.win, allowedArea=allowedAreas )

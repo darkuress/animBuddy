@@ -28,8 +28,5 @@ def build(parent,
 def expandSelectionToolbar(*args):
     """
     """
-    if cmds.window('UISelectionToolBar', ex=True):
-        cmds.deleteUI('UISelectionToolBar')
-    else:
-        ui = UISelectionToolBar.UISelectionToolBar()
-        ui.loadInMaya()
+    ui = UISelectionToolBar.UISelectionToolBar()
+    ui.loadInMaya()

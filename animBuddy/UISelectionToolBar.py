@@ -4,14 +4,6 @@ from functools import partial
 from SelectionGrp import Core as SGP
 reload(SGP)
 
-#- initialize window
-if cmds.window('UISelectionToolBar', ex = True):
-    cmds.deleteUI('UISelectionToolBar')    
-try:
-    cmds.deleteUI('sgToolbar')   
-except:
-    pass 
-    
 class UISelectionToolBar:
     """
     """
@@ -24,7 +16,10 @@ class UISelectionToolBar:
         iconSize = 25
         marginSize = 0
         self.SGP = SGP.SelectionGrp()
-               
+        
+        if cmds.window('UISelectionToolBar', ex = True):
+            return 
+
         self.win = cmds.window('UISelectionToolBar', width=500, title = 'Selection Manager')
         self.frameLayoutMain = cmds.frameLayout(labelVisible = False, 
                                                 w = 10, 
@@ -203,11 +198,8 @@ class UISelectionToolBar:
     def loadInMaya(self, *args):
         """
         """
-        try:
-            cmds.deleteUI('sgToolbar')   
-        except:
-            pass 
-        allowedAreas = ['top', 'bottom']
-        sgToolBar = cmds.toolBar('sgToolbar', area='bottom', content=self.win, allowedArea=allowedAreas )
-        self.buildButton()
+        if not cmds.toolBar('sgToolbar', exists = True):  
+            allowedAreas = ['top', 'bottom']
+            sgToolBar = cmds.toolBar('sgToolbar', area='bottom', content=self.win, allowedArea=allowedAreas )
+            self.buildButton()
 

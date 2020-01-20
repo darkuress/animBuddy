@@ -46,6 +46,7 @@ class DrawNode(OpenMayaUI.MPxLocatorNode):
         lineColorAttr     = OpenMaya.MFnNumericAttribute()
         travelerColorAttr = OpenMaya.MFnNumericAttribute()
         modeAttr          = OpenMaya.MFnNumericAttribute()
+        relativeAttr      = OpenMaya.MFnNumericAttribute()
         DrawNodeDrawOverride.size            = sizeAttr.create("size", "sz", OpenMaya.MFnNumericData.kFloat, 0.15 )
         DrawNodeDrawOverride.keySize         = keySizeAttr.create("keyFrameSize", "ksz", OpenMaya.MFnNumericData.kFloat, 0.2 )
         DrawNodeDrawOverride.timeBuffer      = bufferAttr.create("timeBuffer", "tb", OpenMaya.MFnNumericData.kInt, 11)
@@ -55,6 +56,7 @@ class DrawNode(OpenMayaUI.MPxLocatorNode):
         DrawNodeDrawOverride.lineColor       = lineColorAttr.create("lineColor", "lc", OpenMaya.MFnNumericData.k3Float, 0.0)
         DrawNodeDrawOverride.travelerColor   = travelerColorAttr.create("travelerColor", "tlc", OpenMaya.MFnNumericData.k3Float, 0.0)
         DrawNodeDrawOverride.mode            = modeAttr.create("mode", "md", OpenMaya.MFnNumericData.kInt, 1)
+        DrawNodeDrawOverride.isRelative      = relativeAttr.create("isRelative", "irt", OpenMaya.MFnNumericData.kBoolean, False)
         sizeAttr.storable          = True
         keySizeAttr.storable       = True
         bufferAttr.storable        = True
@@ -64,6 +66,7 @@ class DrawNode(OpenMayaUI.MPxLocatorNode):
         lineColorAttr.storable     = True
         travelerColorAttr.storable = True
         modeAttr.storable          = True
+        relativeAttr.storable      = True
         OpenMaya.MPxNode.addAttribute(DrawNodeDrawOverride.size)
         OpenMaya.MPxNode.addAttribute(DrawNodeDrawOverride.keySize)
         OpenMaya.MPxNode.addAttribute(DrawNodeDrawOverride.timeBuffer)
@@ -73,6 +76,7 @@ class DrawNode(OpenMayaUI.MPxLocatorNode):
         OpenMaya.MPxNode.addAttribute(DrawNodeDrawOverride.lineColor)
         OpenMaya.MPxNode.addAttribute(DrawNodeDrawOverride.travelerColor)    
         OpenMaya.MPxNode.addAttribute(DrawNodeDrawOverride.mode)
+        OpenMaya.MPxNode.addAttribute(DrawNodeDrawOverride.isRelative)
 
 class DrawNodeData(OpenMaya.MUserData):
     def __init__(self):
@@ -144,7 +148,9 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         timeBuffer = timeBufferPlug.asInt()
         modePlug = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.mode)
         data.mode = modePlug.asInt()
-        
+        relativePlug = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.isRelative)
+        isRelative = relativePlug.asBool()
+      
         keyFrames = []
         if cmds.keyframe(data.name, q = True, tc = True):
             keyFrames  = list(set(cmds.keyframe(data.name, q = True, tc = True)))
@@ -165,20 +171,21 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         self.callbacks.append(OpenMayaAnim.MAnimMessage.addAnimKeyframeEditedCallback(self.keyFrameEditedCallback))
         self.callbacks.append(OpenMaya.MEventMessage.addEventCallback('graphEditorChanged', self.graphEditorChangedCallback))
         
-        if not self.isPointCached:
-            self.allPoints = {}
-            for i in range(data.startFrame, data.endFrame):
-                timeContext = OpenMaya.MDGContext(OpenMaya.MTime(i))
-                
-                #Finally get the data  
-                pointMMatrix = OpenMaya.MFnMatrixData(pointPlug.asMObject(timeContext)).matrix()
-                relativePoint = (pointMMatrix[12], pointMMatrix[13], pointMMatrix[14])
+        if not isRelative:
+            if not self.isPointCached:
+                self.allPoints = {}
+                for i in range(data.startFrame, data.endFrame):
+                    timeContext = OpenMaya.MDGContext(OpenMaya.MTime(i))
+                    
+                    #Finally get the data  
+                    pointMMatrix = OpenMaya.MFnMatrixData(pointPlug.asMObject(timeContext)).matrix()
+                    relativePoint = (pointMMatrix[12], pointMMatrix[13], pointMMatrix[14])
 
-                if i in keyFrames:
-                    self.allPoints[i] = (relativePoint, 1)
-                else:
-                    self.allPoints[i] = (relativePoint, 0)
-            self.isPointCached = True
+                    if i in keyFrames:
+                        self.allPoints[i] = (relativePoint, 1)
+                    else:
+                        self.allPoints[i] = (relativePoint, 0)
+                self.isPointCached = True
 
         points = {}
         for i in range(int(currentTime.value - timeBuffer), int(currentTime.value + timeBuffer + 1)):

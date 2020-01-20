@@ -28,9 +28,6 @@ def build(parent,
 def expandToolBar(*args):
     """
     """
-    if cmds.window('UIJustinToolBar', ex=True):
-        cmds.deleteUI('UIJustinToolBar')
-    else:
-        ui = UIJustinToolbar.UIJustinToolbar()
-        ui.loadInMaya()    
+    ui = UIJustinToolbar.UIJustinToolbar()
+    ui.loadInMaya()    
 
