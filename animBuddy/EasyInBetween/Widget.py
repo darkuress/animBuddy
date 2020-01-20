@@ -43,7 +43,7 @@ def build(parent,
     cmds.text(label="0.0")
     cmds.separator(height=5, width=36, style='none')
     cmds.text(label="0.5")
-    cmds.separator(height=5, width=70, style='none')
+    cmds.separator(height=5, width=66, style='none')
     cmds.text(label="1.0")
     cmds.separator(height=5, width=34, style='none')
     cmds.setParent("..")
