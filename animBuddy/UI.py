@@ -87,7 +87,7 @@ class UI(Preference.Preference):
         """
         result = cmds.promptDialog(title = 'License Registration',
                                    message = 'Enter License Key',
-                                   button = ['ok', 'Request Trial License', 'cancel'],
+                                   button = ['ok', 'Request License Key', 'cancel'],
                                    defaultButton = 'ok',
                                    cancelButton = 'cancel',
                                    dismissString = 'cancel')
