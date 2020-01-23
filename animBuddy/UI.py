@@ -96,7 +96,7 @@ class UI(Preference.Preference):
                 return cmds.promptDialog(q = True, text = True)
             else:
                 return "dummyString"
-        elif result == 'Request Trial License':
+        elif result == 'Request License Key':
             x = TrialVersionRequestUI()
             x.run()
         else:
