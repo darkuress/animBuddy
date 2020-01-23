@@ -86,16 +86,19 @@ class UI(Preference.Preference):
         """
         """
         result = cmds.promptDialog(title = 'License Registration',
-                                    message = 'Enter License Key',
-                                    button = ['ok', 'cancel'],
-                                    defaultButton = 'ok',
-                                    cancelButton = 'cancel',
-                                    dismissString = 'cancel')
+                                   message = 'Enter License Key',
+                                   button = ['ok', 'Request Trial License', 'cancel'],
+                                   defaultButton = 'ok',
+                                   cancelButton = 'cancel',
+                                   dismissString = 'cancel')
         if result == 'ok':
             if cmds.promptDialog(q = True, text = True):
                 return cmds.promptDialog(q = True, text = True)
             else:
                 return "dummyString"
+        elif result == 'Request Trial License':
+            x = TrialVersionRequestUI()
+            x.run()
         else:
             return False       
 
@@ -122,4 +125,48 @@ class UI(Preference.Preference):
         """
         # Running
         exec(cn.connect('runUI', self.licenseKey))
+
+class TrialVersionRequestUI(object):
+    def __init__(self):
+        if cmds.window('trialWindow', ex = True):
+            cmds.deleteUI('trialWindow')
+        self.window = cmds.window('trialWindow', title = 'Trial Request', width = 400, height = 300)
+        cmds.columnLayout()
+        cmds.rowColumnLayout( numberOfColumns=2, columnAttach=(1, 'right', 0), columnWidth=[(1, 100), (2, 250)] )
+        cmds.text(label='User Name')
+        self.username = cmds.textField()
+        cmds.text(label='Email Address' )
+        self.emailAddr = cmds.textField()
+        cmds.setParent("..")
+        cmds.frameLayout(width = 350, labelVisible = False)
+        cmds.rowColumnLayout(numberOfColumns = 3, adjustableColumn = 1, columnAttach=([1, 'right', 0]))
+        cmds.separator(style = 'none')
+        cmds.button(label = 'Submit', c = self.submit)
+        cmds.button(label = 'Cancel', c = self.close)
+    
+    def submit(self, *args):
+        """
+        """
+        name = cmds.textField(self.username, q = True, text = True)
+        email = cmds.textField(self.emailAddr, q = True, text = True)
+        import Connection as cn
+        licenseKey = cn.Connection.getLicense("addLicense", name, email)
+
+        if licenseKey == 1:
+            cmds.confirmDialog(title = 'confirm', message = "Username already exists")
+        elif licenseKey == 2:
+            cmds.confirmDialog(title = 'confirm', message = "Email already exists")
+        else:
+            License.License.writeLicense(licenseKey)
+
+            x = UI()
+            x.loadInMaya()
+
+            self.close()
+
+    def close(self, *args):
+        cmds.deleteUI('trialWindow')
+
+    def run(self):
+        cmds.showWindow(self.window)
 

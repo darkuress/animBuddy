@@ -19,7 +19,7 @@ def getCam():
     cam = cmds.lookThru(q = True)
     return cam    
     
-def makeCameraRelative(pointMatrix, camera, time):
+def makeCameraRelative(pointMatrix, camera, time, currentTime):
     """
     sets points of given motionTrail to projected points to given camera from 
     given startTime to length of motionTrail Points
@@ -32,7 +32,7 @@ def makeCameraRelative(pointMatrix, camera, time):
         return (pointMatrix[12], pointMatrix[13], pointMatrix[14])
     
     camLocal = getApiMatrix(cmds.getAttr(camera + ".wm", time = time))
-    camWorldCurrent = getApiMatrix(cmds.getAttr(camera + '.wm', time = cmds.currentTime(q = True)))
+    camWorldCurrent = getApiMatrix(cmds.getAttr(camera + '.wm', time = currentTime))
     localMatrix = pointMatrix * camLocal.inverse()
     worldMatrix = localMatrix * camWorldCurrent
     mt = OpenMaya.MTransformationMatrix(worldMatrix)

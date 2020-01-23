@@ -99,6 +99,8 @@ class DrawNodeData(OpenMaya.MUserData):
         #mode 2 = timebuffer only, 1 = all frames
         self.mode     = 1
 
+        self.isRelative = False
+
 class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
     size          = None
     keySize       = None
@@ -122,6 +124,7 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
 
         self.isPointCached = False
         self.allPoints = {}
+        self.allFramePoints = {}
         self.callbacks = []
 
     def getDepNode(self, n):
@@ -149,8 +152,8 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         modePlug = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.mode)
         data.mode = modePlug.asInt()
         relativePlug = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.isRelative)
-        isRelative = relativePlug.asBool()
-      
+        data.isRelative = relativePlug.asBool()
+
         keyFrames = []
         if cmds.keyframe(data.name, q = True, tc = True):
             keyFrames  = list(set(cmds.keyframe(data.name, q = True, tc = True)))
@@ -171,8 +174,8 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         self.callbacks.append(OpenMayaAnim.MAnimMessage.addAnimKeyframeEditedCallback(self.keyFrameEditedCallback))
         self.callbacks.append(OpenMaya.MEventMessage.addEventCallback('graphEditorChanged', self.graphEditorChangedCallback))
         
-        if not isRelative:
-            if not self.isPointCached:
+        if not data.isRelative:
+            if not self.isPointCached or not self.allPoints.keys():
                 self.allPoints = {}
                 for i in range(data.startFrame, data.endFrame):
                     timeContext = OpenMaya.MDGContext(OpenMaya.MTime(i))
@@ -186,18 +189,51 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
                     else:
                         self.allPoints[i] = (relativePoint, 0)
                 self.isPointCached = True
+        else:
+            if not self.isPointCached or not self.allFramePoints.keys():
+                self.allFramePoints = {}
+
+                for currentFrame in range(data.startFrame, data.endFrame):
+                    self.allFramePoints[currentFrame] = {}
+                    for i in range(data.startFrame, data.endFrame):
+                        timeContext = OpenMaya.MDGContext(OpenMaya.MTime(i))
+                        
+                        #Finally get the data  
+                        pointMMatrix = OpenMaya.MFnMatrixData(pointPlug.asMObject(timeContext)).matrix()
+                        relativePoint = util.makeCameraRelative(pointMMatrix, activeCam, i, currentFrame)
+
+                        if i in keyFrames:
+                            self.allFramePoints[currentFrame][i] = (relativePoint, 1)
+                        else:
+                            self.allFramePoints[currentFrame][i] = (relativePoint, 0)
 
         points = {}
-        for i in range(int(currentTime.value - timeBuffer), int(currentTime.value + timeBuffer + 1)):
-            #Get matrix plug as MObject so we can get it's data.
-            
+        if not data.isRelative:
+            for i in range(int(currentTime.value - timeBuffer), int(currentTime.value + timeBuffer + 1)):
+                #Get matrix plug as MObject so we can get it's data.
+                
+                try:
+                    points[i] = self.allPoints[i]
+                except:
+                    pass
+        else:
+            for i in range(int(currentTime.value - timeBuffer), int(currentTime.value + timeBuffer + 1)):
+                #Get matrix plug as MObject so we can get it's data.
+                
+                try:
+                    points[i] = self.allFramePoints[currentTime.value][i]
+                except:
+                    pass
+                
+        data.points = points
+        
+        if not data.isRelative:
+            data.allPoints = self.allPoints
+        else:
             try:
-                points[i] = self.allPoints[i]
+                data.allPoints = self.allFramePoints[currentTime.value]
             except:
                 pass
-
-        data.points = points
-        data.allPoints = self.allPoints
 
         dotColorPlug      = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.dotColor)
         keyFrameColorPlug = OpenMaya.MPlug(thisNode, DrawNodeDrawOverride.keyFrameColor)
