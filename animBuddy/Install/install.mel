@@ -94,16 +94,16 @@ if not os.path.exists(PIP_PATH):\n\
     print(subprocess.check_output(cmd))\n\
 \n\
 # Install AnimBuddy\n\
-if os.path.exists(ANIMBUDDY_INSTALL_PATH):\n\
-    shutil.rmtree(ANIMBUDDY_INSTALL_PATH, ignore_errors = True)\n\
+#if os.path.exists(ANIMBUDDY_INSTALL_PATH):\n\
+#    shutil.rmtree(ANIMBUDDY_INSTALL_PATH, ignore_errors = True)\n\
 \n\
-cmd = '{0} install --ignore-installed --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,\n\
+cmd = '{0} install --force-reinstall --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,\n\
                                                                 ANIMBUDDY_API_RELEASE_PATH).split(' ')\n\
 print('Calling shell command: {0}'.format(cmd))\n\
 print(subprocess.check_output(cmd))\n\
 \n\
 # Install Requests\n\
-cmd = '{0} install --ignore-installed --target={1} {2}'.format(PIP_PATH, REQUEST_INSTALL_PATH,\n\
+cmd = '{0} install --force-reinstall --target={1} {2}'.format(PIP_PATH, REQUEST_INSTALL_PATH,\n\
                                                                 'requests').split(' ')\n\
 print('Calling shell command: {0}'.format(cmd))\n\
 print(subprocess.check_output(cmd))\n\
