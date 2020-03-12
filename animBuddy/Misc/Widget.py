@@ -13,6 +13,8 @@ from animBuddy.Install import version
 reload(version)
 from animBuddy.Install import install
 reload(install)
+from animBuddy.Install import uninstall
+reload(uninstall)
 from animBuddy import License
 reload(License)
 
@@ -31,6 +33,7 @@ def build(parent,
                         annotation = 'Preference')
     cmds.popupMenu()
     cmds.menuItem(label = "About", c = about)
+    cmds.menuItem(label = "Uninstall", c = about)
     cmds.menuItem(label = "Check for update", c = versionCheck)
     cmds.menuItem(divider = True)
     cmds.menuItem(label = "Preference", c = prefUI)
@@ -91,6 +94,17 @@ def about(*args):
                        button = ['Ok'], 
                        defaultButton='Ok', 
                        dismissString='Ok' )
+
+def unInstall(*args):
+    """
+    """
+    q = cmds.confirmDialog(title ='Anim Buddy UnInstall', 
+                           message ='Do You really want to uninstall?', 
+                           button = ['Yes', 'No'], 
+                           defaultButton='Ok', 
+                           dismissString='Ok' )   
+    if q == 'Yes':
+        uninstall.run()
 
 def closeUI(*args):
     """
