@@ -100,9 +100,9 @@ def unInstall(*args):
     """
     q = cmds.confirmDialog(title ='Anim Buddy UnInstall', 
                            message ='Do You really want to uninstall?', 
-                           button = ['Yes', 'No'], 
+                           button = ['Yes', 'No', 'Cancel'], 
                            defaultButton='Ok', 
-                           dismissString='Ok' )   
+                           dismissString='Cancel')   
     if q == 'Yes':
         uninstall.run()
 
