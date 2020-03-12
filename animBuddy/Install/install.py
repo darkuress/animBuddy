@@ -95,14 +95,7 @@ def run():
 
     # Install AnimBuddy
     if os.path.exists(ANIMBUDDY_INSTALL_PATH):
-        try:
-            shutil.rmtree(ANIMBUDDY_INSTALL_PATH)
-        except:
-            pass
-        try:
-            shutil.rmtree(ANIMBUDDY_INSTALL_PATH)
-        except:
-            pass
+        shutil.rmtree(ANIMBUDDY_INSTALL_PATH, ignore_errors = True)
 
     cmd = '{0} install --ignore-installed --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,
                                                                     ANIMBUDDY_API_RELEASE_PATH).split(' ')
