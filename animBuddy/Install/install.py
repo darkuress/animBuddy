@@ -94,8 +94,8 @@ def run():
         print(subprocess.check_output(cmd))
 
     # Install AnimBuddy
-    #if os.path.exists(ANIMBUDDY_INSTALL_PATH):
-    #    shutil.rmtree(ANIMBUDDY_INSTALL_PATH, ignore_errors = True)
+    if os.path.exists(ANIMBUDDY_INSTALL_PATH):
+        shutil.rmtree(ANIMBUDDY_INSTALL_PATH, ignore_errors = True)
 
     cmd = '{0} install --force-reinstall --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,
                                                                     ANIMBUDDY_API_RELEASE_PATH).split(' ')
