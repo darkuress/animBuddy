@@ -33,6 +33,7 @@ def build(parent,
                         annotation = 'Preference')
     cmds.popupMenu()
     cmds.menuItem(label = "About", c = about)
+    cmds.menuItem(label = 'License Number', c = currentLicense)
     cmds.menuItem(label = "Uninstall", c = about)
     cmds.menuItem(label = "Check for update", c = versionCheck)
     cmds.menuItem(divider = True)
@@ -116,6 +117,15 @@ def closeUI(*args):
         cmds.evalDeferred('cmds.deleteUI("abToolBar")')  
     except:
         pass
+
+def currentLicense(*args):
+    """
+    """
+    cmds.confirmDialog(title ='License : ', 
+                       message = License.License.readLicense(), 
+                       button = ['Ok'], 
+                       defaultButton='Ok', 
+                       dismissString='Ok' )
 
 def changeLicence(*args):
     """
