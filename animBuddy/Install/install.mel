@@ -95,7 +95,13 @@ if not os.path.exists(PIP_PATH):\n\
 \n\
 # Install AnimBuddy\n\
 if os.path.exists(ANIMBUDDY_INSTALL_PATH):\n\
-    shutil.rmtree(ANIMBUDDY_INSTALL_PATH, ignore_errors = True)\n\
+    shutil.rmtree(ANIMBUDDY_INSTALL_PATH)\n\
+#delete animBuddy-x.x.x.dist-info\n\
+ppath = os.path.dirname(ANIMBUDDY_INSTALL_PATH)\n\
+for fldr in os.listdir(ppath):\n\
+    if fldr.startswith('animbuddy') and fldr.endswith('dist-info'):\n\
+        ppath = os.path.dirname(ANIMBUDDY_INSTALL_PATH)\n\
+        shutil.rmtree(os.path.join(ppath, fldr))\n\
 \n\
 cmd = '{0} install --force-reinstall --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,\n\
                                                                 ANIMBUDDY_API_RELEASE_PATH).split(' ')\n\
