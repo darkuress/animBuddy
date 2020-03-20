@@ -34,7 +34,7 @@ def build(parent,
     cmds.popupMenu()
     cmds.menuItem(label = "About", c = about)
     cmds.menuItem(label = 'License Number', c = currentLicense)
-    cmds.menuItem(label = "Uninstall", c = about)
+    cmds.menuItem(label = "Uninstall", c = unInstall)
     cmds.menuItem(label = "Check for update", c = versionCheck)
     cmds.menuItem(divider = True)
     cmds.menuItem(label = "Preference", c = prefUI)
@@ -105,6 +105,7 @@ def unInstall(*args):
                            defaultButton='Ok', 
                            dismissString='Cancel')   
     if q == 'Yes':
+        closeUI()
         uninstall.run()
 
 def closeUI(*args):

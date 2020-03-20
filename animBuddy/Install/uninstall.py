@@ -66,6 +66,12 @@ def run():
     if os.path.exists(REQUEST_INSTALL_PATH):
         shutil.rmtree(REQUEST_INSTALL_PATH)
 
+    #delete animBuddy-x.x.x.dist-info
+    ppath = os.path.dirname(ANIMBUDDY_INSTALL_PATH)
+    for fldr in os.listdir(ppath):
+        if fldr.startswith('animBuddy') and fldr.endswith('dist-info'):
+            shutil.rmtree(os.path.join(ppath, fldr))
+
     #adding to userSetup.py so that it runs when maya starts up
     userSetupFile = os.path.join(MAYA_SCRIPTS_PATH, 'userSetup.py')
     delete_list = ["#ANIMBUDDYBOOLALA", "sys.path.append", "animBuddy", "reload(UI)", "x = ", "x.loadInMaya()"] 
