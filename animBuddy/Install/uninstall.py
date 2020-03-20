@@ -74,7 +74,7 @@ def run():
 
     #adding to userSetup.py so that it runs when maya starts up
     userSetupFile = os.path.join(MAYA_SCRIPTS_PATH, 'userSetup.py')
-    delete_list = ["#ANIMBUDDYBOOLALA", "requests", "fron animBuddy", "reload(UI)", "x = UI.UI()", "x.loadInMaya()"] 
+    delete_list = ["#ANIMBUDDYBOOLALA", "requests", "from animBuddy", "reload(UI)", "x = UI.UI()", "x.loadInMaya()"] 
     f = open(userSetupFile, 'r')
     lst = []
     for line in f:
