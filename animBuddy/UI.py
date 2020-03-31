@@ -39,13 +39,13 @@ class UI(Preference.Preference):
         exec(cn.connect('initialize', self.licenseKey))
 
         # adding widgets
-        widgets = ['Justin', 'Warrior', 'separator', 
-                   'ShiftKey', 'MicroControl','separator', 
-                   'EasyInBetween', 'separator',
-                   'MagicLocator', 'FakeConIt', 'ExFootStep', 'SnapIt', 'LockDown', 'vertical',
-                   'Decalcomanie', 'ResetIt', 'DrawArc', 'vertical',
-                   'SelectionGrp', 'AnimCopySession', 'vertical',
-                   'ViewportRefresh', 'bhPlayblast', 'vertical',
+        widgets = ['Justin', 'Warrior', 'vertical', 
+                   'ShiftKey', 'MicroControl','vertical', 
+                   'EasyInBetween', 'vertical',
+                   'MagicLocator', 'separator', 'FakeConIt', 'separator', 'ExFootStep', 'separator', 'SnapIt', 'separator', 'LockDown', 'vertical',
+                   'Decalcomanie', 'separator', 'ResetIt', 'separator', 'DrawArc', 'vertical',
+                   'SelectionGrp', 'separator', 'AnimCopySession', 'vertical',
+                   'ViewportRefresh', 'separator', 'bhPlayblast', 'vertical',
                    'Misc']
         #-mainLayout------------------------------------------------------------------
         self.mainLayout = cmds.rowLayout(numberOfColumns = len(widgets) + 2,
@@ -76,6 +76,7 @@ class UI(Preference.Preference):
         else:
             exec("from {} import Widget".format(module))
             exec("reload(Widget)")
+            self.iconSize = 20
             Widget.build(self.mainLayout, 
                          self.imagesPath,
                          iconSize = self.iconSize,

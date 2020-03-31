@@ -8,7 +8,7 @@ reload(Core)
 class UIContainer():
     """
     """
-    textFieldMidroControl = None
+    textFieldMicroControl = None
 
 
 def build(parent,
@@ -22,7 +22,7 @@ def build(parent,
     @imagesPath : str path
     """
     cmds.rowLayout(numberOfColumns=3, parent=parent)
-    UIContainer.textFieldMidroControl = cmds.textField(text=0.01, width=50)
+    UIContainer.textFieldMicroControl = cmds.textField(text=0.01, width=50)
     cmds.columnLayout()
     cmds.iconTextButton(style='iconOnly',
                         image1=os.path.join(imagesPath, 'uparrow.png'),
@@ -49,7 +49,7 @@ def microControlRun(mode, *args):
     @param mode string "add" or "sub"
     """
     val = round(float(cmds.textField(
-        UIContainer.textFieldMidroControl, q=True, text=True)), 3)
+        UIContainer.textFieldMicroControl, q=True, text=True)), 3)
     if mode == "add":
         Core.run(val)
     else:

@@ -58,8 +58,7 @@ def run(frame = 0,
         if doReverse:
             for fr in range(int(currentTime) - frame + 1, int(currentTime) + 1):
                 cmds.setKeyframe(sel, attribute = attr, t = fr, v = value)
-        else:
-            print currentTime          
+        else:     
             for fr in range(int(currentTime), int(currentTime) + frame):
                 cmds.setKeyframe(sel, attribute = attr, t = fr, v = value)
     

@@ -6,7 +6,8 @@ def run(mode ='bake'):
     if cmds.ls(sl = True):
         sel = cmds.ls(sl = True)[0]
     else:
-        "need to select controller"
+        cmds.confirmDialog( title='Error :', message='You need to select a controller', button=['ok'])
+        return
 
     loc = "{}_mgLoc".format(sel)
   
