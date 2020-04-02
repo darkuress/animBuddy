@@ -69,6 +69,11 @@ def build(parent,
     UIData.qLineEditMc.setText("1")
     UIData.qLineEditMc.setAlignment(QtCore.Qt.AlignCenter)  
     UIData.qLineEditMc.setToolTip('shifting amount, integer is expected')
+    UIData.qLineEditMc.setStyleSheet(
+    '''
+    QLineEdit { background-color: #333333; }
+    '''   
+    )
 
     hlayout.addWidget(UIData.qLineEditMc)
     vlayout.addWidget(buttonUp)

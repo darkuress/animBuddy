@@ -3,19 +3,18 @@ import pymel.core as pm
 import math
 
 class Data(object):
-    blend_node = "FKIKArm"
-    blend_attr = ".FKIKBlend"
-    fk_attr_value = 0
-    ik_attr_value = 10
-    shoulder_ctrl = "FKShoulder"
-    elbow_ctrl = "FKElbow"
-    wrist_ctrl = "FKWrist"
-    ik_ctrl = "IKArm"
-    pv_ctrl = "PoleArm"
-    pv_attr = ".follow"
-    shoulder_jnt = "IKXShoulder"
-    elbow_jnt = "IKXElbow"
-    wrist_jnt = "IKXWrist"
+    blend_node = "Arm_AttriBank_xx_ctrl"
+    blend_attr = ".ikfkBlend"
+    shoulder_ctrl = "Arm_ShFK_xx_ctrl"
+    elbow_ctrl = "Arm_ElFK_xx_ctrl"
+    wrist_ctrl = "Arm_WrFK_xx_ctrl"
+    ik_ctrl = "Arm_IK_xx_ctrl"
+    pv_ctrl = "Arm_Pv_xx_ctrl"
+    pv_attr = ".PoleVectorMode"
+    l_prifi = "LArm:"
+    shoulder_jnt = "Arm_ShIK_xx_joint"
+    elbow_jnt = "Arm_ElIK_xx_joint"
+    wrist_jnt = "Arm_WrIK_xx_joint"
     @staticmethod
     def normalizeVector(vec = []):
         """
@@ -28,7 +27,7 @@ def getSide():
     """
     if cmds.ls(sl = True):
         sel = cmds.ls(sl = True)[0]
-        return sel.split(":")[-1].split('_')[0] + '_'
+        return sel.split("_")[0] + "_"
     else:
         return ""
 
@@ -81,8 +80,8 @@ def fkToIkConv(prefix = '', side = "LArm:", convert = True):
     wrist_pos = cmds.xform(wrist_ctrl, t = True, q = True, ws = True)
 
     blend_node = getFromSelected(char, prefix + side + Data.blend_node)
-    cmds.setAttr(blend_node + Data.blend_attr, Data.ik_attr_value)
-    #cmds.setAttr(pv_ctrl + Data.pv_attr, 0)
+    cmds.setAttr(blend_node + Data.blend_attr, 0)
+    cmds.setAttr(blend_node + Data.pv_attr, 0)
 
     #cmds.xform(ik_ctrl, t = wrist_pos, ws = True)
 
@@ -110,7 +109,7 @@ def fkToIkConv(prefix = '', side = "LArm:", convert = True):
         temp_pc = cmds.pointConstraint(temp_loc, pv_ctrl, mo = False, weight = 1)
         cmds.delete(temp_pc)
     else:
-        cmds.setAttr(blend_node + Data.blend_attr, Data.fk_attr_value)
+        cmds.setAttr(blend_node + Data.blend_attr, 1)
 
     cmds.delete(temp_loc)
   
@@ -142,7 +141,7 @@ def ikToFkConv(prefix = '', side = "LArm:", convert = True):
     elbow_rot = cmds.xform(elbow_jnt, q = True, ro = True)
     
     blend_node = getFromSelected(char, prefix + side + Data.blend_node)
-    cmds.setAttr(blend_node + Data.blend_attr, Data.fk_attr_value)
+    cmds.setAttr(blend_node + Data.blend_attr, 1)
 
     #wrist
     temp_loc = cmds.spaceLocator()
@@ -151,21 +150,15 @@ def ikToFkConv(prefix = '', side = "LArm:", convert = True):
     wrist_rot = cmds.xform(temp_loc, q = True, ro = True)
     wrist_pos = cmds.xform(temp_loc, q = True, t = True, ws = True)
 
-    pc = cmds.parentConstraint(shoulder_jnt, shoulder_ctrl, mo = False, weight = 1)
-    cmds.delete(pc)
-    pc = cmds.parentConstraint(elbow_jnt, elbow_ctrl, mo = False, weight = 1)
-    cmds.delete(pc)
-    pc = cmds.parentConstraint(ik_ctrl, wrist_ctrl, mo = False, weight = 1)
-    cmds.delete(pc)
-
-    if not convert:
-        cmds.setAttr(blend_node + Data.blend_attr, Data.ik_attr_value)
+    if convert:
+        cmds.xform(shoulder_ctrl, ro = shoulder_rot)
+        cmds.xform(elbow_ctrl, ro = elbow_rot)
+        temp_rc = cmds.orientConstraint(temp_loc, wrist_ctrl, mo = False, weight = 1)
+        cmds.delete(temp_rc)
+    else:
+        cmds.setAttr(blend_node + Data.blend_attr, 0)
 
     cmds.delete(temp_loc)
-
-    shoulder_rot = cmds.xform(shoulder_ctrl, q = True, ro = True)
-    elbow_rot = cmds.xform(elbow_ctrl, q = True, ro = True)
-    wrist_rot = cmds.xform(wrist_ctrl, q = True, ro = True)
 
     return {'shoulder_rot'  : shoulder_rot, 
             'elbow_rot'     : elbow_rot,
@@ -179,14 +172,13 @@ def convert(prefix = "", side = "LArm:"):
     """
     """
     char = getChar()
-    side = getSide()
     blend_node = prefix + side + Data.blend_node
     blend_node = getFromSelected(char, blend_node)
     if not blend_node:
         return 
     state = cmds.getAttr(blend_node + Data.blend_attr)
 
-    if state == Data.fk_attr_value:
+    if state == 1:
         fkToIkConv(prefix = prefix, side = side)
     else:
         ikToFkConv(prefix = prefix, side = side)
@@ -209,7 +201,7 @@ def bake(frame = []):
     data = {}
     cmds.refresh(su = True)
     
-    if state == Data.fk_attr_value:
+    if state == 1:
         #copy data
         for fr in range(frame[0], frame[1] + 1):
             cmds.currentTime(fr)
@@ -223,7 +215,7 @@ def bake(frame = []):
         for fr in range(frame[0], frame[1] + 1):
             #fk to ik
             cmds.currentTime(fr)
-            cmds.setAttr(blend_node + Data.blend_attr, Data.ik_attr_value)
+            cmds.setAttr(blend_node + Data.blend_attr, 0)
             cmds.setKeyframe(blend_node, attribute = Data.blend_attr, t = [fr, fr])
             cmds.xform(temp_loc_ctrl, t = data[fr]['ik_pos'], ro = data[fr]['ik_rot'])
             cmds.xform(temp_loc_pv, t = data[fr]['pv'], ws = True)
@@ -245,14 +237,14 @@ def bake(frame = []):
                              minimizeRotation = True,
                              controlPoints = False,
                              shape = True)
-        
+
         cmds.delete(temp_con_ctrl + temp_con_pv)
         cmds.delete(temp_loc_ctrl + temp_loc_pv)
         cmds.refresh(su = False)
-        cmds.setAttr(blend_node + Data.blend_attr, Data.fk_attr_value)
+        cmds.setAttr(blend_node + Data.blend_attr, 1)
         cmds.setKeyframe(blend_node, attribute = Data.blend_attr, t = [frame[1] + 1, frame[1] + 1])
     
-    elif state == Data.ik_attr_value:
+    elif state == 0:
         #copy data
         for fr in range(frame[0], frame[1] + 1):
             cmds.currentTime(fr)
@@ -260,18 +252,31 @@ def bake(frame = []):
             cmds.select(sel)
         cmds.setKeyframe(blend_node, attribute = Data.blend_attr, t = [frame[0] - 1, frame[0] -1])
         #paste data
+        temp_loc = cmds.spaceLocator()
         for fr in range(frame[0], frame[1] + 1):
             #fk to ik
             cmds.currentTime(fr)
-            cmds.setAttr(blend_node + Data.blend_attr, Data.fk_attr_value)
+            cmds.setAttr(blend_node + Data.blend_attr, 1)
             cmds.setKeyframe(blend_node, attribute = Data.blend_attr, t = [fr, fr])
             cmds.xform(data[fr]['shoulder_ctrl'], ro = data[fr]['shoulder_rot'])
             cmds.xform(data[fr]['elbow_ctrl'], ro = data[fr]['elbow_rot'])
-            cmds.xform(data[fr]['wrist_ctrl'], ro = data[fr]['wrist_rot'])
-            cmds.setKeyframe(data[fr]['shoulder_ctrl'])
-            cmds.setKeyframe(data[fr]['elbow_ctrl'])
-            cmds.setKeyframe(data[fr]['wrist_ctrl'])
-
+            cmds.xform(temp_loc, t = data[fr]['wrist_pos'], ro = data[fr]['wrist_rot'])
+            cmds.setKeyframe(temp_loc)
+        temp_con = cmds.orientConstraint(temp_loc, data[fr]['wrist_ctrl'], mo = False, weight = 1)
+        cmds.bakeResults(data[fr]['wrist_ctrl'], 
+                         simulation = True,
+                         t = (frame[0], frame[1]),
+                         sampleBy = 1, 
+                         oversamplingRate = 1, 
+                         disableImplicitControl= True,
+                         preserveOutsideKeys = True,
+                         sparseAnimCurveBake = False,
+                         removeBakedAttributeFromLayer = False,
+                         removeBakedAnimFromLayer = False,
+                         minimizeRotation = True,
+                         controlPoints = False,
+                         shape = True) 
+        cmds.delete(temp_con)
         cmds.refresh(su = False)
-        cmds.setAttr(blend_node + Data.blend_attr, Data.ik_attr_value)
+        cmds.setAttr(blend_node + Data.blend_attr, 0)
         cmds.setKeyframe(blend_node, attribute = Data.blend_attr, t = [frame[1] + 1, frame[1] + 1])           

@@ -54,6 +54,11 @@ def build(parent,
     UIData.qLineEditLockdown.setText("3")
     UIData.qLineEditLockdown.setAlignment(QtCore.Qt.AlignCenter)  
     UIData.qLineEditLockdown.setToolTip('shifting amount, integer is expected')
+    UIData.qLineEditLockdown.setStyleSheet(
+    '''
+    QLineEdit { background-color: #333333; }
+    '''   
+    )
 
     # ---- menuItem
     UIData.qLineEditLockdown.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)

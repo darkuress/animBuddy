@@ -1,6 +1,8 @@
 import os
 import maya.cmds as cmds
 from PySide2 import QtWidgets, QtCore, QtGui
+import QtUISelectionGrp
+reload(QtUISelectionGrp)
 import Core
 reload(Core)
 
@@ -8,8 +10,6 @@ class UIData():
     """
     """
     button = None
-    popupMenu = None
-    popupReset = None
 
 def build(parent, 
           imagesPath, 
@@ -21,13 +21,13 @@ def build(parent,
     @param parent : parent qt layout
     @imagesPath : str path
     """
-    #- Snap It --------------------------------------------------------------
+    #- Selection Group---------------------------------------------------------------
     mainLayout = parent
-    iconImagePath = os.path.join(imagesPath, 'snapit.png')
-    iconHoverImagePath = os.path.join(imagesPath, 'snapit_hi.png')
+    iconImagePath = os.path.join(imagesPath, 'manager.png')
+    iconHoverImagePath = os.path.join(imagesPath, 'manager_hi.png')
     UIData.button = QtWidgets.QPushButton('')
-    UIData.button.clicked.connect(snapIt)
-    UIData.button.setToolTip('Snap It : secondly selected thing will be snapped to the first selected thing')
+    UIData.button.clicked.connect(expandToolbar)
+    UIData.button.setToolTip('Creating Seiection groups')
     UIData.button.setStyleSheet(
     '''
     QPushButton{image:url(%s); border:0px; width:%s; height:%s}
@@ -39,7 +39,8 @@ def build(parent,
 
     mainLayout.addWidget(UIData.button)
 
-def snapIt(*args):
-      """
-      """
-      Core.snap()
+
+def expandToolbar(*args):
+    """
+    """
+    ui = QtUISelectionGrp.main() 

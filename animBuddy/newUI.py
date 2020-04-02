@@ -21,7 +21,7 @@ class MToolBar(QtWidgets.QWidget):
 
         self.setObjectName(name)
 
-        self.setMinimumHeight(40)
+        self.setMinimumHeight(25)
         self.mainLayout = QtWidgets.QHBoxLayout()
         self.setLayout(self.mainLayout)
 
@@ -31,6 +31,7 @@ class MToolBar(QtWidgets.QWidget):
         logoLabel = QtWidgets.QLabel(self)
         pixmap = QtGui.QPixmap(os.path.join(self.imagesPath, "beaverLogo.png"))
         logoLabel.setPixmap(pixmap)
+        logoLabel.setFixedHeight(30)
         self.logoLayout.addWidget(logoLabel)
 
         #wigets layout
@@ -45,7 +46,10 @@ class MToolBar(QtWidgets.QWidget):
                    'ShiftKey', 'MicroControl', 'separator', 
                    'EasyInBetween', 'separator',  
                    'MagicLocator', 'FakeConIt', 'ExFootStep', 'SnapIt', 'LockDown', 'vertical', 
-                   'ResetIt', 'ViewportRefresh' ]
+                   'Decalcomanie', 'ResetIt', 'DrawArc', 'vertical', 
+                   'SelectionGrp', 'AnimCopySession', 'vertical', 
+                   'ViewportRefresh', 'bhPlayblast', 'vertical',
+                   'Misc' ]
         for module in modules:
             self.addWidget(module)
 

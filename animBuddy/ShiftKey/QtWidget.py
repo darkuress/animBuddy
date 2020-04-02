@@ -49,7 +49,11 @@ def build(parent,
     UIData.qLineEditShiftKey.setText("1")
     UIData.qLineEditShiftKey.setAlignment(QtCore.Qt.AlignCenter)  
     UIData.qLineEditShiftKey.setToolTip('shifting amount, integer is expected')
-
+    UIData.qLineEditShiftKey.setStyleSheet(
+    '''
+    QLineEdit { background-color: #333333; }
+    '''   
+    )
     # ---- menuItem
     UIData.qLineEditShiftKey.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
     UIData.qLineEditShiftKey.customContextMenuRequested.connect(popupHandler)
