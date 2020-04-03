@@ -1,8 +1,8 @@
 import maya.cmds as cmds
 import os
 from functools import partial
-from animBuddy.FkIkMatch import Core
-reload(Core)
+import FkIkMatch
+reload(FkIkMatch)
 
 class UIJustinToolbar:
     """
@@ -59,9 +59,9 @@ class UIJustinToolbar:
         if bake:
             startFrame = int(float(cmds.textField(self.textFieldStartFrame, q = True, text = True)))
             endFrame = int(float(cmds.textField(self.textFieldEndFrame, q = True, text = True)))
-            Core.bake(frame = [startFrame, endFrame])
+            FkIkMatch.bake(frame = [startFrame, endFrame])
         else:
-            Core.convert(prefix = Core.getPrefix(), side = Core.getSide())
+            FkIkMatch.convert(prefix = FkIkMatch.getPrefix(), side = FkIkMatch.getSide())
 
     def close(self, *args):
         """

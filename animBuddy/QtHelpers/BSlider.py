@@ -28,6 +28,8 @@ class BSlider(QtWidgets.QWidget):
                  minValue        = -20,
                  maxValue        = 100,
                  startValue      = 30 ,
+                 offsetValue     = 0, #printing on ui widget only purpose
+                 scaleValue      = 1.0, #printing on ui widget only purpose
                  trail           = True,
                  presetsShow     = True,
                  presetsStep     = 20
@@ -51,8 +53,10 @@ class BSlider(QtWidgets.QWidget):
         self._minValue          = minValue
         self._maxValue          = maxValue
         self._startValue        = startValue
+        self._offsetValue       = offsetValue
+        self._scaleValue        = scaleValue
         self._prevValue         = 0
-        self._outputValue       = 0 # the actual percent on the slider
+        self._outputValue       = 0.0 # the actual percent on the slider
         self._presetMouseOver   = None
 
         # HANDLE attributes
@@ -201,7 +205,7 @@ class BSlider(QtWidgets.QWidget):
             # values = self.getPresetValues()
             for idx, i in enumerate(self._presetPositions):
 
-                if idx == 0 or idx == len(self._presetPositions) - 1:
+                if idx == 2 or idx == len(self._presetPositions) - 3:
                     painter.drawRect(i - 3, 10-3, 6, 6)
                 else:
                     painter.drawRect(i - 1, 10-1, 2, 2)
@@ -215,13 +219,14 @@ class BSlider(QtWidgets.QWidget):
         if self._hPressed:
 
             self._outputValue = SMath.SMath.fit2RangeVal(self._minValue, self._maxValue, 10, self._sliderWidth-10, self.handleCenter())
-
+            self._outputValue = self._outputValue + self._offsetValue
+            self._printValue = float(self._outputValue / self._scaleValue)
 
             if self.handleCenter() > self._sliderWidth / 2:
-                painter.drawText( 10, 16, str(self._outputValue)) 
+                painter.drawText( 10, 16, str(self._printValue)) 
             else:
                 right_border_offset = self._sliderWidth - 25 - pow(len(str(self._outputValue)), 2)
-                painter.drawText( right_border_offset, 16, str(self._outputValue)) 
+                painter.drawText( right_border_offset, 16, str(self._printValue)) 
 
     def _uiDrawHandleTrail(self, painter):
 

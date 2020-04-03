@@ -204,7 +204,7 @@ def bake(frame = []):
     sel = cmds.ls(sl = True)[0]
 
     if not frame:
-        frame = [int(cmds.playbackOptions(q = True, min = True)), int(cmds.playbackOptions(q = True , max = True))]
+        frame = [int(cmds.playbackOptions(q = True, min = True)), int(cmds.playbackOptions(q = True , max = True)) + 1]
     
     data = {}
     cmds.refresh(su = True)
