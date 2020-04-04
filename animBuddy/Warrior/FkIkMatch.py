@@ -92,7 +92,12 @@ def fkToIkConv(prefix = '', side = "LArm:", convert = True):
     cmds.delete(temp_pc)
     if convert:
         temp_pc = cmds.parentConstraint(temp_loc, ik_ctrl, mo = False, weight = 1)
+        #making it work even if there's keyframe
+        ik_ctrl_rot = cmds.xform(ik_ctrl, q = True, ro = True)
+        ik_ctrl_tr = cmds.xform(ik_ctrl, q = True, t = True)
         cmds.delete(temp_pc)
+        cmds.xform(ik_ctrl, t = ik_ctrl_tr)
+        cmds.xform(ik_ctrl, ro = ik_ctrl_rot)
 
     cmds.delete(temp_loc) 
     
@@ -152,11 +157,17 @@ def ikToFkConv(prefix = '', side = "LArm:", convert = True):
     wrist_pos = cmds.xform(temp_loc, q = True, t = True, ws = True)
 
     pc = cmds.parentConstraint(shoulder_jnt, shoulder_ctrl, mo = False, weight = 1)
+    shoulder_rot = cmds.xform(shoulder_ctrl, ro = True, q = True)
     cmds.delete(pc)
+    cmds.xform(shoulder_ctrl, ro = shoulder_rot)
     pc = cmds.parentConstraint(elbow_jnt, elbow_ctrl, mo = False, weight = 1)
+    elbow_rot = cmds.xform(elbow_ctrl, ro = True, q = True)
     cmds.delete(pc)
+    cmds.xform(elbow_ctrl, ro = elbow_rot)
     pc = cmds.parentConstraint(ik_ctrl, wrist_ctrl, mo = False, weight = 1)
+    wrist_rot = cmds.xform(wrist_ctrl, ro = True, q = True)
     cmds.delete(pc)
+    cmds.xform(wrist_ctrl, ro = wrist_rot)
 
     if not convert:
         cmds.setAttr(blend_node + Data.blend_attr, Data.ik_attr_value)

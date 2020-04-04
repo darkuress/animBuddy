@@ -79,19 +79,25 @@ def fkToIkConv(prefix = '', side = "LArm:", convert = True):
     elbow_pos = cmds.xform(elbow_ctrl, t = True, q = True, ws = True) 
     wrist_pos = cmds.xform(wrist_ctrl, t = True, q = True, ws = True)
 
-    blend_node = getFromSelected(char, prefix + side + Data.blend_node)
-    cmds.setAttr(blend_node + Data.blend_attr, 0)
-    cmds.setAttr(blend_node + Data.pv_attr, 0)
-
     #cmds.xform(ik_ctrl, t = wrist_pos, ws = True)
 
     temp_loc = cmds.spaceLocator()
     temp_pc = cmds.parentConstraint(wrist_ctrl, temp_loc, mo = False, weight = 1)
     wrist_rot = cmds.xform(temp_loc, q = True, ro = True)
+
     cmds.delete(temp_pc)
+
+    blend_node = getFromSelected(char, prefix + side + Data.blend_node)
+    cmds.setAttr(blend_node + Data.blend_attr, 0)
+    cmds.setAttr(blend_node + Data.pv_attr, 0)
+
     if convert:
         temp_pc = cmds.parentConstraint(temp_loc, ik_ctrl, mo = False, weight = 1)
+        ik_ctrl_rot = cmds.xform(ik_ctrl, q = True, ro = True)
+        ik_ctrl_tr = cmds.xform(ik_ctrl, q = True, t = True)
         cmds.delete(temp_pc)
+        cmds.xform(ik_ctrl, t = ik_ctrl_tr)
+        cmds.xform(ik_ctrl, ro = ik_ctrl_rot)
 
     cmds.delete(temp_loc) 
     
@@ -112,13 +118,13 @@ def fkToIkConv(prefix = '', side = "LArm:", convert = True):
         cmds.setAttr(blend_node + Data.blend_attr, 1)
 
     cmds.delete(temp_loc)
-  
+    
     return {'ik_pos'  : wrist_pos, 
             'ik_rot'  : wrist_rot,
             'ik_ctrl' : ik_ctrl,
             'pv' : pv_destination,
             'pv_ctrl' : pv_ctrl}
-    
+
 def ikToFkConv(prefix = '', side = "LArm:", convert = True):
     """
     """
@@ -139,12 +145,9 @@ def ikToFkConv(prefix = '', side = "LArm:", convert = True):
 
     shoulder_rot = cmds.xform(shoulder_jnt, q = True, ro = True)
     elbow_rot = cmds.xform(elbow_jnt, q = True, ro = True)
-    
-    blend_node = getFromSelected(char, prefix + side + Data.blend_node)
-    cmds.setAttr(blend_node + Data.blend_attr, 1)
 
     #wrist
-    temp_loc = cmds.spaceLocator()
+    temp_loc = cmds.spaceLocator(n = 'temp_ikfk_loc')
     temp_pc = cmds.parentConstraint(ik_ctrl, temp_loc, mo = False, weight = 1)
     cmds.delete(temp_pc)
     wrist_rot = cmds.xform(temp_loc, q = True, ro = True)
@@ -153,8 +156,16 @@ def ikToFkConv(prefix = '', side = "LArm:", convert = True):
     if convert:
         cmds.xform(shoulder_ctrl, ro = shoulder_rot)
         cmds.xform(elbow_ctrl, ro = elbow_rot)
+        blend_node = getFromSelected(char, prefix + side + Data.blend_node)
+        cmds.setAttr(blend_node + Data.blend_attr, 1)
         temp_rc = cmds.orientConstraint(temp_loc, wrist_ctrl, mo = False, weight = 1)
-        cmds.delete(temp_rc)
+
+        #working even if there's keyframe on fk wrist
+        wrist_rot = cmds.xform(wrist_ctrl, q = True, ro = True)
+        wrist_pos = cmds.xform(wrist_ctrl, q = True, t = True, ws = True)   
+        cmds.delete(temp_rc) 
+        
+        cmds.xform(wrist_ctrl, ro = wrist_rot)  
     else:
         cmds.setAttr(blend_node + Data.blend_attr, 0)
 
