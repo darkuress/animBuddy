@@ -42,9 +42,9 @@ class MToolBar(QtWidgets.QWidget):
         self.mainLayout.addLayout(self.logoLayout)
         self.mainLayout.addLayout(self.widgetLayout)
 
-        modules = ['Justin', 'Warrior', 'separator', 
-                   'ShiftKey', 'MicroControl', 'separator', 
-                   'EasyInBetween', 'separator',  
+        modules = ['Justin', 'Warrior', 'vertical', 'separator', 
+                   'ShiftKey', 'MicroControl', 'vertical', 'separator', 
+                   'EasyInBetween', 'vertical', 'separator',  
                    'MagicLocator', 'FakeConIt', 'ExFootStep', 'SnapIt', 'LockDown', 'vertical', 
                    'Decalcomanie', 'ResetIt', 'DrawArc', 'vertical', 
                    'SelectionGrp', 'AnimCopySession', 'vertical', 

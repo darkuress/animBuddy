@@ -87,6 +87,9 @@ class BSlider(QtWidgets.QWidget):
         # self.setBackgroundColor()
         self.handleRect(value = self._startValue)
 
+        # undochunk
+        self.undoChunk          = False
+
     def setBackgroundColor(self, rgb = [60,60,60]):
         """
         Public
@@ -243,6 +246,10 @@ class BSlider(QtWidgets.QWidget):
 
 
     def mousePressEvent(self, event):
+        # undochunk
+        if not self.undoChunk:
+            self.undoChunk = True
+            cmds.undoInfo(openChunk=True)
 
         xmin = self._hGeom[0][0]
         xmax = self._hGeom[0][1]
@@ -275,7 +282,7 @@ class BSlider(QtWidgets.QWidget):
         self.handleReleased.emit(self._outputValue)
 
         if self._hStick:
-            self._outputValue = self._startValue
+            #self._outputValue = self._startValue
             self.handleRect(value = self._startValue)
 
         else:
@@ -292,7 +299,8 @@ class BSlider(QtWidgets.QWidget):
         self._hPressed = False
         self.update()
  
-
+        self.undoChunk = False
+        cmds.undoInfo(closeChunk=True)
 
     def mouseMoveEvent(self, event):
 
