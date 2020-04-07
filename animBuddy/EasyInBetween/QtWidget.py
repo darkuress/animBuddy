@@ -29,7 +29,7 @@ def build(parent,
     @param parent : parent qt layout 
     @imagesPath : str path
     """
-    #- Reset It---------------------------------------------------------------
+    #- Easy Inbetween---------------------------------------------------------------
     mainLayout = parent
     sliderLayout = QtWidgets.QVBoxLayout()
     UIData.labelMode = QtWidgets.QLabel()
@@ -47,7 +47,16 @@ def build(parent,
     UIData.menuLinear = ag.addAction(QtWidgets.QAction('Keyframe (no overshoot)', UIData.popupMenu, checkable=True))
     UIData.popupMenu.addAction(UIData.menuLinear)
 
-    UIData.slider = BSlider.BSlider(colorEnum = "blue", width = 280, minValue=-7, maxValue=7, offsetValue = 5, scaleValue = 10.0, startValue=0, presetsStep=1, handleText = "EI")
+    UIData.slider = BSlider.BSlider(colorEnum = "blue", 
+                                    width     = 280, 
+                                    minValue  = -7, 
+                                    maxValue  = 7, 
+                                    offsetValue = 5, 
+                                    scaleValue = 10.0, 
+                                    startValue=0, 
+                                    presetsStep=1, 
+                                    handleText = "EI")
+                                    
     UIData.slider.valueChanged.connect(easyInBetweenChange)
 
     sliderLayout.addWidget(UIData.labelMode)

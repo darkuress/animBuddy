@@ -68,13 +68,13 @@ def drawArc(*args):
     UIData.pref = Preference.Preference()
 
     Core.run(dotSize=UIData.pref.dotSize,
-            keyFrameSize=UIData.pref.keyFrameSize,
-            timeBuffer=UIData.pref.timeBuffer,
-            lineWidth=UIData.pref.lineWidth,
-            lineColor=UIData.pref.lineColor,
-            dotColor=UIData.pref.dotColor,
-            keyFrameColor=UIData.pref.keyFrameColor,
-            style = UIData.pref.mtStyle)
+             keyFrameSize=UIData.pref.keyFrameSize,
+             timeBuffer=UIData.pref.timeBuffer,
+             lineWidth=UIData.pref.lineWidth,
+             lineColor=UIData.pref.lineColor,
+             dotColor=UIData.pref.dotColor,
+             keyFrameColor=UIData.pref.keyFrameColor,
+             style = UIData.pref.mtStyle)
 
 
 def deleteAll(*args):
