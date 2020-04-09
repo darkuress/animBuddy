@@ -122,6 +122,8 @@ class UISelectionToolBar:
                             dismissString='Cancel')       
             if result == 'OK':
                 text = cmds.promptDialog(query=True, text=True)
+            else:
+                return
                 
             saved = self.SGP.save(text)
             

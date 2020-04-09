@@ -28,7 +28,10 @@ class UIImportSelectionGrp:
         cmds.setParent('..')
 
         self.rebuildExportedGrps()
-        cmds.textScrollList(self.textScrollListGrp, e = True, sii = 1)
+        try:
+            cmds.textScrollList(self.textScrollListGrp, e = True, sii = 1)
+        except:
+            print("Exported Group doesn't exist")
         
     def rebuildExportedGrps(self, *args):
         """
