@@ -20,8 +20,8 @@ def build(parent,
       """
       #- Viewport Refresh---------------------------------------------------------------
       mainLayout = parent
-      iconImagePath = os.path.join(imagesPath, 'freeze.png')
-      iconHoverImagePath = os.path.join(imagesPath, 'freeze_hi.png')
+      iconImagePath = os.path.join(imagesPath, 'freeze.png').replace('\\', '/')
+      iconHoverImagePath = os.path.join(imagesPath, 'freeze_hi.png').replace('\\', '/')
       button = QtWidgets.QPushButton('')
       button.setIconSize(QtCore.QSize(iconSize, iconSize))
       button.clicked.connect(freeze)
