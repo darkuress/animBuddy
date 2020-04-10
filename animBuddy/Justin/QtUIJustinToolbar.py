@@ -28,8 +28,8 @@ class MToolBar(QtWidgets.QWidget):
         mainLayout.setAlignment(QtCore.Qt.AlignRight) 
         self.setLayout(mainLayout)
 
-        iconImagePath = os.path.join(imagesPath, 'close.png')
-        iconHoverImagePath = os.path.join(imagesPath, 'close_hi.png')
+        iconImagePath = os.path.join(imagesPath, 'close.png').replace('\\', '/')
+        iconHoverImagePath = os.path.join(imagesPath, 'close_hi.png').replace('\\', '/')
 
         #- FKIK button
         self.fkikLayout = QtWidgets.QHBoxLayout()

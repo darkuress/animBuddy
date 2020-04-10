@@ -141,8 +141,8 @@ class MToolBar(QtWidgets.QWidget):
         mainLayout.addWidget(comboBoxStyle)
 
         # close button
-        iconImagePath = os.path.join(imagesPath, 'close.png')
-        iconHoverImagePath = os.path.join(imagesPath, 'close_hi.png')
+        iconImagePath = os.path.join(imagesPath, 'close.png').replace('\\', '/')
+        iconHoverImagePath = os.path.join(imagesPath, 'close_hi.png').replace('\\', '/')
         button = QtWidgets.QPushButton('')
         button.clicked.connect(cleanUI)
         button.setToolTip("Closing Toolbar")
