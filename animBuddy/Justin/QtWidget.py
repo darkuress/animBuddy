@@ -17,8 +17,8 @@ def build(parent,
       """
       #- Justin ---------------------------------------------------------------
       mainLayout = parent
-      iconImagePath = os.path.join(imagesPath, 'justin.png')
-      iconHoverImagePath = os.path.join(imagesPath, 'justin_hi.png')
+      iconImagePath = os.path.join(imagesPath, 'justin.png').replace('\\', '/')
+      iconHoverImagePath = os.path.join(imagesPath, 'justin_hi.png').replace('\\', '/')
       button = QtWidgets.QPushButton('')
       button.clicked.connect(expandToolBar)
       button.setToolTip("Justin Toolbar Expand")
