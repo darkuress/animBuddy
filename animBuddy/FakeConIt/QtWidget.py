@@ -23,8 +23,8 @@ def build(parent,
     """
     #- FakeConit---------------------------------------------------------------
     mainLayout = parent
-    iconImagePath = os.path.join(imagesPath, 'conit.png')
-    iconHoverImagePath = os.path.join(imagesPath, 'conit_hi.png')
+    iconImagePath = os.path.join(imagesPath, 'conit.png').replace('\\', '/')
+    iconHoverImagePath = os.path.join(imagesPath, 'conit_hi.png').replace('\\', '/')
     UIData.button = QtWidgets.QPushButton('')
     UIData.button.clicked.connect(fakeConIt)
     UIData.button.setToolTip('Fake Constraint, select source and shift select destination. Right click for Reset Menu')

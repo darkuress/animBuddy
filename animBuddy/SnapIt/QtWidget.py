@@ -23,8 +23,8 @@ def build(parent,
     """
     #- Snap It --------------------------------------------------------------
     mainLayout = parent
-    iconImagePath = os.path.join(imagesPath, 'snapit.png')
-    iconHoverImagePath = os.path.join(imagesPath, 'snapit_hi.png')
+    iconImagePath = os.path.join(imagesPath, 'snapit.png').replace('\\', '/')
+    iconHoverImagePath = os.path.join(imagesPath, 'snapit_hi.png').replace('\\', '/')
     UIData.button = QtWidgets.QPushButton('')
     UIData.button.clicked.connect(snapIt)
     UIData.button.setToolTip('Snap It : secondly selected thing will be snapped to the first selected thing')

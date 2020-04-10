@@ -17,8 +17,8 @@ def build(parent,
       """
       #- Reset It---------------------------------------------------------------
       mainLayout = parent
-      iconImagePath = os.path.join(imagesPath, 'reset.png')
-      iconHoverImagePath = os.path.join(imagesPath, 'reset_hi.png')
+      iconImagePath = os.path.join(imagesPath, 'reset.png').replace('\\', '/')
+      iconHoverImagePath = os.path.join(imagesPath, 'reset_hi.png').replace('\\', '/')
       button = QtWidgets.QPushButton('')
       button.clicked.connect(resetIt)
       button.setToolTip("Making All the attributes as 0")

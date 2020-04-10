@@ -29,8 +29,8 @@ def build(parent,
     """
     #- Reset It---------------------------------------------------------------
     mainLayout = parent
-    iconImagePath = os.path.join(imagesPath, 'mgloc.png')
-    iconHoverImagePath = os.path.join(imagesPath, 'mgloc_hi.png')
+    iconImagePath = os.path.join(imagesPath, 'mgloc.png').replace('\\', '/')
+    iconHoverImagePath = os.path.join(imagesPath, 'mgloc_hi.png').replace('\\', '/')
     UIData.button = QtWidgets.QPushButton('')
     UIData.button.clicked.connect(run)
     UIData.button.setToolTip("select object and run, it will craete locator per option")

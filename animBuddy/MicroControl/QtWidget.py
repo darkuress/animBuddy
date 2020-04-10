@@ -29,8 +29,8 @@ def build(parent,
     hlayout.setAlignment(QtCore.Qt.AlignCenter) 
 
     #---- button up
-    iconImagePath = os.path.join(imagesPath, 'uparrow.png')
-    iconHoverImagePath = os.path.join(imagesPath, 'uparrow_hi.png')
+    iconImagePath = os.path.join(imagesPath, 'uparrow.png').replace('\\', '/')
+    iconHoverImagePath = os.path.join(imagesPath, 'uparrow_hi.png').replace('\\', '/')
     buttonUp = QtWidgets.QPushButton('')
     buttonUp.setSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
     buttonUp.setFixedHeight(iconSize/2.5)
@@ -46,8 +46,8 @@ def build(parent,
     buttonUp.show()
 
     #---- button down
-    iconImagePath = os.path.join(imagesPath, 'dnarrow.png')
-    iconHoverImagePath = os.path.join(imagesPath, 'dnarrow_hi.png')
+    iconImagePath = os.path.join(imagesPath, 'dnarrow.png').replace('\\', '/')
+    iconHoverImagePath = os.path.join(imagesPath, 'dnarrow_hi.png').replace('\\', '/')
     buttonDn = QtWidgets.QPushButton('')
     buttonDn.setSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
     buttonDn.setFixedHeight(iconSize/2.5)

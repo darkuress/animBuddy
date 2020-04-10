@@ -38,8 +38,8 @@ class MToolBar(QtWidgets.QWidget):
         self.buttonsLayout = QtWidgets.QHBoxLayout()
 
         #- add butotn
-        iconImagePath = os.path.join(imagesPath, 'add.png')
-        iconHoverImagePath = os.path.join(imagesPath, 'add_hi.png')
+        iconImagePath = os.path.join(imagesPath, 'add.png').replace('\\', '/')
+        iconHoverImagePath = os.path.join(imagesPath, 'add_hi.png').replace('\\', '/')
         buttonAdd = QtWidgets.QPushButton('')
         buttonAdd.clicked.connect(self.addDialog)
         buttonAdd.setToolTip("Close Toolbar")
@@ -54,8 +54,8 @@ class MToolBar(QtWidgets.QWidget):
 
         #- Import Export
         ioLayout = QtWidgets.QHBoxLayout()
-        iconImagePath = os.path.join(imagesPath, 'savegrp.png')
-        iconHoverImagePath = os.path.join(imagesPath, 'savegrp_hi.png')
+        iconImagePath = os.path.join(imagesPath, 'savegrp.png').replace('\\', '/')
+        iconHoverImagePath = os.path.join(imagesPath, 'savegrp_hi.png').replace('\\', '/')
         buttonExport = QtWidgets.QPushButton('')
         buttonExport.clicked.connect(self.exportToolbar)
         buttonExport.setToolTip("Export This Selection Group")
@@ -68,8 +68,8 @@ class MToolBar(QtWidgets.QWidget):
         )             
         buttonExport.show()
 
-        iconImagePath = os.path.join(imagesPath, 'importgrp.png')
-        iconHoverImagePath = os.path.join(imagesPath, 'importgrp_hi.png')
+        iconImagePath = os.path.join(imagesPath, 'importgrp.png').replace('\\', '/')
+        iconHoverImagePath = os.path.join(imagesPath, 'importgrp_hi.png').replace('\\', '/')
         buttonImport = QtWidgets.QPushButton('')
         buttonImport.clicked.connect(self.importToolbar)
         buttonImport.setToolTip("Import Selection Group")
@@ -85,8 +85,8 @@ class MToolBar(QtWidgets.QWidget):
         ioLayout.addWidget(buttonImport)
 
         #- close toolbar
-        iconImagePath = os.path.join(imagesPath, 'close.png')
-        iconHoverImagePath = os.path.join(imagesPath, 'close_hi.png')
+        iconImagePath = os.path.join(imagesPath, 'close.png').replace('\\', '/')
+        iconHoverImagePath = os.path.join(imagesPath, 'close_hi.png').replace('\\', '/')
         button = QtWidgets.QPushButton('')
         button.clicked.connect(cleanUI)
         button.setToolTip("Close Toolbar")

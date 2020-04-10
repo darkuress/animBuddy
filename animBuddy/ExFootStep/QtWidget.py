@@ -23,8 +23,8 @@ def build(parent,
     """
     #- Ex Foot step---------------------------------------------------------------
     mainLayout = parent
-    iconImagePath = os.path.join(imagesPath, 'footstep.png')
-    iconHoverImagePath = os.path.join(imagesPath, 'footstep_hi.png')
+    iconImagePath = os.path.join(imagesPath, 'footstep.png').replace('\\', '/')
+    iconHoverImagePath = os.path.join(imagesPath, 'footstep_hi.png').replace('\\', '/')
     UIData.button = QtWidgets.QPushButton('')
     UIData.button.clicked.connect(exFootStep)
     UIData.button.setToolTip('Ex Footstep : snaps to the last keyframe')

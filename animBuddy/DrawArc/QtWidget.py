@@ -26,8 +26,8 @@ def build(parent,
     """
     #- Draw Arc---------------------------------------------------------------
     mainLayout = parent
-    iconImagePath = os.path.join(imagesPath, 'arc_hi.png')
-    iconHoverImagePath = os.path.join(imagesPath, 'arc.png')
+    iconImagePath = os.path.join(imagesPath, 'arc_hi.png').replace('\\', '/')
+    iconHoverImagePath = os.path.join(imagesPath, 'arc.png').replace('\\', '/')
     UIData.button = QtWidgets.QPushButton('')
     UIData.button.clicked.connect(drawArc)
     UIData.button.setToolTip('MotionTrail tool')

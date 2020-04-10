@@ -28,8 +28,8 @@ def build(parent,
     layout.setAlignment(QtCore.Qt.AlignCenter) 
 
     #---- button left
-    iconImagePath = os.path.join(imagesPath, 'left.png')
-    iconHoverImagePath = os.path.join(imagesPath, 'left_hi.png')
+    iconImagePath = os.path.join(imagesPath, 'left.png').replace('\\', '/')
+    iconHoverImagePath = os.path.join(imagesPath, 'left_hi.png').replace('\\', '/')
     buttonLeft = QtWidgets.QPushButton('')
     buttonLeft.clicked.connect(partial(shiftKey, "left"))
     buttonLeft.setToolTip("Shift keys to the left")
@@ -61,8 +61,8 @@ def build(parent,
     UIData.popupReset = UIData.popupMenu.addAction("reset")
 
     #---- button right
-    iconImagePath = os.path.join(imagesPath, 'right.png')
-    iconHoverImagePath = os.path.join(imagesPath, 'right_hi.png')
+    iconImagePath = os.path.join(imagesPath, 'right.png').replace('\\', '/')
+    iconHoverImagePath = os.path.join(imagesPath, 'right_hi.png').replace('\\', '/')
     buttonRight = QtWidgets.QPushButton('')
     buttonRight.clicked.connect(partial(shiftKey, "right"))
     buttonRight.setToolTip("Shift keys to the right")

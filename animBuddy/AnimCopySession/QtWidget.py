@@ -27,8 +27,8 @@ def build(parent,
     """
     #- Reset It---------------------------------------------------------------
     mainLayout = parent
-    iconImagePath = os.path.join(imagesPath, 'copy.png')
-    iconHoverImagePath = os.path.join(imagesPath, 'copy_hi.png')
+    iconImagePath = os.path.join(imagesPath, 'copy.png').replace('\\', '/')
+    iconHoverImagePath = os.path.join(imagesPath, 'copy_hi.png').replace('\\', '/')
     UIData.button = QtWidgets.QPushButton('')
     UIData.button.clicked.connect(copySession)
     UIData.button.setToolTip("copy current animation or pose. Right click for reset tool. Preserves current session")

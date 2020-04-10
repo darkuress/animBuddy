@@ -15,8 +15,8 @@ def build(parent,
       """
       #- Playblast ---------------------------------------------------------------
       mainLayout = parent
-      iconImagePath = os.path.join(imagesPath, 'play1_hi.png')
-      iconHoverImagePath = os.path.join(imagesPath, 'play1.png')
+      iconImagePath = os.path.join(imagesPath, 'play1_hi.png').replace('\\', '/')
+      iconHoverImagePath = os.path.join(imagesPath, 'play1.png').replace('\\', '/')
       button = QtWidgets.QPushButton('')
       button.clicked.connect(playblast)
       button.setToolTip("Beverhouse exclusive Playblast Tool")

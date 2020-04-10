@@ -33,8 +33,8 @@ def build(parent,
     layout.setAlignment(QtCore.Qt.AlignCenter) 
 
     #---- button reverse
-    iconImagePath = os.path.join(imagesPath, 'lockdown_reverse.png')
-    iconHoverImagePath = os.path.join(imagesPath, 'lockdown_reverse_hi.png')
+    iconImagePath = os.path.join(imagesPath, 'lockdown_reverse.png').replace('\\', '/')
+    iconHoverImagePath = os.path.join(imagesPath, 'lockdown_reverse_hi.png').replace('\\', '/')
     buttonLeft = QtWidgets.QPushButton('')
     buttonLeft.clicked.connect(partial(run, 'reverse'))
     buttonLeft.setToolTip("lock reverse")

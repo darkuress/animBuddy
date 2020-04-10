@@ -15,8 +15,8 @@ def build(parent,
       """
       #- Misc---------------------------------------------------------------
       mainLayout = parent
-      iconImagePath = os.path.join(imagesPath, 'preference.png')
-      iconHoverImagePath = os.path.join(imagesPath, 'preference_hi.png')
+      iconImagePath = os.path.join(imagesPath, 'preference.png').replace('\\', '/')
+      iconHoverImagePath = os.path.join(imagesPath, 'preference_hi.png').replace('\\', '/')
       button = QtWidgets.QPushButton('')
       button.setToolTip("Making All the attributes as 0")
       button.setStyleSheet(

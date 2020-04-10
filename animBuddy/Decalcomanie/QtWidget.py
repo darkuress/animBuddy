@@ -27,8 +27,8 @@ def build(parent,
     """
     #- Decalcomanie---------------------------------------------------------------
     mainLayout = parent
-    iconImagePath = os.path.join(imagesPath, 'decalcomanie.png')
-    iconHoverImagePath = os.path.join(imagesPath, 'decalcomanie_hi.png')
+    iconImagePath = os.path.join(imagesPath, 'decalcomanie.png').replace('\\', '/')
+    iconHoverImagePath = os.path.join(imagesPath, 'decalcomanie_hi.png').replace('\\', '/')
     UIData.button = QtWidgets.QPushButton('')
     UIData.button.clicked.connect(run)
     UIData.button.setToolTip("Copy Left or Right anim to Right or Left")

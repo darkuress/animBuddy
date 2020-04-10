@@ -23,8 +23,8 @@ def build(parent,
     """
     #- Selection Group---------------------------------------------------------------
     mainLayout = parent
-    iconImagePath = os.path.join(imagesPath, 'manager.png')
-    iconHoverImagePath = os.path.join(imagesPath, 'manager_hi.png')
+    iconImagePath = os.path.join(imagesPath, 'manager.png').replace('\\', '/')
+    iconHoverImagePath = os.path.join(imagesPath, 'manager_hi.png').replace('\\', '/')
     UIData.button = QtWidgets.QPushButton('')
     UIData.button.clicked.connect(expandToolbar)
     UIData.button.setToolTip('Creating Seiection groups')
