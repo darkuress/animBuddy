@@ -77,8 +77,8 @@ def build(parent,
     UIData.popupReset = UIData.popupMenu.addAction("clear key")
 
     #---- button forward
-    iconImagePath = os.path.join(imagesPath, 'lockdown_forward.png')
-    iconHoverImagePath = os.path.join(imagesPath, 'lockdown_forward_hi.png')
+    iconImagePath = os.path.join(imagesPath, 'lockdown_forward.png').replace('\\', '/')
+    iconHoverImagePath = os.path.join(imagesPath, 'lockdown_forward_hi.png').replace('\\', '/')
     buttonRight = QtWidgets.QPushButton('')
     buttonRight.clicked.connect(partial(run, 'forward'))
     buttonRight.setToolTip("lock forward")
