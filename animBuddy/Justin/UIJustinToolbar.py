@@ -3,6 +3,8 @@ import os
 from functools import partial
 import FkIkMatch
 reload(FkIkMatch)
+import FacialCam
+reload(FacialCam)
 
 class UIJustinToolbar:
     """
@@ -29,7 +31,12 @@ class UIJustinToolbar:
     
         cmds.rowLayout(numberOfColumns = 1)
         cmds.setParent("..")
-        cmds.rowLayout(numberOfColumns = 7)
+        cmds.rowLayout(numberOfColumns = 8)
+
+        cmds.button(label = 'FACIAL PANEL',
+                    annotation = 'Opening facial panel cam', 
+                    c = self.facialPanel)
+
         cmds.button(label = 'FKIK',
                     annotation = 'select any arm controller and run', 
                     c = self.fkikSwitch)
@@ -62,6 +69,14 @@ class UIJustinToolbar:
             FkIkMatch.bake(frame = [startFrame, endFrame])
         else:
             FkIkMatch.convert(prefix = FkIkMatch.getPrefix(), side = FkIkMatch.getSide())
+
+    def facialPanel(self, *args):
+        """
+        """
+        if FacialCam.isExists():
+            FacialCam.deletePanelCam()
+        else:
+            FacialCam.createPanelCam()
 
     def close(self, *args):
         """
