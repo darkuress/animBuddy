@@ -5,6 +5,8 @@ import FkIkMatch
 reload(FkIkMatch)
 import FacialCam
 reload(FacialCam)
+import PartSelection
+reload(PartSelection)
 
 class UIJustinToolbar:
     """
@@ -31,11 +33,21 @@ class UIJustinToolbar:
     
         cmds.rowLayout(numberOfColumns = 1)
         cmds.setParent("..")
-        cmds.rowLayout(numberOfColumns = 8)
+        cmds.rowLayout(numberOfColumns = 12)
+
+        cmds.button(label = 'GLASSES',
+                    annotation = 'hide / unhide glasses', 
+                    c = PartSelection.glasses)     
+
+        cmds.button(label = 'TIE',
+                    annotation = 'hide / unhide tie', 
+                    c = PartSelection.tie)    
+        cmds.separator(hr= False, height = 20, width = 20, style = 'in')
 
         cmds.button(label = 'FACIAL PANEL',
                     annotation = 'Opening facial panel cam', 
                     c = self.facialPanel)
+        cmds.separator(hr= False, height = 20, width = 20, style = 'in')
 
         cmds.button(label = 'FKIK',
                     annotation = 'select any arm controller and run', 

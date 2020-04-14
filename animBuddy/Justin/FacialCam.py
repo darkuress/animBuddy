@@ -16,7 +16,11 @@ def createPanelCam():
     editor = cmds.modelEditor()
     cmds.modelEditor(editor, edit=True, displayAppearance='points', camera=panelCam[0], grid=False, hud=False)
 
-    cmds.lookThru(panelCam)
+
+    #cmds.lookThru(panelCam)
+    cmds.xform(panelCam[0], t = [23.722, 160.367, 0])
+    cmds.setAttr(cmds.listRelatives(panelCam[0])[0] + '.orthographicWidth', 20.0)
+    cmds.setAttr(cmds.listRelatives(panelCam[0])[0] + '.orthographicWidth', lock = True)
     if cmds.ls('*:shape_panelShape'):
         cmds.select('*:shape_panelShape')
     elif cmds.ls('shape_panelShape'):
@@ -100,7 +104,7 @@ def createPanelCam():
 
     cmds.formLayout(form, edit=True, attachForm=[(column, 'bottom', 0), 
                                                  (column, 'left', 0),
-                                                 (column, 'right', 0), 
+                                                 (column, 'right', 100), 
                                                  (editor, 'top', 0), 
                                                  (editor, 'right', 0), 
                                                  (editor, 'left', 0)],
