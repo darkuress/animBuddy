@@ -9,6 +9,10 @@ import os
 
 import FkIkMatch
 reload(FkIkMatch)
+import FacialCam
+reload(FacialCam)
+import PartSelection
+reload(PartSelection)
 
 class MToolBar(QtWidgets.QWidget):
 
@@ -19,7 +23,6 @@ class MToolBar(QtWidgets.QWidget):
         imagesPath = os.path.join(filePath, 'images')
 
         iconSize = 30
-        marginSize = 0
 
         self.setObjectName(name)
 
@@ -31,6 +34,73 @@ class MToolBar(QtWidgets.QWidget):
         iconImagePath = os.path.join(imagesPath, 'close.png').replace('\\', '/')
         iconHoverImagePath = os.path.join(imagesPath, 'close_hi.png').replace('\\', '/')
 
+        #- glasses button
+        buttonGlasses = QtWidgets.QPushButton('GLASSES')
+        buttonGlasses.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        buttonGlasses.setMinimumHeight(20)
+        buttonGlasses.setMinimumWidth(40)
+        buttonGlasses.setStyleSheet(
+        '''
+        QPushButton{background-color: #3A506B; padding : 2px; 
+                    border-radius: 3px;
+                    border-color: #2D6060;}
+        QPushButton:hover{background-color: #1C2541;}
+        QPushButton:pressed { background-color: #0B132B;}
+        '''   
+        )
+        font = QtGui.QFont('Monaco', 9, QtGui.QFont.Light)
+        font.setBold(True)
+        font.setPointSize(11)
+        buttonGlasses.setFont(font)
+        buttonGlasses.setToolTip('glasses visibility')
+        buttonGlasses.clicked.connect(PartSelection.glasses)
+        buttonGlasses.show() 
+
+        #- tie button
+        buttonTie = QtWidgets.QPushButton('TIE')
+        buttonTie.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        buttonTie.setMinimumHeight(20)
+        buttonTie.setMinimumWidth(40)
+        buttonTie.setStyleSheet(
+        '''
+        QPushButton{background-color: #3A506B; padding : 2px; 
+                    border-radius: 3px;
+                    border-color: #2D6060;}
+        QPushButton:hover{background-color: #1C2541;}
+        QPushButton:pressed { background-color: #0B132B;}
+        '''   
+        )
+        font = QtGui.QFont('Monaco', 9, QtGui.QFont.Light)
+        font.setBold(True)
+        font.setPointSize(11)
+        buttonTie.setFont(font)
+        buttonTie.setToolTip('necktie visibility')
+        buttonTie.clicked.connect(PartSelection.tie)
+        buttonTie.show() 
+
+
+        #- ficial cam button
+        buttonFCam = QtWidgets.QPushButton('FACIAL CAM')
+        buttonFCam.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        buttonFCam.setMinimumHeight(20)
+        buttonFCam.setMinimumWidth(80)
+        buttonFCam.setStyleSheet(
+        '''
+        QPushButton{background-color: #3A506B; padding : 2px; 
+                    border-radius: 3px;
+                    border-color: #2D6060;}
+        QPushButton:hover{background-color: #1C2541;}
+        QPushButton:pressed { background-color: #0B132B;}
+        '''   
+        )
+        font = QtGui.QFont('Monaco', 9, QtGui.QFont.Light)
+        font.setBold(True)
+        font.setPointSize(11)
+        buttonFCam.setFont(font)
+        buttonFCam.setToolTip('open facial cam UI')
+        buttonFCam.clicked.connect(self.facialPanel)
+        buttonFCam.show() 
+
         #- FKIK button
         self.fkikLayout = QtWidgets.QHBoxLayout()
         buttonFkIk = QtWidgets.QPushButton('FKIK')
@@ -39,10 +109,8 @@ class MToolBar(QtWidgets.QWidget):
         buttonFkIk.setMinimumWidth(50)
         buttonFkIk.setStyleSheet(
         '''
-        QPushButton{background-color: #3A506B; padding : 3px; 
-                    border-style: outset;
-                    border-width: 2px;
-                    border-radius: 6px;
+        QPushButton{background-color: #3A506B; padding : 2px; 
+                    border-radius: 3px;
                     border-color: #2D6060;}
         QPushButton:hover{background-color: #1C2541;}
         QPushButton:pressed { background-color: #0B132B;}
@@ -50,7 +118,7 @@ class MToolBar(QtWidgets.QWidget):
         )
         font = QtGui.QFont('Monaco', 9, QtGui.QFont.Light)
         font.setBold(True)
-        font.setPointSize(12)
+        font.setPointSize(11)
         buttonFkIk.setFont(font)
         buttonFkIk.setToolTip('FKIK switch')
         buttonFkIk.clicked.connect(self.fkikSwitch)
@@ -88,7 +156,6 @@ class MToolBar(QtWidgets.QWidget):
         '''   
         )
         self.qLineEditEndFrame.setEnabled(False)
-
         self.fkikLayout.addWidget(buttonFkIk)
         self.fkikLayout.addWidget(self.checkboxBake)
         self.fkikLayout.addWidget(self.qLineEditStartFrame)
@@ -108,7 +175,12 @@ class MToolBar(QtWidgets.QWidget):
         )             
         buttonClose.show()
 
-
+        mainLayout.addWidget(self.separator())
+        mainLayout.addWidget(buttonGlasses)
+        mainLayout.addWidget(buttonTie)
+        mainLayout.addWidget(self.separator())
+        mainLayout.addWidget(buttonFCam)
+        mainLayout.addWidget(self.separator())
         mainLayout.addLayout(self.fkikLayout)
         mainLayout.addWidget(self.separator())
         mainLayout.addWidget(buttonClose)
@@ -146,6 +218,14 @@ class MToolBar(QtWidgets.QWidget):
             FkIkMatch.bake(frame = [startFrame, endFrame])
         else:
             FkIkMatch.convert(prefix = FkIkMatch.getPrefix(), side = FkIkMatch.getSide())
+
+    def facialPanel(self, *args):
+        """
+        """
+        if FacialCam.isExists():
+            FacialCam.deletePanelCam()
+        else:
+            FacialCam.createPanelCam()
 
 def cleanUI(name = 'JustinToolbar'):
 

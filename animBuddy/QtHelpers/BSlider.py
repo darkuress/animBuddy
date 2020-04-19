@@ -194,7 +194,7 @@ class BSlider(QtWidgets.QWidget):
             painter.drawRoundedRect(QtCore.QRectF( offset_x , offset_y, self._hSize, self._hSize), 5,5)
 
         painter.setPen(QtGui.QColor(0,0,0))
-        painter.setFont(QtGui.QFont("console", 8, weight = 75))
+        painter.setFont(QtGui.QFont("console", self._sliderHeight*0.5, weight = 75))
         painter.drawText(offset_x + 2, 15, self._hText)
 
 
@@ -216,7 +216,7 @@ class BSlider(QtWidgets.QWidget):
 
     def _uiDrawValueText(self, painter):
 
-        painter.setFont(QtGui.QFont("console", 12))
+        painter.setFont(QtGui.QFont("console", self._sliderHeight*0.7))
         painter.setPen(QtGui.QColor(110,110,110))
 
         if self._hPressed:

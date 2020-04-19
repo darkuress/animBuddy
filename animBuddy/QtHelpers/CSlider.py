@@ -202,7 +202,7 @@ class CSlider(QtWidgets.QWidget):
             painter.drawRoundedRect(QtCore.QRectF( offset_x , offset_y, self._hfixedWidth, self._hSize), 5,5)
 
         painter.setPen(QtGui.QColor(50,50,50))
-        painter.setFont(QtGui.QFont("console", 8, weight = 75))
+        painter.setFont(QtGui.QFont("console", self._sliderHeight/0.5, weight = 75))
         painter.drawText(offset_x + 2, self._sliderHeight/2+3, self._hText)
 
 
