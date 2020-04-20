@@ -113,6 +113,12 @@ cmd = '{0} install --force-reinstall --target={1} {2}'.format(PIP_PATH, REQUEST_
 print('Calling shell command: {0}'.format(cmd))\n\
 print(subprocess.check_output(cmd))\n\
 \n\
+# Install Dropbox\n\
+cmd = '{0} install --force-reinstall --target={1} {2}'.format(PIP_PATH, REQUEST_INSTALL_PATH,\n\
+                                                                'dropbox').split(' ')\n\
+print('Calling shell command: {0}'.format(cmd))\n\
+print(subprocess.check_output(cmd))\n\
+\n\
 # Remove our temporary directory\n\
 if delete_tmpdir and tmpdir:\n\
     print('cleaning up temporary files: {0}'.format(tmpdir))\n\
