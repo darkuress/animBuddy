@@ -3,6 +3,8 @@ import os
 from functools import partial
 import FkIkMatch
 reload(FkIkMatch)
+import Variation
+reload(Variation)
 
 class UIWarriorToolbar:
     """
@@ -29,10 +31,14 @@ class UIWarriorToolbar:
     
         cmds.rowLayout(numberOfColumns = 1)
         cmds.setParent("..")
-        cmds.rowLayout(numberOfColumns = 7)
-        cmds.button(label = 'FKIK',
-                    annotation = 'select any arm controller and run', 
-                    c = self.fkikSwitch)
+        cmds.rowLayout(numberOfColumns = 8)
+        cmds.columnLayout()
+        self.optionMenuVariation = cmds.optionMenu(label='Variation', changeCommand = self.changeVariation)
+        cmds.menuItem(label='Select...')
+        cmds.menuItem(label='Warrior')
+        cmds.menuItem(label='Hero')
+        cmds.setParent("..")
+        
         cmds.separator(height = 10, width = 10, style = 'none')
         self.checkBoxBake = cmds.checkBox(label = "bake", cc = self.bakeTextBoxEnable)
         self.textFieldStartFrame = cmds.textField(width = 50, text = cmds.playbackOptions(minTime = True, q = True))
@@ -80,11 +86,16 @@ class UIWarriorToolbar:
         cmds.textField(self.textFieldStartFrame, e = True, en = enable)
         cmds.textField(self.textFieldEndFrame, e = True, en = enable)
         
-
-    def bakeTextBoxEnable(self, args):
+    def bakeTextBoxEnable(self, *args):
         """
         """
         self._bakeTextBoxCB()
+
+    def changeVariation(self, *args):
+        """
+        """
+        variation = cmds.optionMenu(self.optionMenuVariation, q = True, v = True)
+        Variation.setVariation(variation)
 
     def loadInMaya(self, *args):
         """
