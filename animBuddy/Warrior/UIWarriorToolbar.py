@@ -103,3 +103,5 @@ class UIWarriorToolbar:
         if not cmds.toolBar('WarriorToolbar', exists = True):  
             allowedAreas = ['top', 'bottom']
             cmds.toolBar('WarriorToolbar', area='bottom', content=self.win, allowedArea=allowedAreas )
+        else:
+            self.close()

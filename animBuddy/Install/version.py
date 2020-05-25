@@ -6,7 +6,7 @@ import logging
 logger = logging.getLogger("AnimBuddy")
 
 #This is Local Version
-VERSION = "1.0.1"
+VERSION = "1.0.2"
 
 def getLatestSetupPyFileFromRepo():
     """Parses latest setup.py's version number"""

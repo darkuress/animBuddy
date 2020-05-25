@@ -119,3 +119,5 @@ class UIJustinToolbar:
         if not cmds.toolBar('justinToolbar', exists = True):  
             allowedAreas = ['top', 'bottom']
             cmds.toolBar('justinToolbar', area='bottom', content=self.win, allowedArea=allowedAreas )
+        else:
+            self.close()

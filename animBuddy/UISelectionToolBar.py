@@ -204,4 +204,6 @@ class UISelectionToolBar:
             allowedAreas = ['top', 'bottom']
             sgToolBar = cmds.toolBar('sgToolbar', area='bottom', content=self.win, allowedArea=allowedAreas )
             self.buildButton()
+        else:
+            self.close()
 
