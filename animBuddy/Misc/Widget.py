@@ -78,7 +78,8 @@ def versionCheck(*args):
                                       cancelButton='No', 
                                       dismissString='No' )
         if question == 'Yes':
-            install.run()
+            closeUI()
+            cmds.evalDeferred("from animBuddy.Install import install;install.run()")
     else:
         cmds.confirmDialog(title ='Update', 
                            message ='No update is available', 

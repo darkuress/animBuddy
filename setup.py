@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'animBuddy',
-    version = '1.0.1',
+    version = '1.0.2',
     url = 'https://github.com/darkuress/animBuddy.git',
     author = 'Huile De Olive',
     author_email = "huiledolivemaster@gmail.com",
