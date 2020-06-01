@@ -7,6 +7,7 @@ import maya.api.OpenMayaRender as OpenMayaRender
 import MotionTrailUtil as util
 reload(util)
 import maya.cmds as cmds
+import datetime
 
 def maya_useNewAPI():
     """
@@ -126,6 +127,7 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         self.allPoints = {}
         self.allFramePoints = {}
         self.callbacks = []
+        self.timestamp = datetime.datetime.now()
 
     def getDepNode(self, n):
         return OpenMaya.MGlobal.getSelectionListByName(n).getDependNode(0)
@@ -164,7 +166,7 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         fnThisNode = OpenMaya.MFnDependencyNode(selectedNode)
         worldMatrixAttr = fnThisNode.attribute("worldMatrix")
         pointPlug = OpenMaya.MPlug(selectedNode, worldMatrixAttr)
-        pointPlug = pointPlug.elementByLogicalIndex(0)     
+        pointPlug = pointPlug.elementByLogicalIndex(0)
 
         activeCam = util.getCam()
 
@@ -210,8 +212,7 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         points = {}
         if not data.isRelative:
             for i in range(int(currentTime.value - timeBuffer), int(currentTime.value + timeBuffer + 1)):
-                #Get matrix plug as MObject so we can get it's data.
-                
+                #Get matrix plug as MObject so we can get it's data.                
                 try:
                     points[i] = self.allPoints[i]
                 except:
@@ -344,7 +345,9 @@ class DrawNodeDrawOverride(OpenMayaRender.MPxDrawOverride):
         return True
 
     def graphEditorChangedCallback(self, client_data):
-        self.isPointCached = False
+        if (datetime.datetime.now() - self.timestamp).total_seconds() > 1:
+            self.isPointCached = False
+            self.timestamp = datetime.datetime.now()
 
     def deleteCallbacks(self):
         """
