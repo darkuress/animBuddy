@@ -102,20 +102,39 @@ for fldr in os.listdir(ppath):\n\
     if fldr.startswith('animBuddy') and fldr.endswith('dist-info'):\n\
         shutil.rmtree(os.path.join(ppath, fldr))\n\
 \n\
-cmd = '{0} install --force-reinstall --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,\n\
-                                                                ANIMBUDDY_API_RELEASE_PATH).split(' ')\n\
+#cmd = '{0} install --force-reinstall --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,\n\
+#                                                                ANIMBUDDY_API_RELEASE_PATH).split(' ')   \n\
+cmd = []\n\
+cmd.append(PIP_PATH)\n\
+cmd.append("install")\n\
+cmd.append("--force-reinstall")\n\
+cmd.append("--target={0}".format(MAYA_SCRIPTS_PATH))\n\
+cmd.append(ANIMBUDDY_API_RELEASE_PATH)\n\
+\n\
 print('Calling shell command: {0}'.format(cmd))\n\
 print(subprocess.check_output(cmd))\n\
 \n\
 # Install Requests\n\
-cmd = '{0} install --force-reinstall --target={1} {2}'.format(PIP_PATH, REQUEST_INSTALL_PATH,\n\
-                                                                'requests').split(' ')\n\
+#cmd = '{0} install --force-reinstall --target={1} {2}'.format(PIP_PATH, REQUEST_INSTALL_PATH,\n\
+#                                                                'requests').split(' ')\n\
+cmd = []\n\
+cmd.append(PIP_PATH)\n\
+cmd.append("install")\n\
+cmd.append("--force-reinstall")\n\
+cmd.append("--target={0}".format(REQUEST_INSTALL_PATH))\n\
+cmd.append("requests")\n\
 print('Calling shell command: {0}'.format(cmd))\n\
 print(subprocess.check_output(cmd))\n\
 \n\
 # Install Dropbox\n\
 cmd = '{0} install --force-reinstall --target={1} {2}'.format(PIP_PATH, REQUEST_INSTALL_PATH,\n\
                                                                 'dropbox').split(' ')\n\
+cmd = []\n\
+cmd.append(PIP_PATH)\n\
+cmd.append("install")\n\
+cmd.append("--force-reinstall")\n\
+cmd.append("--target={0}".format(REQUEST_INSTALL_PATH))\n\
+cmd.append("dropbox")\n\
 print('Calling shell command: {0}'.format(cmd))\n\
 print(subprocess.check_output(cmd))\n\
 \n\

@@ -102,20 +102,39 @@ def run():
         if fldr.startswith('animBuddy') and fldr.endswith('dist-info'):
             shutil.rmtree(os.path.join(ppath, fldr))
 
-    cmd = '{0} install --force-reinstall --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,
-                                                                    ANIMBUDDY_API_RELEASE_PATH).split(' ')
+    #cmd = '{0} install --force-reinstall --target={1} {2}'.format(PIP_PATH, MAYA_SCRIPTS_PATH,
+    #                                                                ANIMBUDDY_API_RELEASE_PATH).split(' ')   
+    cmd = []
+    cmd.append(PIP_PATH)
+    cmd.append("install")
+    cmd.append("--force-reinstall")
+    cmd.append("--target={0}".format(MAYA_SCRIPTS_PATH))
+    cmd.append(ANIMBUDDY_API_RELEASE_PATH)
+
     print('Calling shell command: {0}'.format(cmd))
     print(subprocess.check_output(cmd))
 
     # Install Requests
-    cmd = '{0} install --force-reinstall --target={1} {2}'.format(PIP_PATH, REQUEST_INSTALL_PATH,
-                                                                    'requests').split(' ')
+    #cmd = '{0} install --force-reinstall --target={1} {2}'.format(PIP_PATH, REQUEST_INSTALL_PATH,
+    #                                                                'requests').split(' ')
+    cmd = []
+    cmd.append(PIP_PATH)
+    cmd.append("install")
+    cmd.append("--force-reinstall")
+    cmd.append("--target={0}".format(REQUEST_INSTALL_PATH))
+    cmd.append("requests")
     print('Calling shell command: {0}'.format(cmd))
     print(subprocess.check_output(cmd))
 
     # Install Dropbox
     cmd = '{0} install --force-reinstall --target={1} {2}'.format(PIP_PATH, REQUEST_INSTALL_PATH,
                                                                     'dropbox').split(' ')
+    cmd = []
+    cmd.append(PIP_PATH)
+    cmd.append("install")
+    cmd.append("--force-reinstall")
+    cmd.append("--target={0}".format(REQUEST_INSTALL_PATH))
+    cmd.append("dropbox")
     print('Calling shell command: {0}'.format(cmd))
     print(subprocess.check_output(cmd))
 
