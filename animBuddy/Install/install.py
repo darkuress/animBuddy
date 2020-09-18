@@ -106,9 +106,9 @@ def run():
     #                                                                ANIMBUDDY_API_RELEASE_PATH).split(' ')   
     cmd = []
     cmd.append(PIP_PATH)
-    cmd.append("install")
-    cmd.append("--force-reinstall")
-    cmd.append("--target={0}".format(MAYA_SCRIPTS_PATH))
+    cmd.append('install')
+    cmd.append('--force-reinstall')
+    cmd.append('--target={0}'.format(MAYA_SCRIPTS_PATH))
     cmd.append(ANIMBUDDY_API_RELEASE_PATH)
 
     print('Calling shell command: {0}'.format(cmd))
@@ -119,10 +119,10 @@ def run():
     #                                                                'requests').split(' ')
     cmd = []
     cmd.append(PIP_PATH)
-    cmd.append("install")
-    cmd.append("--force-reinstall")
-    cmd.append("--target={0}".format(REQUEST_INSTALL_PATH))
-    cmd.append("requests")
+    cmd.append('install')
+    cmd.append('--force-reinstall')
+    cmd.append('--target={0}'.format(REQUEST_INSTALL_PATH))
+    cmd.append('requests')
     print('Calling shell command: {0}'.format(cmd))
     print(subprocess.check_output(cmd))
 
@@ -131,10 +131,10 @@ def run():
                                                                     'dropbox').split(' ')
     cmd = []
     cmd.append(PIP_PATH)
-    cmd.append("install")
-    cmd.append("--force-reinstall")
-    cmd.append("--target={0}".format(REQUEST_INSTALL_PATH))
-    cmd.append("dropbox")
+    cmd.append('install')
+    cmd.append('--force-reinstall')
+    cmd.append('--target={0}'.format(REQUEST_INSTALL_PATH))
+    cmd.append('dropbox')
     print('Calling shell command: {0}'.format(cmd))
     print(subprocess.check_output(cmd))
 
