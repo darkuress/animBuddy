@@ -3,45 +3,11 @@ import maya.cmds as cmds
 def createPanelCam():
     """
     """
-    if not cmds.ls('*:shape_panelShape') and not cmds.ls('shape_panelShape'):
-        print 'no Justin in scene'
-        return 
-
-    deletePanelCam()
-
-    panelCam = cmds.camera(n = 'justin_panel_cam', orthographic = True)
-
     window = cmds.window('justinPanelWindow', width = 300, height = 800, s = False)
     form = cmds.formLayout()
     editor = cmds.modelEditor()
-    cmds.modelEditor(editor, edit=True, displayAppearance='points', camera=panelCam[0], grid=False, hud=False)
-
-
-    #cmds.lookThru(panelCam)
-    cmds.xform(panelCam[0], t = [23.722, 160.367, 0])
-    cmds.setAttr(cmds.listRelatives(panelCam[0])[0] + '.orthographicWidth', 20.0)
-    cmds.setAttr(cmds.listRelatives(panelCam[0])[0] + '.orthographicWidth', lock = True)
-    if cmds.ls('*:shape_panelShape'):
-        cmds.select('*:shape_panelShape')
-    elif cmds.ls('shape_panelShape'):
-        cmds.select('shape_panelShape')
-    else:
-        deletePanelCam()
-        return 
-
-    cmds.viewFit(f = 1)
-    cmds.select(cl = True)
-
-    cmds.setAttr(panelCam[0] + ".tx", lock = True)
-    cmds.setAttr(panelCam[0] + ".ty", lock = True)
-    cmds.setAttr(panelCam[0] + ".tz", lock = True)
-    cmds.setAttr(panelCam[0] + ".rx", lock = True)
-    cmds.setAttr(panelCam[0] + ".ry", lock = True)
-    cmds.setAttr(panelCam[0] + ".rz", lock = True)
-    cmds.setAttr(panelCam[0] + ".sx", lock = True)
-    cmds.setAttr(panelCam[0] + ".sy", lock = True)
-    cmds.setAttr(panelCam[0] + ".sz", lock = True)
-    cmds.setAttr(panelCam[0] + ".v", lock = True)
+    if cmds.objExists('arFacePanelCamShape'):
+        cmds.modelEditor(editor, edit=True, displayAppearance='points', camera='arFacePanelCamShape', grid=False, hud=False)
 
 
     #facial selection
