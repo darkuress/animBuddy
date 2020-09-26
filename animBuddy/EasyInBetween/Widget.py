@@ -11,6 +11,11 @@ class UIContainer():
     """
     """
     undoChunk = False
+    dragInProgress = False
+    objs = False
+    animCurves = None
+    animCurveInfo = {} #dict {animcurve : []}
+    animCurveCalculatedInfo = {}
     floatSliderEIBAmount = None
     radioMenuItemModeObject = None
     radioMenuItemModeKeyFrame = None
@@ -86,7 +91,7 @@ def build(parent,
                             image1=os.path.join(imagesPath, pic),
                             label=str(value),
                             annotation="set inbetween : " + str(value),
-                            c=partial(easyInBetweenChange2, value=value))
+                            c=partial(easyInBetweenChange, value=value))
         cmds.separator(height=10, width=1, style='none')
     cmds.setParent("..")
     cmds.setParent("..")
@@ -96,23 +101,47 @@ def build(parent,
     readEIBMode()
 
 
-def easyInBetweenChange(*args):
+def easyInBetweenChange(value = None, *args):
     """
     slider
     """
     if not UIContainer.undoChunk:
         UIContainer.undoChunk = True
         cmds.undoInfo(openChunk=True)
-    amount = cmds.floatSlider(UIContainer.floatSliderEIBAmount, q=True, v=True)
+    
+    if not UIContainer.dragInProgress:
+        #pass initial values
+        UIContainer.objs = cmds.ls(sl = True)
+        if cmds.menuItem(UIContainer.radioMenuItemModeObject, q=True, radioButton=True):
+            UIContainer.animCurves = Core.getAnimCurves()
+            for curve in UIContainer.animCurves:
+                UIContainer.animCurveInfo[curve] = Core.findCloseKeyByFrame(curve, cmds.currentTime(q = True))
+            UIContainer.animCurveCalculatedInfo = Core.calculate(UIContainer.animCurveInfo)
+        elif cmds.menuItem(UIContainer.radioMenuItemModeKeyFrame, q=True, radioButton=True):
+            UIContainer.animCurves = Core.getAnimCurves(withFrame = True)
+            for curve in UIContainer.animCurves:
+                frames = Core.getAllKeyFrames(curve)
+                UIContainer.animCurveInfo[curve] = {}
+                for frame in frames:
+                    UIContainer.animCurveInfo[curve][frame] = Core.findCloseKeyByFrame(curve, frame)          
+            UIContainer.animCurveCalculatedInfo = Core.calculate(UIContainer.animCurveInfo, withFrame = True)
+
+        UIContainer.dragInProgress = True
+
+    if value:
+        amount = value
+    else:
+        amount = cmds.floatSlider(UIContainer.floatSliderEIBAmount, q=True, v=True)
+
     if cmds.menuItem(UIContainer.radioMenuItemModeObject, q=True, radioButton=True):
-        Core.changeKey(amount)
+        Core.runChange(UIContainer.objs, amount, UIContainer.animCurveCalculatedInfo)
     elif cmds.menuItem(UIContainer.radioMenuItemModeKeyFrame, q=True, radioButton=True):
         if amount > 1:
-            Core.changeSelectedKey(1)
+            Core.runChange(UIContainer.objs, 1, UIContainer.animCurveCalculatedInfo, withFrame = True)
         elif amount < 0:
-            Core.changeSelectedKey(0)
+            Core.runChange(UIContainer.objs, 0, UIContainer.animCurveCalculatedInfo, withFrame = True)
         else:
-            Core.changeSelectedKey(amount)
+            Core.runChange(UIContainer.objs, amount, UIContainer.animCurveCalculatedInfo, withFrame = True)
 
 
 def afterDrop(*args):
@@ -121,23 +150,11 @@ def afterDrop(*args):
     UIContainer.undoChunk = False
     cmds.undoInfo(closeChunk=True)
     cmds.floatSlider(UIContainer.floatSliderEIBAmount, e=True, v=0.5)
-
-
-def easyInBetweenChange2(value=None, *args):
-    """
-    dots
-    """
-    cmds.floatSlider(UIContainer.floatSliderEIBAmount, e=True, v=value)
-    if cmds.menuItem(UIContainer.radioMenuItemModeObject, q=True, radioButton=True):
-        Core.changeKey(value)
-    elif cmds.menuItem(UIContainer.radioMenuItemModeKeyFrame, q=True, radioButton=True):
-        if value > 1:
-            Core.changeSelectedKey(1)
-        elif value < 0:
-            Core.changeSelectedKey(0)
-        else:
-            Core.changeSelectedKey(value)
-    afterDrop()
+    UIContainer.dragInProgress = False
+    UIContainer.objs = None
+    UIContainer.animCurves = None
+    UIContainer.nearByKeyFrame = {}
+    UIContainer.animCurveCalculatedInfo = {}
 
 
 def readEIBMode():
